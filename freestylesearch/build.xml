@@ -1,0 +1,181 @@
+<project>
+    <description>
+        Build and deploy the Freestyle Search engine
+    </description>
+    <!-- set global properties for this build -->
+
+    <property name="oroot" location="tmp/freestyle"/>
+
+    <property name="owebinf" location="${oroot}/WEB-INF"/>
+    <property name="ojsp" location="${oroot}/jsp"/>
+    <property name="oclasses" location="${owebinf}/classes"/>
+    <property name="orootC2" location="${oclasses}/gov"/>
+    <property name="orootC3" location="${oclasses}/gov/nih"/>
+    <property name="orootC4" location="${oclasses}/gov/nih/nci"/>
+    <property name="orootC5" location="${oclasses}/gov/nih/nci/cadsr"/>
+    <property name="orootC6" location="${oclasses}/gov/nih/nci/cadsr/freestylesearch"/>
+    <property name="olib" location="${owebinf}/lib"/>
+    <property name="obin" location="distrib/war"/>
+    <property name="java" location="src"/>
+    <property name="xml" location="conf/web"/>
+    <property name="ui" location="ui"/>
+    <property name="lib" location="lib"/>
+    <property name="temp" location="tmp"/>
+    <property name="odoc" location="${temp}/freestylesearch/doc"/>
+    
+    <target name="clean">
+        <mkdir dir="${temp}"/>
+        <mkdir dir="${oroot}"/>
+        <mkdir dir="${owebinf}"/>
+        <mkdir dir="${owebinf}/tld"/>
+        <mkdir dir="${ojsp}"/>
+        <mkdir dir="${oclasses}"/>
+        <mkdir dir="${orootC2}"/>
+        <mkdir dir="${orootC3}"/>
+        <mkdir dir="${orootC4}"/>
+        <mkdir dir="${orootC5}"/>
+        <mkdir dir="${orootC6}"/>
+        <mkdir dir="${olib}"/>
+        <mkdir dir="${obin}"/>
+        <delete>
+                <fileset dir="${orootC6}">
+                    <include name="**/*.class"/>
+                </fileset>
+        </delete>
+        <copy todir="${ojsp}">
+            <fileset dir="${ui}/jsp">
+                <include name="**/*"/>
+            </fileset>
+            <fileset dir="${ui}/css">
+                <include name="**/*"/>
+            </fileset>
+            <fileset dir="${ui}/images">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
+        <copy todir="${olib}">
+            <fileset file="${lib}/struts.jar" />
+            <fileset file="${lib}/struts-config_1_0.dtd"/>
+            <fileset file="${lib}/struts-config_1_1.dtd"/>
+            <fileset file="${lib}/struts-config_1_2.dtd"/>
+            <fileset file="${lib}/tiles-config_1_1.dtd"/>
+            <fileset file="${lib}/web-app_2_2.dtd"/>
+            <fileset file="${lib}/web-app_2_3.dtd"/>
+            <fileset file="${lib}/antlr.jar"/>
+            <fileset file="${lib}/commons-beanutils.jar"/>
+            <fileset file="${lib}/commons-collections.jar"/>
+            <fileset file="${lib}/commons-digester.jar"/>
+            <fileset file="${lib}/commons-fileupload.jar"/>
+            <fileset file="${lib}/commons-validator.jar"/>
+            <fileset file="${lib}/jakarta-oro.jar"/>
+            <fileset file="${lib}/validator-rules.xml"/>
+            <fileset file="${lib}/client.jar"/>
+            <fileset file="${lib}/spring.jar"/>
+            <fileset file="${lib}/hibernate3.jar"/>
+        </copy>
+        <copy todir="${orootC6}/tool">
+            <fileset file="${conf}/../common/Freestyle.properties" />
+        </copy>
+        <copy todir="${owebinf}">
+            <fileset file="${conf}/../web/struts-config.xml" />
+        </copy>
+        <copy todir="${owebinf}/tld">
+            <fileset dir="${conf}/../web/tld">
+                <include name="**/*.tld"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="build" depends="clean">
+        <javac srcdir="${java}" destdir="${oclasses}" tempdir="${temp}" debug="${jdebug}">
+            <compilerarg line="-deprecation"/>
+            <compilerarg line="-Xlint:unchecked"/>
+            <classpath path="${lib}/ojdbc14.jar"/>
+            <classpath path="${lib}/log4j-1.2.8.jar"/>
+            <classpath path="${lib}/j2ee.jar"/>
+            <classpath path="${lib}/struts.jar"/>
+            <classpath path="${lib}/client.jar"/>
+        </javac>
+        <delete file="${obin}/freestylesearch.jar"/>
+        <cvs command="status -v" output="${oclasses}/cvsdeploy.txt"/>
+        <jar destfile="${obin}/freestylesearch.jar">
+            <fileset dir="${oclasses}" />
+        </jar>
+        <delete file="${oclasses}/cvsdeploy.txt"/>
+    </target>
+
+    <target name="deploy" depends="build">
+        <delete file="${obin}/freestyle.war"/>
+        <cvs command="status -v" output="${ojsp}/cvsdeploy.txt"/>
+        <war destfile="${obin}/freestyle.war" basedir="${oroot}" update="true" webxml="${xml}/web.xml">
+        </war>
+    </target>
+
+    <target name="build-doc">
+        <mkdir dir="${temp}"/>
+        <mkdir dir="${oroot}"/>
+        <delete dir="${odoc}"/>
+        <mkdir dir="${odoc}"/>
+        <javadoc
+                destdir="${odoc}"
+                Private="false"
+                author="true"
+                version="true"
+                use="true"
+                windowtitle="Freestyle Searchl API">
+            
+            <classpath>
+                <fileset dir="${lib}">
+                    <include name="**/*.jar" />
+                </fileset>
+            </classpath>
+            
+            <packageset dir="${java}" defaultexcludes="yes">
+                <include name="gov/nih/nci/cadsr/freestylesearch/**" />
+            </packageset>
+            
+            <doctitle><![CDATA[<h1>Freestyle Search API</h1>]]></doctitle>
+            <bottom><![CDATA[<i>Copyright &#169; 2006 ScenPro, Inc. All Rights Reserved.</i>]]></bottom>
+            <tag name="todo" scope="all" description="To do:" />
+            <group title="Source Package" packages="gov.nih.nci.cadsr.freestylesearch.util;gov.nih.nci.cadsr.freestylesearch.test"/>
+            <link offline="true" href="http://java.sun.com/products/jdk/1.2/docs/api/" packagelistLoc="D:\temp"/>
+        </javadoc>
+        <zip destfile="distrib/doc/freestylesearch_doc.zip">
+            <zipfileset dir="${odoc}"/>
+        </zip>
+    </target>
+
+    <target name="build-jar">
+        <jar destfile="${obin}/freestylesearch.jar">
+            <fileset dir="${oclasses}" />
+        </jar>
+    </target>
+
+    <target name="build-dev">
+        <antcall target="deploy">
+            <param name="conf" value="conf/dev"/>
+            <param name="jdebug" value="on"/>
+        </antcall>
+    </target>
+
+    <target name="build-qa">
+        <antcall target="deploy">
+            <param name="conf" value="conf/qa"/>
+            <param name="jdebug" value="off"/>
+        </antcall>
+    </target>
+
+    <target name="build-stage">
+        <antcall target="deploy">
+            <param name="conf" value="conf/stage"/>
+            <param name="jdebug" value="off"/>
+        </antcall>
+    </target>
+
+    <target name="build-prod">
+        <antcall target="deploy">
+            <param name="conf" value="conf/prod"/>
+            <param name="jdebug" value="off"/>
+        </antcall>
+    </target>
+</project>
