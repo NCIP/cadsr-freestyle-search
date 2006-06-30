@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.java,v 1.1 2006-06-30 13:46:47 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.java,v 1.2 2006-06-30 18:48:00 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.test;
@@ -94,15 +94,43 @@ public class SearchTest
         else
             var.resetResultsByWorkflowNotRetired();
 
+        String[] vals;
         String restrict = prop.getProperty("restricts");
         if (restrict != null)
         {
-            String[] vals = restrict.split("[, ]");
+            vals = restrict.split("[, ]");
             for (int i = 0; i < vals.length; ++i)
             {
                 if (vals[i] != null && vals[i].length() > 0)
                     var.restrictResultsByType(Integer.valueOf(vals[i]));
             }
+        }
+        
+        boolean outDef = false;
+        boolean outAbbrev = false;
+        boolean outAC = false;
+        
+        restrict = prop.getProperty("returns");
+        if (restrict != null)
+        {
+            vals = restrict.split("[, ]");
+            for (int i = 0; i < vals.length; ++i)
+            {
+                if (vals[i] != null && vals[i].length() > 0)
+                {
+                    switch (Integer.valueOf(vals[i]))
+                    {
+                    case 1: outAbbrev = true; break;
+                    case 2: outAC = true; break;
+                    case 0:
+                    default: outDef = true; break;
+                    }
+                }
+            }
+        }
+        else
+        {
+            outDef = true;
         }
 
         // Perform a search on each phrase.
@@ -114,40 +142,50 @@ public class SearchTest
                 break;
             _logger.info("Looking for \"" + phrase + "\"");
 
-            // Perform search and get default results.
-            Vector<String> rs = var.findReturningDefault(phrase);
-    
-            // Output results
             int cnt;
-            for (cnt = 0; cnt < rs.size(); ++cnt)
+
+            if (outDef)
             {
-                _logger.info(String.valueOf(cnt + 1) + ": " + rs.get(cnt));
+                // Perform search and get default results.
+                Vector<String> rs = var.findReturningDefault(phrase);
+        
+                // Output results
+                for (cnt = 0; cnt < rs.size(); ++cnt)
+                {
+                    _logger.info(String.valueOf(cnt + 1) + ": " + rs.get(cnt));
+                }
+                _logger.info(cnt + " matches found");
             }
-            _logger.info(cnt + " matches found");
-/*
-            // Perform search and get caCORE object results.
-            Vector<AdministeredComponent> rs2 = var.findReturningAdministeredComponent(phrase);
-            
-            // Output results
-            cnt = 0;
-            for (AdministeredComponent ac: rs2)
+
+            if (outAC)
             {
-                _logger.info(String.valueOf(cnt + 1) + ": " + ac.getLongName() + "\n" + ac.getPublicID() + " / " + ac.getVersion());
-                ++cnt;
+                // Perform search and get caCORE object results.
+                Vector<AdministeredComponent> rs2 = var.findReturningAdministeredComponent(phrase);
+                
+                // Output results
+                cnt = 0;
+                for (AdministeredComponent ac: rs2)
+                {
+                    _logger.info(String.valueOf(cnt + 1) + ": " + ac.getLongName() + "\n" + ac.getPublicID() + " / " + ac.getVersion());
+                    ++cnt;
+                }
+                _logger.info(cnt + " matches found");
             }
-            _logger.info(cnt + " matches found");
-*/
-            // Perform search and get Search object results..
-            Vector<SearchResultSet> rs3 = var.findReturningResultSet(phrase);
-            
-            // Output results
-            cnt = 0;
-            for (SearchResultSet ac: rs3)
+
+            if (outAbbrev)
             {
-                _logger.info(String.valueOf(cnt + 1) + ": " + ac.getType() + ", " + ac.getIdseq() + ", " + ac.getScore());
-                ++cnt;
+                // Perform search and get Search object results..
+                Vector<SearchResultSet> rs3 = var.findReturningResultSet(phrase);
+                
+                // Output results
+                cnt = 0;
+                for (SearchResultSet ac: rs3)
+                {
+                    _logger.info(String.valueOf(cnt + 1) + ": " + ac.getType() + ", " + ac.getIdseq() + ", " + ac.getScore());
+                    ++cnt;
+                }
+                _logger.info(cnt + " matches found");
             }
-            _logger.info(cnt + " matches found");
         }
     }
 

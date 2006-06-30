@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/DBAccess.java,v 1.1 2006-06-30 13:46:47 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/DBAccess.java,v 1.2 2006-06-30 18:48:00 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -547,23 +547,25 @@ public class DBAccess
      */
     private String buildSelectTerms(String terms_, String types_)
     {
-        String select =
-            " select ac_idseq, ac_table, sum(1) as cnt"
-            + " from " + _indexTable;
-        if (types_ == null)
-            select += " where token in (" + terms_ + ")";
-        else
-            select += " where ac_table in (" + types_ + ") and token in (" + terms_ + ")";
-            
-        return select + " group by ac_idseq, ac_table";
+        String select = " select ac_idseq, ac_table, sum(1) as cnt from " + _indexTable + " where ";
+
+        if (types_ != null)
+            select += "ac_table in (" + types_ + ") and ";
+
+        select += "token in (" + terms_ + ") group by ac_idseq, ac_table";
+
+        return select;
     }
     
     /**
      * Build the SQL select to pull from the composite index.
      * 
-     * @param terms_ the comma separated terms, appropriately enclosed in appostophies
-     * @param types_ (optional) the comma separated type codes or null
-     * @param pairs_ the array of terms used as pairs
+     * @param terms_
+     *            the comma separated terms, appropriately enclosed in appostophies
+     * @param types_
+     *            (optional) the comma separated type codes or null
+     * @param pairs_
+     *            the array of terms used as pairs
      * @return the SQL select for the composite index
      */
     private String buildSelectComposite(String terms_, String types_, String[] pairs_)
@@ -571,18 +573,25 @@ public class DBAccess
         String select = "";
         String strongest = " " + pairs_[0];
         String weakest = "%" + pairs_[0];
+        String subSelect = "";
+
+        /*
+        subSelect += "ac_idseq in (select distinct gs.ac_idseq from " + _indexTable + " gs where ";
+        if (types_ != null)
+            subSelect += "gs.ac_table in (" + types_ + ") and ";
+        subSelect += "gs.token in (" + terms_ + ")) and";
+        */
+
+        if (types_ != null)
+            subSelect += "ac_table in (" + types_ + ") and ";
         
         for (int i = 1; i < pairs_.length; ++i)
         {
             select += 
                 " union all select ac_idseq, ac_table, sum(10) as cnt"
                 + " from " + _compositeTable
-                + " where ac_idseq in (select distinct gs.ac_idseq from " + _indexTable + " gs";
-            if (types_ == null)
-                select += " where gs.token in (" + terms_ + "))";
-            else
-                select += " where gs.ac_table in (" + types_ + ") and gs.token in (" + terms_ + "))";
-            select += " and composite like '% " + pairs_[i - 1] + " " + pairs_[i] + " %' group by ac_idseq, ac_table";
+                + " where " + subSelect
+                + " composite like '% " + pairs_[i - 1] + " " + pairs_[i] + " %' group by ac_idseq, ac_table";
             strongest += " " + pairs_[i];
             weakest += "%" + pairs_[i];
         }
@@ -590,22 +599,14 @@ public class DBAccess
         select += 
             " union all select ac_idseq, ac_table, sum(10) as cnt"
             + " from " + _compositeTable
-            + " where ac_idseq in (select distinct gs.ac_idseq from " + _indexTable + " gs";
-        if (types_ == null)
-            select += " where gs.token in (" + terms_ + "))";
-        else
-            select += " where gs.ac_table in (" + types_ + ") and gs.token in (" + terms_ + "))";
-        select += " and composite like '%" + strongest + " %' group by ac_idseq, ac_table";
+            + " where " + subSelect
+            + " composite like '%" + strongest + " %' group by ac_idseq, ac_table";
 
         select += 
             " union all select ac_idseq, ac_table, sum(5) as cnt"
             + " from " + _compositeTable
-            + " where ac_idseq in (select distinct gs.ac_idseq from " + _indexTable + " gs";
-        if (types_ == null)
-            select += " where gs.token in (" + terms_ + "))";
-        else
-            select += " where gs.ac_table in (" + types_ + ") and gs.token in (" + terms_ + "))";
-        select += " and composite like '" + weakest + "%' group by ac_idseq, ac_table";
+            + " where " + subSelect
+            + " composite like '" + weakest + "%' group by ac_idseq, ac_table";
 
         return select.substring(10);
     }

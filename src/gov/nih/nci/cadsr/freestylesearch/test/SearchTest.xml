@@ -1,6 +1,6 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 
-<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.xml,v 1.1 2006-06-30 13:46:47 hebell Exp $
+<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.xml,v 1.2 2006-06-30 18:48:00 hebell Exp $
        $Name: not supported by cvs2svn $
  -->
 
@@ -20,6 +20,13 @@
         <entry key="data.DSurl">cbiodb2-d.nci.nih.gov:1521:CBDEV</entry>
         <entry key="data.DSusername">freestylesearch</entry>
         <entry key="data.DSpassword">search0608</entry>
+
+        <!-- Define the types of data returns:
+            0 = default
+            1 = abbreviated (idseq, score, type)
+            2 = caCORE API Administered Component Objects
+        -->
+        <entry key="returns">0, 1</entry>
 
         <!-- Specify the match test type, 0 = exact, 1 = partial, 2 = best.
         -->
