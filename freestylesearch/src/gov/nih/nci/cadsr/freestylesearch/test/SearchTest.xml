@@ -1,0 +1,53 @@
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.xml,v 1.1 2006-06-30 13:46:47 hebell Exp $
+       $Name: not supported by cvs2svn $
+ -->
+
+<properties>
+    
+        <!-- The index database access values
+        -->
+        <entry key="index.DSurl">cbiodb2-d.nci.nih.gov:1521:CBDEV</entry>
+        <entry key="index.DSusername">freestylesearch</entry>
+        <entry key="index.DSpassword">search0608</entry>
+        <entry key="index.DSschema">sbrext</entry>
+    
+        <!-- The caDSR referenced by the index database access values
+        
+        cbiodb10.nci.nih.gov:1521:CBPROD
+        -->
+        <entry key="data.DSurl">cbiodb2-d.nci.nih.gov:1521:CBDEV</entry>
+        <entry key="data.DSusername">freestylesearch</entry>
+        <entry key="data.DSpassword">search0608</entry>
+
+        <!-- Specify the match test type, 0 = exact, 1 = partial, 2 = best.
+        -->
+        <entry key="matchType">2</entry>
+    
+        <!-- Specify the maximum possible number of returns.
+        -->
+        <entry key="limit">20</entry>
+    
+        <!-- Specify the maximum number of scores, e.g. 3 is the top 3 scores which may be 56, 23, 2.
+        -->
+        <entry key="scores">3</entry>
+    
+        <!-- Specify the return types of the results. If all are desired comment out this block.
+               0 = DE, 1 = DEC, 2 = VD, etc.
+        -->
+        <entry key="restricts">0, 1, 2</entry>
+        
+        <!-- Restrict the results to non-retired Workflow Status
+        -->
+        <entry key="restrictResultsByWorkflowNotRetired">true</entry>
+    
+        <!-- Specify the terms for which to search. Start numbering with zero (0) and each set
+               will run a separate search.
+        -->
+        <entry key="terms.0">agent during reporting period</entry>
+        <entry key="terms.1">failure congestive heart</entry>
+        <entry key="terms.2">heart</entry>
+        <entry key="terms.3">congestive failure heart</entry>
+
+</properties>
