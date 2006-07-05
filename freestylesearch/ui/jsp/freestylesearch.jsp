@@ -1,5 +1,5 @@
 <!-- Copyright ScenPro, Inc. 2005
-     $Header: /share/content/gforge/freestylesearch/freestylesearch/ui/jsp/freestylesearch.jsp,v 1.1 2006-06-30 13:46:47 hebell Exp $
+     $Header: /share/content/gforge/freestylesearch/freestylesearch/ui/jsp/freestylesearch.jsp,v 1.2 2006-07-05 14:53:51 hebell Exp $
      $Name: not supported by cvs2svn $
 -->
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
@@ -90,9 +90,9 @@
         <html:radio property="matching" value="1"/>&nbsp;Comparisons must be for any partial content.<br>
         <html:radio property="matching" value="2"/>&nbsp;Comparisons are first for the whole word and when no matches are found a comparison is done for any partial content.
         </p>
-        <p style="margin: 0.2in 0in 0in 0.2in">Maximum number of possible results is <html:text property="limit" styleClass="std" style="width: 0.5in"/>
+        <p style="margin: 0.2in 0in 0in 0.2in">Maximum number of possible results is <html:text property="limit" styleClass="std" style="width: 0.5in" maxlength="4"/>
         </p>
-        <p style="margin: 0.2in 0in 0in 0.2in">Number of top scoring results is <html:text property="score" styleClass="std" style="width: 0.5in"/>
+        <p style="margin: 0.2in 0in 0in 0.2in">Number of top score groups is <html:text property="score" styleClass="std" style="width: 0.5in" maxlength="3"/>
         </p>
         <p style="margin: 0.2in 0in 0in 0.2in"><html:checkbox property="excludeRetired" value="Y"/>&nbsp;Exclude Retired AC's
         </p>
@@ -125,7 +125,7 @@
         {
             String text = (String)results.get(i++);
             text = "<b>" + i + ")</b> " + text.replaceFirst("\n\t", "<dd>");
-            text = text.replace("\n\tScore ", "\n\t<span style=\"color: #aaaaaa\">Score ") + "</span>";
+            text = text.replace("\n\tScore: ", "\n\t<span style=\"color: #aaaaaa\">Score: ") + "</span>";
             text = text.replace("\n\t", "<br/>");
             %><dt><%=text%>
             <%

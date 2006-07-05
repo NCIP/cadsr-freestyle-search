@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/GenericAC.java,v 1.1 2006-06-30 13:46:47 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/GenericAC.java,v 1.2 2006-07-05 14:53:51 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -105,15 +105,6 @@ public abstract class GenericAC
         String type = getType();
         return ((type.compareTo("de") == 0) ? "cde_id" : type + "_id");
     }
-    
-    /**
-     * Get the SQL select to form the desired display to the user.
-     *  
-     * @param score_ 
-     * @return SQL to retrieve display data
-     */
-    public abstract String getDisplay(int score_);
-    
     
     /**
      * Set the master index used to uniquely describe the class type as

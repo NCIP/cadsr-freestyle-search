@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/DBAccess.java,v 1.2 2006-06-30 18:48:00 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/DBAccess.java,v 1.3 2006-07-05 14:53:51 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -851,29 +851,40 @@ public class DBAccess
         if (list_ == null || list_.size() == 0)
             return results;
 
-        // Because the results can be from any number of different tables
-        // in any order, the display values must be retrieved using a
-        // UNION ALL. This preserves the order of the results and
-        // avoids a lot of unnecessary table joins.
-        String select = "";
-        String union = "\nunion all ";
+        String decode = "decode(hits.ac_table";
+        for (int i = 0; i < _desc.length; ++i)
+        {
+            decode += "," + String.valueOf(i) + ",'" + _desc[i].getTypeName() + "'";
+        }
+        decode += ") ";
+        
         ResultsAC obj;
+        String data = "";
+        String uall = "union all ";
         for (int i = 0; i < list_.size(); ++i)
         {
             obj = list_.get(i);
-            select = select + union + obj._desc.getDisplay(obj._score);
+            data += "union all select '" + obj._idseq + "' as ac_idseq, " + obj._desc.getMasterIndex() + " as ac_table, " + obj._score + " as score from dual ";
         }
-        select = select.substring(union.length());
+        data = data.substring(uall.length());
+
+        String select = "";
+        select = "select ac.long_name "
+            + "|| '\n\t' || " + decode
+            + "|| '\n\tPublic ID: ' || ac.public_id "
+            + "|| '\n\tVersion: ' || ac.version "
+            + "|| '\n\tContext: ' || c.name "
+            + "|| '\n\tWorkflow Status: ' || ac.asl_name "
+            + "|| '\n\tRegistration Status: ' || nvl(rs.registration_status, ' ') "
+            + "|| '\n\tScore: ' || hits.score "
+            + "from (" + data + ") hits, sbr.admin_components_view ac, sbr.contexts_view c, sbr.ac_registrations_view rs "
+            + "where ac.ac_idseq = hits.ac_idseq and c.conte_idseq = ac.conte_idseq and rs.ac_idseq(+) = ac.ac_idseq "
+            + "order by hits.score desc, hits.ac_table asc, upper(ac.long_name) asc";
         
         try
         {
             // Set the database id for each sub-select.
             _pstmt = _conn.prepareStatement(select);
-            for (int i = 0; i < list_.size(); )
-            {
-                obj = list_.get(i);
-                _pstmt.setString(++i, obj._idseq);
-            }
             
             // Get the display and save for later.
             _rs = _pstmt.executeQuery();
@@ -888,8 +899,7 @@ public class DBAccess
         catch (SQLException ex)
         {
             _errorCode = ex.getErrorCode();
-            _errorMsg = _errorCode + ": " + select
-                + "\n" + ex.toString();
+            _errorMsg = _errorCode + ": " + select.substring(0, 80) + " ...\n" + ex.toString();
             _logger.fatal(_errorMsg);
         }
 
