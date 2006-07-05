@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/ACAlternate.java,v 1.1 2006-06-30 13:46:47 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/ACAlternate.java,v 1.2 2006-07-05 14:53:51 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -56,12 +56,6 @@ public class ACAlternate extends GenericAC
     public String getTypeName()
     {
         return _root.getTypeName();
-    }
-
-    @Override
-    public String getDisplay(int score_)
-    {
-        return null;
     }
     
     /**

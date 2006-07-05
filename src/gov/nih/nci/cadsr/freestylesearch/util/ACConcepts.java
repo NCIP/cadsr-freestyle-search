@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/ACConcepts.java,v 1.1 2006-06-30 13:46:47 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/ACConcepts.java,v 1.2 2006-07-05 14:53:51 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -68,21 +68,6 @@ public class ACConcepts extends GenericAC
     public String getTypeName()
     {
         return _name;
-    }
-
-    /**
-     * @see gov.nih.nci.cadsr.freestylesearch.util.GenericAC#getDisplay(int)
-     */
-    @Override
-    public String getDisplay(int score_)
-    {
-        return "select zz.long_name || '\n\t" + _name + "\n\tPublic ID ' || zz.con_id || "
-            +"'\n\tVersion ' || zz.version || '\n\tContext ' || cc.name || "
-            + "'\n\tWorkflow Status ' || zz.asl_name || "
-            + "'\n\tRegistration Status ' || nvl(rs.registration_status, ' ') || "
-            + "'\n\tScore " + score_
-            + "' from sbrext.concepts_view_ext zz, sbr.ac_registrations_view rs, sbr.contexts_view cc "
-            + "where zz.con_idseq = ? and cc.conte_idseq = zz.conte_idseq and rs.ac_idseq(+) = zz.con_idseq";
     }
 
     /**
