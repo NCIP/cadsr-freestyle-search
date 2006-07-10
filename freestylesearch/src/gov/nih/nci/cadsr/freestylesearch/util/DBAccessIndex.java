@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/DBAccessIndex.java,v 1.1 2006-07-10 18:40:32 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/DBAccessIndex.java,v 1.2 2006-07-10 19:25:35 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -361,31 +361,10 @@ public class DBAccessIndex
      * @param terms_ the comma separated terms, appropriately enclosed in appostophies
      * @param types_ (optional) the comma separated type codes or null
      * @return the SQL select for the term index
-
-    private String buildSelectWeightedTerms(String terms_, String types_)
-    {
-        String select =
-            " select ac_idseq, ac_table, sum(weight) as cnt"
-            + " from " + _indexTable;
-        if (types_ == null)
-            select += " where token in (" + terms_ + ")";
-        else
-            select += " where ac_table in (" + types_ + ") and token in (" + terms_ + ")";
-            
-        return select + " group by ac_idseq, ac_table";
-    }
-*/
-
-    /**
-     * Build the SQL select to pull from the terms index.
-     * 
-     * @param terms_ the comma separated terms, appropriately enclosed in appostophies
-     * @param types_ (optional) the comma separated type codes or null
-     * @return the SQL select for the term index
      */
     private String buildSelectTerms(String terms_, String types_)
     {
-        String select = " select ac_idseq, ac_table, sum(1) as cnt from " + _indexTable + " where ";
+        String select = " select ac_idseq, ac_table, sum(weight) as cnt from " + _indexTable + " where ";
 
         if (types_ != null)
             select += "ac_table in (" + types_ + ") and ";
