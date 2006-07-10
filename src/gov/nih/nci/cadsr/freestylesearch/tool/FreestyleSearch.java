@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/FreestyleSearch.java,v 1.1 2006-06-30 13:46:47 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/FreestyleSearch.java,v 1.2 2006-07-10 18:40:32 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.tool;
@@ -17,6 +17,7 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import gov.nih.nci.cadsr.freestylesearch.util.Search;
+import gov.nih.nci.cadsr.freestylesearch.util.SearchAC;
 
 
 /**
@@ -64,7 +65,7 @@ public class FreestyleSearch extends Action
         // Set search options.
         var.restrictResultsByScore(form.getScoreInt());
         var.setResultsLimit(form.getLimitInt());
-        var.setMatchFlag(form.getMatchingInt());
+        var.setMatchFlag(form.getMatchingEnum());
         if (form.getExcludeRetiredBool())
             var.restrictResultsByWorkflowNotRetired();
 
@@ -75,8 +76,9 @@ public class FreestyleSearch extends Action
         {
             if (types[i])
             {
-                var.restrictResultsByType(i);
-                restricts += ", " + i;
+                SearchAC temp = SearchAC.valueOf(i);
+                var.restrictResultsByType(temp);
+                restricts += ", " + temp.toString();
             }
         }
         if (restricts.length() == 0)

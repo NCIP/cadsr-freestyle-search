@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Seed.java,v 1.1 2006-06-30 13:46:47 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Seed.java,v 1.2 2006-07-10 18:40:32 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -74,7 +74,7 @@ public class Seed
         var._pswdData = prop.getProperty("data.DSpassword");
         
         String schema = prop.getProperty("index.DSschema");
-        DBAccess.setSchema(schema);
+        DBAccessIndex.setSchema(schema);
         
         _logger.info(" ");
         _logger.info("---------------------------------------------------------------------------------");
@@ -97,14 +97,14 @@ public class Seed
         DBAccess data = new DBAccess();
         if (data.open(_dbData, _userData, _pswdData) != 0)
             return;
-        DBAccess index = new DBAccess();
+        DBAccessIndex index = new DBAccessIndex();
         if (index.open(_dbIndex, _userIndex, _pswdIndex) != 0)
         {
             data.close();
             return;
         }
 
-        getLastSeedTimestamp(index, millis_);
+        getLastSeedTimestamp(data, millis_);
 
         _logger.info("Retrieving changes made since " + _start.toString());
         data.parseDatabase(_start, index);
@@ -127,7 +127,7 @@ public class Seed
         String yesterday = start.toString().split(" ")[0];
         start = Timestamp.valueOf(yesterday + " 00:00:00");
 
-        start = Timestamp.valueOf("1999-12-01 00:00:00");
+        start = Timestamp.valueOf("2006-06-15 00:00:00");
         return start;
     }
 

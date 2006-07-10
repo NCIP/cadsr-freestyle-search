@@ -1,12 +1,13 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/FreestyleSearchForm.java,v 1.1 2006-06-30 13:46:47 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/FreestyleSearchForm.java,v 1.2 2006-07-10 18:40:32 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.tool;
 
 import gov.nih.nci.cadsr.freestylesearch.util.Search;
-import gov.nih.nci.cadsr.freestylesearch.util.DBAccess;
+import gov.nih.nci.cadsr.freestylesearch.util.SearchAC;
+import gov.nih.nci.cadsr.freestylesearch.util.SearchMatch;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -35,8 +36,8 @@ public class FreestyleSearchForm extends ActionForm
         _phrase = "";
         _limit = 100;
         _score = 3;
-        _matching = Search.AC_MATCH_BEST;
-        _types = new boolean[Search.AC_TYPE_COUNT];
+        _matching = SearchMatch.BEST;
+        _types = new boolean[SearchAC.count()];
         for (int i = 0; i < _types.length; ++i)
             _types[i] = true;
     }
@@ -98,7 +99,7 @@ public class FreestyleSearchForm extends ActionForm
      */
     public String getMatching()
     {
-        return String.valueOf(_matching);
+        return String.valueOf(_matching.toInt());
     }
     
     /**
@@ -106,7 +107,7 @@ public class FreestyleSearchForm extends ActionForm
      * 
      * @return the term comparison mode, i.e. exact, partial or best.
      */
-    public int getMatchingInt()
+    public SearchMatch getMatchingEnum()
     {
         return _matching;
     }
@@ -114,11 +115,11 @@ public class FreestyleSearchForm extends ActionForm
     /**
      * Set the term comparison mode.
      * 
-     * @param matching_ the term comparison, i.e. AC_MATCH_EXACT, AC_MATCH_PARTIAL, AC_MATCH_BEST
+     * @param matching_ the integer term comparison as defined in SearchMatch.toInt().
      */
     public void setMatching(String matching_)
     {
-        _matching = Integer.parseInt(matching_);
+        _matching = SearchMatch.valueOf(Integer.parseInt(matching_));
     }
     
     /**
@@ -290,7 +291,7 @@ public class FreestyleSearchForm extends ActionForm
     private boolean _excludeRetired;
     private String _phrase;
     private int _limit;
-    private int _matching;
+    private SearchMatch _matching;
     private int _score;
     private String _displayOptions;
     private boolean[] _types;
