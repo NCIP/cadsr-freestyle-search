@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.1 2006-06-30 13:46:47 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.2 2006-07-10 18:40:32 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -36,18 +36,18 @@ public class Search
      */
     public Search()
     {
-        init(AC_MATCH_BEST, 100, 5);
+        init(SearchMatch.BEST, 100, 5);
     }
 
     /**
      * Constructor
      * 
-     * @param match_ The match comparison flag,  AC_MATCH_EXACT, AC_MATCH_PARTIAL, AC_MATCH_BEST
+     * @param match_ The match comparison flag in the SearchMatch enum.
      * @param limit_  The maximum results limit.
      * @param scores_  The maximum number of score groups.
      *
      */
-    public Search(int match_, int limit_, int scores_)
+    public Search(SearchMatch match_, int limit_, int scores_)
     {
         init(match_, limit_, scores_);
     }
@@ -55,18 +55,18 @@ public class Search
     /**
      * Common initialization during object construction.
      * 
-     * @param match_ The match comparison flag,  AC_MATCH_EXACT, AC_MATCH_PARTIAL, AC_MATCH_BEST
+     * @param match_ The match comparison flag in the SearchMatch enum.
      * @param limit_  The maximum results limit.
      * @param scores_  The maximum number of score groups.
      */
-    private void init(int match_, int limit_, int scores_)
+    private void init(SearchMatch match_, int limit_, int scores_)
     {
         _excludeWFSretired = false;
         _matchFlag = match_;
         _limit = limit_;
         _highestScores = scores_;
         
-        _restrict = new int[AC_TYPE_COUNT];
+        _restrict = new int[SearchAC.count()];
         _restrictAll = true;
     }
     
@@ -98,7 +98,7 @@ public class Search
         
         for (ResultsAC obj : rs0)
         {
-            SearchResultSet var = new SearchResultSet(obj._idseq, obj._score, obj._desc.getMasterIndex());
+            SearchResultSet var = new SearchResultSet(obj._idseq, obj._score, SearchAC.valueOf(obj._desc.getMasterIndex()));
             rs.add(var);
         }
         return rs;
@@ -120,7 +120,7 @@ public class Search
         DBAccess db = new DBAccess();
         try
         {
-            openData(db);
+            open(db);
         }
         catch (SQLException ex)
         {
@@ -143,7 +143,7 @@ public class Search
                 if (ac.size() == 0)
                     _logger.fatal("Failed to find (type, id) (" + obj._desc.getMasterIndex() + ", " + obj._idseq + ")");
                 else
-                    rs.add(var);
+                    rs.add((AdministeredComponent) ac.get(0));
             }
             catch (ApplicationException ex)
             {
@@ -166,7 +166,7 @@ public class Search
         _logger.debug(phrase_);
 
         // Open the database.
-        DBAccess dbIndex = new DBAccess();
+        DBAccessIndex dbIndex = new DBAccessIndex();
         
         // Set data settings.
         dbIndex.setLimit(_limit);
@@ -174,13 +174,13 @@ public class Search
         dbIndex.excludeWorkflowStatusRetired(_excludeWFSretired);
         
         // Pre-qualify the phrase.
-        String phrase = phrase_.replaceAll(DBAccess._tokenChars, " ");
+        String phrase = DBAccessIndex.replaceAll(phrase_);
         phrase = phrase.trim();
         if (phrase != null && phrase.length() > 0)
         {
             try
             {
-                openIndex(dbIndex);
+                open(dbIndex);
             }
             catch (SQLException ex)
             {
@@ -195,9 +195,9 @@ public class Search
             Vector<ResultsAC> var = null;
             switch (_matchFlag)
             {
-                case AC_MATCH_EXACT: var = doMatchExact(dbIndex, phrase); break;
-                case AC_MATCH_PARTIAL: var = doMatchPartial(dbIndex, phrase); break;
-                case AC_MATCH_BEST:
+                case EXACT: var = doMatchExact(dbIndex, phrase); break;
+                case PARTIAL: var = doMatchPartial(dbIndex, phrase); break;
+                case BEST:
                 default: var = doMatchBest(dbIndex, phrase); break;
             }
             dbIndex.close();
@@ -221,7 +221,7 @@ public class Search
         DBAccess dbData = new DBAccess();
         try
         {
-            openData(dbData);
+            open(dbData);
         }
         catch (SQLException ex)
         {
@@ -243,7 +243,7 @@ public class Search
      * @param indexDB_ the access object to the freestyle index tables
      * @throws SQLException
      */
-    private void openIndex(DBAccess indexDB_) throws SQLException
+    private void open(DBAccessIndex indexDB_) throws SQLException
     {
         if (indexDB_ != null)
         {
@@ -254,7 +254,7 @@ public class Search
                     if (indexDB_.open(_indexDS) != 0)
                         throw new SQLException("Failed to open connection from DataSource.", "Failed", -101);
                 }
-                if (indexDB_.open(_indexDS, _indexUser, _indexPswd) != 0)
+                else if (indexDB_.open(_indexDS, _indexUser, _indexPswd) != 0)
                     throw new SQLException("Failed to open connection from DataSource.", "Failed", -101);
             }
     
@@ -277,7 +277,7 @@ public class Search
      * @param dataDB_ the access object to the caDSR target data
      * @throws SQLException
      */
-    private void openData(DBAccess dataDB_) throws SQLException
+    private void open(DBAccess dataDB_) throws SQLException
     {
         if (dataDB_ != null)
         {
@@ -288,7 +288,7 @@ public class Search
                     if (dataDB_.open(_dataDS) != 0)
                         throw new SQLException("Failed to open connection from DataSource.", "Failed", -201);
                 }
-                if (dataDB_.open(_dataDS, _dataUser, _dataPswd) != 0)
+                else if (dataDB_.open(_dataDS, _dataUser, _dataPswd) != 0)
                     throw new SQLException("Failed to open connection from DataSource.", "Failed", -201);
             }
     
@@ -310,7 +310,7 @@ public class Search
      * @param phrase_ the terms of interest
      * @return the collection of successful matches in descending order by score
      */
-    private Vector<ResultsAC> doMatchExact(DBAccess dbIndex_, String phrase_)
+    private Vector<ResultsAC> doMatchExact(DBAccessIndex dbIndex_, String phrase_)
     {
         // Remove words we don't keep.
         String[] terms = phrase_.split(" ");
@@ -336,7 +336,7 @@ public class Search
         Vector<ResultsAC> var = null;
         if (_restrictAll)
         {
-            var = dbIndex_.searchExact(phrase);
+            var = dbIndex_.searchExact(null, phrase);
         }
         else
         {
@@ -352,7 +352,7 @@ public class Search
      * @param phrase_ the terms of interest
      * @return the collection of successful matches in descending order by score
      */
-    private Vector<ResultsAC> doMatchPartial(DBAccess dbIndex_, String phrase_)
+    private Vector<ResultsAC> doMatchPartial(DBAccessIndex dbIndex_, String phrase_)
     {
         // The SQL is optomized to filter by type when not including all possible
         // AC's. Excluded words are not removed as they may appear as part of
@@ -360,7 +360,7 @@ public class Search
         Vector<ResultsAC> var = null;
         if (_restrictAll)
         {
-            var = dbIndex_.searchPartial(phrase_);
+            var = dbIndex_.searchPartial(null, phrase_);
         }
         else
         {
@@ -377,7 +377,7 @@ public class Search
      * @param phrase_ the terms of interest
      * @return the collection of successful matches in descending order by score
      */
-    private Vector<ResultsAC> doMatchBest(DBAccess dbIndex_, String phrase_)
+    private Vector<ResultsAC> doMatchBest(DBAccessIndex dbIndex_, String phrase_)
     {
         // Remove words we don't keep.
         String[] terms = phrase_.split(" ");
@@ -401,9 +401,9 @@ public class Search
         Vector<ResultsAC> var = null;
         if (_restrictAll)
         {
-            var = dbIndex_.searchExact(phrase);
+            var = dbIndex_.searchExact(null, phrase);
             if (var.size() == 0)
-                var = dbIndex_.searchPartial(phrase_);
+                var = dbIndex_.searchPartial(null, phrase_);
         }
         else
         {
@@ -418,13 +418,9 @@ public class Search
      * Set the match flag to control how comparisons are performed
      * during a search.
      * 
-     * @param match_ AC_MATCH_EXACT, all words/tokens are compared exactly,
-     *      no partial comparisons are done; AC_MATCH_PARTIAL, all words/tokens are
-     *      compared as partial strings, no exact comparisons are done; AC_MATCH_BEST,
-     *      all words/comparisons are compared exactly, if and only if no results are found
-     *       a partial comparison search is performed.
+     * @param match_ see the SearchMatch enum for values
      */
-    public void setMatchFlag(int match_)
+    public void setMatchFlag(SearchMatch match_)
     {
         _matchFlag = match_;
     }
@@ -450,16 +446,15 @@ public class Search
     }
     
     /**
-     * Restrict the results by the type(s) of record. The Search.AC_TYPE_* constants must be used as
-     * arguments to this method, e.g. AC_TYPE_DE, AC_TYPE_DEC, etc.
+     * Restrict the results by the type(s) of record. See the SearchAC enum for values.
      * 
      * @param args The record type(s) to filter the search results.
      */
-    public void restrictResultsByType(int ... args)
+    public void restrictResultsByType(SearchAC ... args)
     {
         for (int i = 0; i < args.length; ++i)
         {
-            _restrict[args[i]] = 1;
+            _restrict[args[i].toInt()] = 1;
         }
 
         int total = 0;
@@ -468,7 +463,7 @@ public class Search
             total += _restrict[i];
         }
         
-        _restrictAll = (total == AC_TYPE_COUNT);
+        _restrictAll = (total == SearchAC.count());
     }
     
     /**
@@ -477,7 +472,7 @@ public class Search
      */
     public void resetRestrictResultsByType()
     {
-        _restrict = new int[AC_TYPE_COUNT];
+        _restrict = new int[SearchAC.count()];
         _restrictAll = true;
     }
     
@@ -551,7 +546,7 @@ public class Search
     public static void setSchema(String text_)
     {
         if (text_ != null && text_.length() > 0)
-            DBAccess.setSchema(text_);
+            DBAccessIndex.setSchema(text_);
     }
     
     /**
@@ -723,7 +718,7 @@ public class Search
         String seedTime = null;
         try
         {
-            openIndex(db);
+            open(db);
             seedTime = db.getLastSeedTimestamp().toString() + " (yyyy-mm-dd hh:mm:ss Eastern Time)";
             db.close();
         }
@@ -745,7 +740,7 @@ public class Search
         Timestamp seedTime = null;
         try
         {
-            openIndex(db);
+            open(db);
             seedTime = db.getLastSeedTimestamp();
             db.close();
         }
@@ -755,65 +750,6 @@ public class Search
         }
         return seedTime;
     }
-    
-    /**
-     * The AC type constant for a Data Element
-     */
-    public static final int AC_TYPE_DE = 0;
-    
-    /**
-     * The AC type constant for a Data Element Concept
-     */
-    public static final int AC_TYPE_DEC = 1;
-    
-    /**
-     * The AC type constant for a Value Domain
-     */
-    public static final int AC_TYPE_VD = 2;
-    
-    /**
-     * The AC type constant for a Object Class
-     */
-    public static final int AC_TYPE_OC = 3;    
-
-    /**
-     * The AC type constant for a Property
-     */
-    public static final int AC_TYPE_PROP = 4;
-
-    /**
-     * The AC type constant for a Property
-     */
-    public static final int AC_TYPE_CON = 5;
-
-    /**
-     * The AC type constant for a Property
-     */
-    public static final int AC_TYPE_CD = 6;
-    
-    /**
-     * The supported AC type count
-     */
-    public static final int AC_TYPE_COUNT = 7;
-    
-    /**
-     * Indicates all words/tokens are compared exactly, no partial
-     * comparisons are done, e.g. "Lateral" will not match "Colateral".
-     */
-    public static final int AC_MATCH_EXACT = 0;
-    
-    /**
-     * Indicates all words/tokens are compared partially, no exact
-     * comparisons are done, e.g. "Lateral" will always match "Colateral".
-     */
-    public static final int AC_MATCH_PARTIAL = 1;
-    
-    /**
-     * Indicates all words/tokens are compared exactly, then if no results
-     * are found a partial search is performed, e.g. "Lateral" will match "Lateral"
-     * and if found the search stops, if not found "Lateral" will match "Colateral".
-     */
-    public static final int AC_MATCH_BEST = 2;
 
     private boolean _excludeWFSretired;
     private String _indexUrl;
@@ -826,7 +762,7 @@ public class Search
     private int[] _restrict;
     private boolean _restrictAll;
     private int _highestScores;
-    private int _matchFlag;
+    private SearchMatch _matchFlag;
     private DataSource _indexDS;
     private Connection _indexConn;
     private DataSource _dataDS;

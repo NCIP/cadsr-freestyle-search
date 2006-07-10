@@ -1,12 +1,14 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.java,v 1.2 2006-06-30 18:48:00 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.java,v 1.3 2006-07-10 18:40:32 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.test;
 
 import gov.nih.nci.cadsr.domain.AdministeredComponent;
 import gov.nih.nci.cadsr.freestylesearch.util.Search;
+import gov.nih.nci.cadsr.freestylesearch.util.SearchAC;
+import gov.nih.nci.cadsr.freestylesearch.util.SearchMatch;
 import gov.nih.nci.cadsr.freestylesearch.util.SearchResultSet;
 
 import java.io.FileInputStream;
@@ -70,7 +72,7 @@ public class SearchTest
             return;
         }
         
-        int match = Integer.valueOf(prop.getProperty("matchType"));
+        SearchMatch match = SearchMatch.valueOf(Integer.valueOf(prop.getProperty("matchType")));
         int limit = Integer.valueOf(prop.getProperty("limit"));
         int scores = Integer.valueOf(prop.getProperty("scores"));
         String indexUrl = prop.getProperty("index.DSurl");
@@ -102,7 +104,7 @@ public class SearchTest
             for (int i = 0; i < vals.length; ++i)
             {
                 if (vals[i] != null && vals[i].length() > 0)
-                    var.restrictResultsByType(Integer.valueOf(vals[i]));
+                    var.restrictResultsByType(SearchAC.valueOf(Integer.valueOf(vals[i])));
             }
         }
         

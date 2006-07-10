@@ -1,6 +1,6 @@
 <html>
     <!--
-    $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/package.html,v 1.1 2006-06-30 13:46:47 hebell Exp $
+    $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/package.html,v 1.2 2006-07-10 18:40:32 hebell Exp $
     $Name: not supported by cvs2svn $
 -->
     <body>
@@ -174,7 +174,7 @@
         </p>
         <div style="margin-left: 0.5in">
             <code>
-                import gov.nih.nci.cadsr.freestyle.util.*;
+                import gov.nih.nci.cadsr.freestylesearch.util.*;
                 <br>
                 <br>
                 DataSource ds = ...;
@@ -192,17 +192,17 @@
                 <br>
                 // Perform a search and get a default ASCII result
                 <br>
-                Vector&lt;String&gt; results = var.findReturningDefault("congestive heart failure");
+                Vector&lt;String&gt; r1 = var.findReturningDefault("congestive heart failure");
                 <br>
                 <br>
                 // Perform a search and get a search result set
                 <br>
-                Vector&lt;SearchResultSet&gt; results = var.findReturningResultSet("congestive heart failure");
+                Vector&lt;SearchResultSet&gt; r2 = var.findReturningResultSet("congestive heart failure");
                 <br>
                 <br>
                 // Perform a search and get caCORE API AdministeredComponent results
                 <br>
-                Vector&lt;AdministeredComponent&gt; results = var.findReturningAdministeredComponents("congestive heart failure");
+                Vector&lt;AdministeredComponent&gt; r3 = var.findReturningAdministeredComponent("congestive heart failure");
                 <br>
             </code>
         </div>

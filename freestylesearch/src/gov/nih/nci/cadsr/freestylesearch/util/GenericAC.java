@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/GenericAC.java,v 1.2 2006-07-05 14:53:51 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/GenericAC.java,v 1.3 2006-07-10 18:40:32 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -81,7 +81,7 @@ public abstract class GenericAC
     public String getIdseqName()
     {
         String[] cols = getColumns();
-        return cols[AC_IDSEQ];
+        return cols[ReservedColumns.IDSEQ.toInt()];
     }
     
     /**
@@ -92,7 +92,7 @@ public abstract class GenericAC
     public String getType()
     {
         String[] cols = getColumns();
-        return cols[AC_TYPE].replaceAll("'", "");
+        return cols[ReservedColumns.TYPE.toInt()].replaceAll("'", "");
     }
     
     /**
@@ -141,21 +141,6 @@ public abstract class GenericAC
     }
     
     private int _masterIndex;
-    
-    /**
-     * The index in the column names for the database id.
-     */
-    public static final int AC_IDSEQ = 0;
-    
-    /**
-     * The index in the column names for the record type.
-     */
-    public static final int AC_TYPE = 1;
-    
-    /**
-     * The index in the column names for the record version.
-     */
-    public static final int AC_VERSION = 2;
     
     private static final String[] _colNames = {
         "Version", "Long Name", "Preferred Name", "Preferred Definition", "Question", "Public ID"
