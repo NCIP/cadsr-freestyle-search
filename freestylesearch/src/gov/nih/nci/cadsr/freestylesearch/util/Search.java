@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.2 2006-07-10 18:40:32 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.3 2006-07-11 15:20:06 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -89,18 +89,87 @@ public class Search
      * the AC type, database ID and result score.
      * 
      * @param phrase_ the terms of interest
-     * @return return the collection using SearchResultSet.
+     * @return return the collection using SearchResultObject.
      */
-    public Vector<SearchResultSet> findReturningResultSet(String phrase_)
+    public Vector<SearchResultObject> findReturningResultSet(String phrase_)
     {
         Vector<ResultsAC> rs0 = find(phrase_);
-        Vector<SearchResultSet> rs = new Vector<SearchResultSet>();
+        Vector<SearchResultObject> rs = new Vector<SearchResultObject>();
         
         for (ResultsAC obj : rs0)
         {
-            SearchResultSet var = new SearchResultSet(obj._idseq, obj._score, SearchAC.valueOf(obj._desc.getMasterIndex()));
+            SearchResultObject var = new SearchResultObject(obj._idseq, obj._score, SearchAC.valueOf(obj._desc.getMasterIndex()));
             rs.add(var);
         }
+        return rs;
+    }
+
+    /**
+     * Get the ApplicationService for the caCORE API
+     * 
+     * @return the ApplicationService
+     */
+    private ApplicationService getCoreUrl()
+    {
+        // Get the coreapi url
+        DBAccess db = new DBAccess();
+        try
+        {
+            open(db);
+        }
+        catch (SQLException ex)
+        {
+            _logger.fatal(ex.toString());
+            return null;
+        }
+        String url = db.getCoreUrl();
+        db.close();
+
+        return ApplicationService.getRemoteInstance(url);
+    }
+    
+    /**
+     * Find AC's using the phrase (terms) provided, results are in objects containing
+     * the SearchResultObject and AdministeredComponent.
+     * 
+     * @param phrase_ the terms of interest
+     * @return return the collection using SearchResultsWithAC.
+     */
+    public Vector<SearchResultsWithAC> findReturningResultsWithAC(String phrase_)
+    {
+        Vector<ResultsAC> rs0 = find(phrase_);
+        Vector<SearchResultsWithAC> rs = new Vector<SearchResultsWithAC>();
+        
+        ApplicationService coreapi = getCoreUrl();
+        
+        for (ResultsAC record : rs0)
+        {
+            SearchAC type = SearchAC.valueOf(record._desc.getMasterIndex());
+            SearchResultObject obj = new SearchResultObject(record._idseq, record._score, type);
+
+            Class cvar = record._desc.getACClass();
+            AdministeredComponent select = record._desc.factoryAC();
+            select.setId(record._idseq);
+
+            AdministeredComponent ac = null;
+            try
+            {
+                List acs = coreapi.search(cvar, select);
+
+                if (acs.size() == 0)
+                    _logger.fatal("Failed to find (type, id) (" + type + ", " + record._idseq + ")");
+                else
+                    ac = (AdministeredComponent) acs.get(0);
+            }
+            catch (ApplicationException ex)
+            {
+                _logger.fatal(ex.toString());
+            }
+
+            SearchResultsWithAC var = new SearchResultsWithAC(obj, ac);
+            rs.add(var);
+        }
+
         return rs;
     }
     
@@ -116,34 +185,23 @@ public class Search
         Vector<ResultsAC> rs0 = find(phrase_);
         Vector<AdministeredComponent> rs = new Vector<AdministeredComponent>();
 
-        // Get the coreapi url
-        DBAccess db = new DBAccess();
-        try
-        {
-            open(db);
-        }
-        catch (SQLException ex)
-        {
-            _logger.fatal(ex.toString());
-            return new Vector<AdministeredComponent>();
-        }
-        String url = db.getCoreUrl();
-        db.close();
+        ApplicationService coreapi = getCoreUrl();
         
-        ApplicationService coreapi = ApplicationService.getRemoteInstance(url);
-        
-        for (ResultsAC obj : rs0)
+        for (ResultsAC record : rs0)
         {
-            Class cvar = obj._desc.getACClass();
-            AdministeredComponent var = obj._desc.factoryAC();
-            var.setId(obj._idseq);
+            Class cvar = record._desc.getACClass();
+            AdministeredComponent var = record._desc.factoryAC();
+            var.setId(record._idseq);
             try
             {
-                List ac = coreapi.search(cvar, var);
-                if (ac.size() == 0)
-                    _logger.fatal("Failed to find (type, id) (" + obj._desc.getMasterIndex() + ", " + obj._idseq + ")");
+                List acs = coreapi.search(cvar, var);
+                if (acs.size() == 0)
+                {
+                    SearchAC type = SearchAC.valueOf(record._desc.getMasterIndex());
+                    _logger.fatal("Failed to find (type, id) (" + type + ", " + record._idseq + ")");
+                }
                 else
-                    rs.add((AdministeredComponent) ac.get(0));
+                    rs.add((AdministeredComponent) acs.get(0));
             }
             catch (ApplicationException ex)
             {
