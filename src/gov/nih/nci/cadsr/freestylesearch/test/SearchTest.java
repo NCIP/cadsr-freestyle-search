@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.java,v 1.3 2006-07-10 18:40:32 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.java,v 1.4 2006-07-11 15:20:06 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.test;
@@ -9,7 +9,7 @@ import gov.nih.nci.cadsr.domain.AdministeredComponent;
 import gov.nih.nci.cadsr.freestylesearch.util.Search;
 import gov.nih.nci.cadsr.freestylesearch.util.SearchAC;
 import gov.nih.nci.cadsr.freestylesearch.util.SearchMatch;
-import gov.nih.nci.cadsr.freestylesearch.util.SearchResultSet;
+import gov.nih.nci.cadsr.freestylesearch.util.SearchResultObject;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -177,11 +177,11 @@ public class SearchTest
             if (outAbbrev)
             {
                 // Perform search and get Search object results..
-                Vector<SearchResultSet> rs3 = var.findReturningResultSet(phrase);
+                Vector<SearchResultObject> rs3 = var.findReturningResultSet(phrase);
                 
                 // Output results
                 cnt = 0;
-                for (SearchResultSet ac: rs3)
+                for (SearchResultObject ac: rs3)
                 {
                     _logger.info(String.valueOf(cnt + 1) + ": " + ac.getType() + ", " + ac.getIdseq() + ", " + ac.getScore());
                     ++cnt;

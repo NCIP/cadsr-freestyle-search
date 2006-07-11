@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/SearchResultSet.java,v 1.2 2006-07-10 18:40:32 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/SearchResultObject.java,v 1.1 2006-07-11 15:20:07 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -11,14 +11,14 @@ package gov.nih.nci.cadsr.freestylesearch.util;
  * @author lhebel
  *
  */
-public class SearchResultSet
+public class SearchResultObject
 {
     /**
      * @param idseq_ the database ID
      * @param score_ the search result score
      * @param type_ see the SearchAC enum
      */
-    public SearchResultSet(String idseq_, int score_, SearchAC type_)
+    public SearchResultObject(String idseq_, int score_, SearchAC type_)
     {
         _idseq = idseq_;
         _score = score_;
