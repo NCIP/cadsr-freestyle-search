@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/DBAccess.java,v 1.4 2006-07-10 18:40:32 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/DBAccess.java,v 1.5 2006-07-12 21:55:25 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -255,7 +255,7 @@ public class DBAccess
      * @param start_ the timestamp from which to select records
      * @return the result set from the select.
      */
-    public ResultSet readTable(GenericAC ac_, Timestamp start_)
+    private ResultSet readTable(GenericAC ac_, ACAlternate alt_, Timestamp start_)
     {
         // Build the select column list.
         String[] cols = ac_.getColumns();
@@ -270,16 +270,16 @@ public class DBAccess
         
         // Add the From clause
         select = "select " + select.substring(2)
-            + ", conte.name, rs.registration_status, nvl(rv.display_order, 1000) as reg_order, nvl(wfs.display_order, 1000) as wfs_order from " + ac_.getTableName()
+            + ", conte.name, rs.registration_status, nvl(rv.display_order, 1000) as reg_order, nvl(wfs.display_order, 1000) as wfs_order from ("
+            + buildIDselect(ac_, alt_, start_) + ") xx, " + ac_.getTableName()
             +" zz, sbr.contexts_view conte, sbr.ac_registrations_view rs, sbr.reg_status_lov_view rv, sbr.ac_status_lov_view wfs "
-            +  _qualWhere + " and conte.conte_idseq = zz.conte_idseq and wfs.asl_name = zz.asl_name and rs.ac_idseq(+) = zz."
-            + ac_.getIdseqName() + " and rv.registration_status(+) = rs.registration_status";
+            +  "where zz." + ac_.getIdseqName()
+            + " = xx.idseq and conte.conte_idseq = zz.conte_idseq and wfs.asl_name = zz.asl_name and rs.ac_idseq(+) = xx.idseq and rv.registration_status(+) = rs.registration_status";
 
         // Get the result set.
         try
         {
             _pstmt = _conn.prepareStatement(select);
-            _pstmt.setTimestamp(1, start_);
             _rs = _pstmt.executeQuery();
         }
         
@@ -298,14 +298,14 @@ public class DBAccess
     /**
      * Read a table.
      * 
-     * @param ac_ the record/table description
+     * @param alt_ the record/table description
      * @param start_ the timestamp from which to select records
      * @return the result set from the select.
      */
-    public ResultSet readAlternateTable(ACAlternate ac_, Timestamp start_)
+    private ResultSet readAlternateTable(GenericAC ac_, ACAlternate alt_, Timestamp start_)
     {
         // Build the select column list.
-        String[] cols = ac_.getColumns();
+        String[] cols = alt_.getColumns();
         String select = "";
         for (int i = 0; i < cols.length; ++i)
         {
@@ -316,18 +316,14 @@ public class DBAccess
         }
         
         // Add the From clause
-        select = "select " + select.substring(2) + ", conte.name from " + ac_.getTableName() + " alt, "
-            + ac_.getRootTableName()
-            + " zz, sbr.contexts_view conte where alt." + ac_.getIdseqName() + " = zz." + ac_.getRootIdseqName()
-            + " and (nvl(zz.date_modified, zz.date_created) >= ? or nvl(alt.date_modified, alt.date_created) >= ?)"
-            + " and conte.conte_idseq = alt.conte_idseq";
+        select = "select " + select.substring(2) + ", conte.name from (" + buildIDselect(ac_, alt_, start_) + ") xx, "
+            + alt_.getTableName() + " alt, sbr.contexts_view conte where alt."
+            + alt_.getIdseqName() + " = xx.idseq and conte.conte_idseq = alt.conte_idseq";
 
         // Get the result set.
         try
         {
             _pstmt = _conn.prepareStatement(select);
-            _pstmt.setTimestamp(1, start_);
-            _pstmt.setTimestamp(2, start_);
             _rs = _pstmt.executeQuery();
         }
         
@@ -426,7 +422,9 @@ public class DBAccess
         for (int i = 0; i < _desc.length; ++i)
         {
             GenericAC ac = _desc[i];
-            int total = updateCount(ac, start_);
+            ACAlternate alt = new ACAlternate(ac);
+
+            int total = updateCount(ac, alt, start_, true);
             _logger.info(" ");
             _logger.info("Doing... " + ac.getTypeName() + " " + total + " records");
 
@@ -443,13 +441,12 @@ public class DBAccess
             else
             {
                 _logger.info("... deleting changed records ...");
-                String[] ids = new String[total];
-                eraseList(ac, start_, ids);
+                String[] ids = eraseList(ac, alt, start_);
                 indexTable_.erase(ids);
             }
 
             // Read the table.
-            ResultSet rs = readTable(ac, start_);
+            ResultSet rs = readTable(ac, alt, start_);
             if (rs != null)
             {
                 int updcnt = 0;
@@ -477,11 +474,10 @@ public class DBAccess
             }
 
             // Read the alternate table.
-            ACAlternate alt = new ACAlternate(ac);
-            total = updateCount(alt, start_);
+            total = updateCount(ac, alt, start_, false);
             _logger.info(" ");
             _logger.info("Doing... Alternates for " + alt.getTypeName() + " " + total + " possible records");
-            rs = readAlternateTable(alt, start_);
+            rs = readAlternateTable(ac, alt, start_);
             if (rs != null)
             {
                 int updcnt = 0;
@@ -510,32 +506,51 @@ public class DBAccess
         }
     }
 
+    private String buildIDselect(GenericAC ac_, ACAlternate alt_, Timestamp start_)
+    {
+        String time = start_.toString();
+        time = time.split("[.]")[0];
+        String select =
+            "select pp." + ac_.getIdseqName() + " as idseq from " + ac_.getTableName() + " pp "
+            + "where nvl(pp.date_modified, pp.date_created) >= to_date('" + time + "', 'yyyy-mm-dd hh24:mi:ss')"
+            +"union select alt." + alt_.getIdseqName() + " as idseq from " + alt_.getTableName() + " alt, " + ac_.getTableName() + " pp "
+            + "where nvl(alt.date_modified, alt.date_created) >= to_date('" + time + "', 'yyyy-mm-dd hh24:mi:ss') "
+            + "and pp." + ac_.getIdseqName() + " = alt.ac_idseq";
+        
+        return select;
+    }
+
     /**
      * Build the list of database ID's which have been modified on or after
      * the date specified.
      * 
      * @param ac_ the AC of interest
      * @param start_ the comparison date
-     * @param ids_ the list of ID's to be updated in the freestyle index tables
+     * @return the list of ID's to be updated in the freestyle index tables
      */
-    private void eraseList(GenericAC ac_, Timestamp start_, String[] ids_)
+    private String[] eraseList(GenericAC ac_, ACAlternate alt_, Timestamp start_)
     {
+        String[] ids = new String[0];
+        
         // Build the delete using a sub-select to match that used to query
         // the database for records to load into the search index table.
-        String select = "select zz." + ac_.getIdseqName() + " from " + ac_.getTableName() + " zz"
-            + _qualWhere;
+        String select = buildIDselect(ac_, alt_, start_);
 
         try
         {
             _pstmt = _conn.prepareStatement(select);
-            _pstmt.setTimestamp(1, start_);
             
             ResultSet rs = _pstmt.executeQuery();
-            int cnt = 0;
+
+            Vector<String> list = new Vector<String>();
             while (rs.next())
             {
-                ids_[cnt++] = rs.getString(1);
+                list.add(rs.getString(1));
             }
+
+            ids = new String[list.size()];
+            for (int cnt = 0; cnt < ids.length; ++cnt)
+                ids[cnt] = list.get(cnt);
         }
         
         // We had an unexpected problem.
@@ -548,6 +563,8 @@ public class DBAccess
         }
         
         cleanupWithCatch();
+        
+        return ids;
     }
 
     /**
@@ -557,18 +574,19 @@ public class DBAccess
      * @param start_ the start date for records of interest
      * @return return the record count for the number of changes
      */
-    private int updateCount(GenericAC ac_, Timestamp start_)
+    private int updateCount(GenericAC ac_, ACAlternate alt_, Timestamp start_, boolean prime_)
     {
         // Build the delete using a sub-select to match that used to query
         // the database for records to load into the search index table.
-        String select = "select count(*) from " + ac_.getTableName() + " zz"
-            + _qualWhere;
+        String select = "select count(*) from (" + buildIDselect(ac_, alt_, start_) + ")";
+        
+        if (!prime_)
+            select += " xx, " + alt_.getTableName() + " alt where alt." + alt_.getIdseqName() + " = xx.idseq";
 
         int count = 0;
         try
         {
             _pstmt = _conn.prepareStatement(select);
-            _pstmt.setTimestamp(1, start_);
             
             _rs = _pstmt.executeQuery();
             if (_rs.next())
@@ -866,9 +884,6 @@ public class DBAccess
     private boolean _connFlag;
     private ResultSet _rs;
     private PreparedStatement _pstmt;
-    
-    private static final String _qualWhere =
-        " where nvl(zz.date_modified, zz.date_created) >= ?";
     
     private static final Logger _logger = Logger.getLogger(DBAccess.class.getName());
 }
