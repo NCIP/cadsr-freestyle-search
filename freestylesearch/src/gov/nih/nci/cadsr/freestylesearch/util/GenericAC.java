@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/GenericAC.java,v 1.3 2006-07-10 18:40:32 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/GenericAC.java,v 1.4 2006-07-13 13:17:50 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -143,8 +143,8 @@ public abstract class GenericAC
     private int _masterIndex;
     
     private static final String[] _colNames = {
-        "Version", "Long Name", "Preferred Name", "Preferred Definition", "Question", "Public ID"
-        , "Latest Version Indicator", "Created By", "Modified By", "Workflow Status", "Context"
-        , "Alternate Name", "Definition Source", "Origin"
+        "Version", "Long Name", "Preferred Name", "Name", "Preferred Definition", "Question", "Public ID"
+        , "Latest Version Indicator", "Created By", "Modified By", "Workflow Status", "Registration Status"
+        , "Context", "Alternate Name", "Definition Source", "Origin"
     };
 }
