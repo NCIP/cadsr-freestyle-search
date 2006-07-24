@@ -1,9 +1,9 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/ACObjectClass.java,v 1.2 2006-07-05 14:53:51 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/ACObjectClass.java,v 1.1 2006-07-24 14:56:18 hebell Exp $
 // $Name: not supported by cvs2svn $
 
-package gov.nih.nci.cadsr.freestylesearch.util;
+package gov.nih.nci.cadsr.freestylesearch.tool;
 
 import gov.nih.nci.cadsr.domain.AdministeredComponent;
 import gov.nih.nci.cadsr.domain.ObjectClass;
@@ -26,7 +26,7 @@ public class ACObjectClass extends GenericAC
     }
 
     /**
-     * @see gov.nih.nci.cadsr.freestylesearch.util.GenericAC#factoryAC()
+     * @see gov.nih.nci.cadsr.freestylesearch.tool.GenericAC#factoryAC()
      */
     @Override
     public AdministeredComponent factoryAC()
@@ -35,7 +35,7 @@ public class ACObjectClass extends GenericAC
     }
 
     /**
-     * @see gov.nih.nci.cadsr.freestylesearch.util.GenericAC#getACClass()
+     * @see gov.nih.nci.cadsr.freestylesearch.tool.GenericAC#getACClass()
      */
     @Override
     public Class getACClass()
@@ -44,7 +44,7 @@ public class ACObjectClass extends GenericAC
     }
 
     /**
-     * @see gov.nih.nci.cadsr.freestylesearch.util.GenericAC#getTableName()
+     * @see gov.nih.nci.cadsr.freestylesearch.tool.GenericAC#getTableName()
      */
     @Override
     public String getTableName()
@@ -53,7 +53,7 @@ public class ACObjectClass extends GenericAC
     }
 
     /**
-     * @see gov.nih.nci.cadsr.freestylesearch.util.GenericAC#getTypeName()
+     * @see gov.nih.nci.cadsr.freestylesearch.tool.GenericAC#getTypeName()
      */
     @Override
     public String getTypeName()
@@ -62,7 +62,7 @@ public class ACObjectClass extends GenericAC
     }
 
     /**
-     * @see gov.nih.nci.cadsr.freestylesearch.util.GenericAC#getColumns()
+     * @see gov.nih.nci.cadsr.freestylesearch.tool.GenericAC#getColumns()
      */
     @Override
     public String[] getColumns()
@@ -74,7 +74,7 @@ public class ACObjectClass extends GenericAC
      * The columns used to seed the search index table. Some of these are order
      * dependant.
      * 
-     * @see gov.nih.nci.cadsr.freestylesearch.util.GenericAC
+     * @see gov.nih.nci.cadsr.freestylesearch.tool.GenericAC
      */
     private static final String[] _cols = {
         "oc_idseq", "'oc'", "version", "long_name", "preferred_name", "oc_id", "latest_version_ind", "created_by", "modified_by"

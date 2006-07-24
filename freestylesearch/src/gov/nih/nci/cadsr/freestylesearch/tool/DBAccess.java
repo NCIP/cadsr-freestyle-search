@@ -1,10 +1,11 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/DBAccess.java,v 1.6 2006-07-13 13:17:50 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccess.java,v 1.1 2006-07-24 14:56:18 hebell Exp $
 // $Name: not supported by cvs2svn $
 
-package gov.nih.nci.cadsr.freestylesearch.util;
+package gov.nih.nci.cadsr.freestylesearch.tool;
 
+import gov.nih.nci.cadsr.freestylesearch.util.SearchAC;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,7 +19,7 @@ import org.apache.log4j.Logger;
 import oracle.jdbc.pool.OracleDataSource;
 
 /**
- * Provide access to the caDSR and Freestyle Index tables.
+ * Provide access to the caDSR tables.
  * 
  * @author lhebel Mar 3, 2006
  */

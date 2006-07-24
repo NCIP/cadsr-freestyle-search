@@ -5,7 +5,7 @@
           "http://jakarta.apache.org/struts/dtds/struts-config_1_2.dtd">
 
 <!-- Copyright ScenPro, Inc. 2005
-     $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/web/struts-config.xml,v 1.1 2006-06-30 13:46:46 hebell Exp $
+     $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/web/struts-config.xml,v 1.2 2006-07-24 14:55:21 hebell Exp $
      $Name: not supported by cvs2svn $
 -->
 
@@ -14,7 +14,7 @@
   <!-- ========== Form Bean Definitions =================================== -->
   <form-beans>
 
-    <form-bean name="freestyleForm" type="gov.nih.nci.cadsr.freestylesearch.tool.FreestyleSearchForm"/>
+    <form-bean name="freestyleForm" type="gov.nih.nci.cadsr.freestylesearch.ui.FreestyleSearchForm"/>
 
   </form-beans>
   
@@ -22,7 +22,7 @@
   <action-mappings>
 
     <action path="/search"
-            type="gov.nih.nci.cadsr.freestylesearch.tool.FreestyleSearch"
+            type="gov.nih.nci.cadsr.freestylesearch.ui.FreestyleSearch"
             name="freestyleForm"
             scope="request"
             input="/jsp/freestylesearch.jsp">
@@ -34,6 +34,6 @@
     null="false"
     parameter="gov.nih.nci.cadsr.freestylesearch.tool.Freestyle"/>
     
-  <plug-in className="gov.nih.nci.cadsr.freestylesearch.tool.FreestylePlugIn" />
+  <plug-in className="gov.nih.nci.cadsr.freestylesearch.ui.FreestylePlugIn" />
 
 </struts-config>

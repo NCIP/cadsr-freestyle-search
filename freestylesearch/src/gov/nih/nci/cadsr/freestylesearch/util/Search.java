@@ -1,11 +1,15 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.3 2006-07-11 15:20:06 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.4 2006-07-24 14:55:21 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
 
 import gov.nih.nci.cadsr.domain.AdministeredComponent;
+import gov.nih.nci.cadsr.freestylesearch.tool.DBAccess;
+import gov.nih.nci.cadsr.freestylesearch.tool.DBAccessIndex;
+import gov.nih.nci.cadsr.freestylesearch.tool.GenericAC;
+import gov.nih.nci.cadsr.freestylesearch.tool.ResultsAC;
 import gov.nih.nci.system.applicationservice.ApplicationException;
 import gov.nih.nci.system.applicationservice.ApplicationService;
 import java.sql.Connection;
@@ -65,11 +69,11 @@ public class Search
         _matchFlag = match_;
         _limit = limit_;
         _highestScores = scores_;
-        
+
         _restrict = new int[SearchAC.count()];
         _restrictAll = true;
     }
-    
+
     /**
      * Find AC's using the phrase (terms) provided, results are in ASCII text form using
      * default AC attributes.
@@ -83,7 +87,7 @@ public class Search
         Vector<String> rs = getDefaultDisplay(rs0);
         return rs;
     }
-    
+
     /**
      * Find AC's using the phrase (terms) provided, results are in objects containing
      * the AC type, database ID and result score.
@@ -95,7 +99,7 @@ public class Search
     {
         Vector<ResultsAC> rs0 = find(phrase_);
         Vector<SearchResultObject> rs = new Vector<SearchResultObject>();
-        
+
         for (ResultsAC obj : rs0)
         {
             SearchResultObject var = new SearchResultObject(obj._idseq, obj._score, SearchAC.valueOf(obj._desc.getMasterIndex()));
@@ -127,7 +131,7 @@ public class Search
 
         return ApplicationService.getRemoteInstance(url);
     }
-    
+
     /**
      * Find AC's using the phrase (terms) provided, results are in objects containing
      * the SearchResultObject and AdministeredComponent.
@@ -139,9 +143,9 @@ public class Search
     {
         Vector<ResultsAC> rs0 = find(phrase_);
         Vector<SearchResultsWithAC> rs = new Vector<SearchResultsWithAC>();
-        
+
         ApplicationService coreapi = getCoreUrl();
-        
+
         for (ResultsAC record : rs0)
         {
             SearchAC type = SearchAC.valueOf(record._desc.getMasterIndex());
@@ -172,7 +176,7 @@ public class Search
 
         return rs;
     }
-    
+
     /**
      * Find AC's using the phrase (terms) provided, results are in objects defined by
      * the caCORE API in the client.jar.
@@ -186,7 +190,7 @@ public class Search
         Vector<AdministeredComponent> rs = new Vector<AdministeredComponent>();
 
         ApplicationService coreapi = getCoreUrl();
-        
+
         for (ResultsAC record : rs0)
         {
             Class cvar = record._desc.getACClass();
@@ -210,7 +214,7 @@ public class Search
         }
         return rs;
     }
-    
+
     /**
      * Search the freestyle index table for matches.
      * 
@@ -225,12 +229,12 @@ public class Search
 
         // Open the database.
         DBAccessIndex dbIndex = new DBAccessIndex();
-        
+
         // Set data settings.
         dbIndex.setLimit(_limit);
         dbIndex.restrictResultsByScore(_highestScores);
         dbIndex.excludeWorkflowStatusRetired(_excludeWFSretired);
-        
+
         // Pre-qualify the phrase.
         String phrase = DBAccessIndex.replaceAll(phrase_);
         phrase = phrase.trim();
@@ -245,7 +249,7 @@ public class Search
                 _logger.fatal(ex.toString());
                 return new Vector<ResultsAC>();
             }
-            
+
             // We do a case sensitive search on a lower case string
             // which has the effect of a case insensitive search without
             // the extra processing overhead.
@@ -259,12 +263,12 @@ public class Search
                 default: var = doMatchBest(dbIndex, phrase); break;
             }
             dbIndex.close();
-            
+
             return var;
         }
         return new Vector<ResultsAC>();
     }
-    
+
     /**
      * Get the default results display.
      * 
@@ -292,7 +296,7 @@ public class Search
         dbData.close();
         return rs;
     }
-    
+
     /**
      * Establish connections for the index tables. This
      * provides for the possibility the index tables may not be hosted by the
@@ -315,13 +319,13 @@ public class Search
                 else if (indexDB_.open(_indexDS, _indexUser, _indexPswd) != 0)
                     throw new SQLException("Failed to open connection from DataSource.", "Failed", -101);
             }
-    
+
             else if (_indexConn != null)
             {
                 if (indexDB_.open(_indexConn) != 0)
                     throw new SQLException("Failed to use supplied Connection.", "Failed", -102);
             }
-    
+
             else if (indexDB_.open(_indexUrl, _indexUser, _indexPswd) != 0)
                 throw new SQLException("Failed to open connection to index.", "Failed", -103);
         }
@@ -349,13 +353,13 @@ public class Search
                 else if (dataDB_.open(_dataDS, _dataUser, _dataPswd) != 0)
                     throw new SQLException("Failed to open connection from DataSource.", "Failed", -201);
             }
-    
+
             else if (_dataConn != null)
             {
                 if (dataDB_.open(_dataConn) != 0)
                     throw new SQLException("Failed to use supplied Connection.", "Failed", -202);
             }
-    
+
             else if (dataDB_.open(_dataUrl, _dataUser, _dataPswd) != 0)
                 throw new SQLException("Failed to open connection to caDSR.", "Failed", -203);
         }
@@ -471,7 +475,7 @@ public class Search
         }
         return var;
     }
-    
+
     /**
      * Set the match flag to control how comparisons are performed
      * during a search.
@@ -482,7 +486,7 @@ public class Search
     {
         _matchFlag = match_;
     }
-    
+
     /**
      * Get the search limit. This is the maxium returns from a find...().
      *  
@@ -492,7 +496,7 @@ public class Search
     {
         return _limit;
     }
-    
+
     /**
      * Set the limit for maximum results returned.
      * 
@@ -502,7 +506,7 @@ public class Search
     {
         _limit = limit_;
     }
-    
+
     /**
      * Restrict the results by the type(s) of record. See the SearchAC enum for values.
      * 
@@ -520,10 +524,10 @@ public class Search
         {
             total += _restrict[i];
         }
-        
+
         _restrictAll = (total == SearchAC.count());
     }
-    
+
     /**
      * Reset the restrict list to include All types.
      *
@@ -533,7 +537,7 @@ public class Search
         _restrict = new int[SearchAC.count()];
         _restrictAll = true;
     }
-    
+
     /**
      * Restrict the results by the search score groups. A score group is one or more results with the same
      * score.
@@ -556,7 +560,7 @@ public class Search
     {
         _highestScores = 0;
     }
-    
+
     /**
      * Restrict the results to those with Workflow Status not "retired".
      * 
@@ -565,7 +569,7 @@ public class Search
     {
         _excludeWFSretired = true;
     }
-    
+
     /**
      * Clear the Workflow Status restriction. All are returned in the results.
      * 
@@ -574,7 +578,7 @@ public class Search
     {
         _excludeWFSretired = false;
     }
-    
+
     /**
      * Get the AC type names.
      * 
@@ -584,7 +588,7 @@ public class Search
     {
         return DBAccess.getTypes();
     }
-    
+
     /**
      * Get the names of the columns which may be searched for all the types. This is
      * a single cumulative list, not segregated by AC type.
@@ -595,7 +599,7 @@ public class Search
     {
         return GenericAC.getColNames();
     }
-    
+
     /**
      * Reserved.
      * 
@@ -606,7 +610,7 @@ public class Search
         if (text_ != null && text_.length() > 0)
             DBAccessIndex.setSchema(text_);
     }
-    
+
     /**
      * Set the database description which hosts the freestyle search index tables. Use
      * setDataDescription(...) instead.
@@ -627,7 +631,7 @@ public class Search
         if (_dataPswd == null)
             _dataPswd = pswd_;
     }
-    
+
     /**
      * Set the database description which hosts the freestyle search index tables. Use
      * setDataDescription(...) instead.
@@ -654,7 +658,7 @@ public class Search
         if (_dataPswd == null)
             _dataPswd = pswd_;
     }
-    
+
     /**
      * Set the database description which hosts the freestyle search index tables. Use
      * setDataDescription(...) instead.
@@ -673,7 +677,7 @@ public class Search
         if (_dataPswd == null)
             _dataPswd = _indexPswd;
     }
-    
+
     /**
      * Set the database description which hosts the freestyle search index tables. Use
      * setDataDescription(...) instead.
@@ -686,7 +690,7 @@ public class Search
         if (_dataConn == null)
             _dataConn = conn_;
     }
-    
+
     /**
      * Set the database description which hosts the freestyle index tables and caDSR.
      * 
@@ -706,7 +710,7 @@ public class Search
         if (_indexPswd == null)
             _indexPswd = pswd_;
     }
-    
+
     /**
      * Set the database description which hosts the freestyle index tables and caDSR.
      * 
@@ -732,7 +736,7 @@ public class Search
         if (_indexPswd == null)
             _indexPswd = pswd_;
     }
-    
+
     /**
      * Set the database description which hosts the freestyle index tables and caDSR. The
      * datasource must already have a valid user and password defined.
@@ -751,7 +755,7 @@ public class Search
         if (_indexPswd == null)
             _indexPswd = _dataPswd;
     }
-    
+
     /**
      * Set the database description which hosts the freestyle index tables and caDSR.
      * 
@@ -763,7 +767,7 @@ public class Search
         if (_indexConn == null)
             _indexConn = conn_;
     }
-    
+
     /**
      * Get the last seed timestamp as a string. This is not a compatible format for any
      * parsing method.
@@ -777,7 +781,14 @@ public class Search
         try
         {
             open(db);
-            seedTime = db.getLastSeedTimestamp().toString() + " (yyyy-mm-dd hh:mm:ss Eastern Time)";
+            Timestamp ts = db.getLastSeedTimestamp();
+            if (ts == null)
+            {
+                seedTime = "";
+                _logger.fatal("Can not retrieve the Index Table timestamp - installation incomplete or in error.");
+            }
+            else
+                seedTime = ts.toString() + " (yyyy-mm-dd hh:mm:ss Eastern Time)";
             db.close();
         }
         catch (SQLException ex)
@@ -786,7 +797,7 @@ public class Search
         }
         return seedTime;
     }
-    
+
     /**
      * Get the last seed timestamp.
      * 

@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/SearchResultObject.java,v 1.1 2006-07-11 15:20:07 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/SearchResultObject.java,v 1.2 2006-07-24 14:55:21 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -49,7 +49,7 @@ public class SearchResultObject
         return _type;
     }
     
-    protected String _idseq;
-    protected int _score;
-    protected SearchAC _type;
+    private String _idseq;
+    private int _score;
+    private SearchAC _type;
 }

@@ -1,9 +1,9 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/GenericAC.java,v 1.4 2006-07-13 13:17:50 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/GenericAC.java,v 1.1 2006-07-24 14:56:18 hebell Exp $
 // $Name: not supported by cvs2svn $
 
-package gov.nih.nci.cadsr.freestylesearch.util;
+package gov.nih.nci.cadsr.freestylesearch.tool;
 
 import gov.nih.nci.cadsr.domain.AdministeredComponent;
 

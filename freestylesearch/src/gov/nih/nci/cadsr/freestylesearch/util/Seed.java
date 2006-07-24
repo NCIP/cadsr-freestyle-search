@@ -1,10 +1,12 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Seed.java,v 1.2 2006-07-10 18:40:32 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Seed.java,v 1.3 2006-07-24 14:55:21 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
 
+import gov.nih.nci.cadsr.freestylesearch.tool.DBAccess;
+import gov.nih.nci.cadsr.freestylesearch.tool.DBAccessIndex;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
