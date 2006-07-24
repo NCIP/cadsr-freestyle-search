@@ -1,9 +1,9 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/FreestyleSearch.java,v 1.2 2006-07-10 18:40:32 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FreestyleSearch.java,v 1.1 2006-07-24 14:55:21 hebell Exp $
 // $Name: not supported by cvs2svn $
 
-package gov.nih.nci.cadsr.freestylesearch.tool;
+package gov.nih.nci.cadsr.freestylesearch.ui;
 
 import java.util.Vector;
 

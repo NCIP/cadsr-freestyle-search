@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/SearchResultsWithAC.java,v 1.1 2006-07-11 15:20:07 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/SearchResultsWithAC.java,v 1.2 2006-07-24 14:55:21 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -8,6 +8,9 @@ package gov.nih.nci.cadsr.freestylesearch.util;
 import gov.nih.nci.cadsr.domain.AdministeredComponent;
 
 /**
+ * Map the freestyle search results to a SearchResultObject and the corresponding
+ * AdministeredComponent object defined by the caCORE API.
+ * 
  * @author lhebel
  *
  */
@@ -46,6 +49,6 @@ public class SearchResultsWithAC
         return _ac;
     }
 
-    protected SearchResultObject _obj;
-    protected AdministeredComponent _ac;
+    private SearchResultObject _obj;
+    private AdministeredComponent _ac;
 }

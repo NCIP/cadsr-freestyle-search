@@ -1,11 +1,11 @@
 <!-- Copyright ScenPro, Inc. 2005
-     $Header: /share/content/gforge/freestylesearch/freestylesearch/ui/jsp/freestylesearch.jsp,v 1.3 2006-07-13 13:17:50 hebell Exp $
+     $Header: /share/content/gforge/freestylesearch/freestylesearch/ui/jsp/freestylesearch.jsp,v 1.4 2006-07-24 14:55:21 hebell Exp $
      $Name: not supported by cvs2svn $
 -->
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ page import="java.util.Vector" %>
-<%@ page import="gov.nih.nci.cadsr.freestylesearch.tool.FreestyleSearch" %>
+<%@ page import="gov.nih.nci.cadsr.freestylesearch.ui.FreestyleSearch" %>
 
 <html>
     <head>
@@ -57,7 +57,7 @@
         <p>This page is provided to exercise the freestyle search engine and offer a simple search into the NCICB Cancer
         Data Standards Repository (caDSR).</p><p>Multiple terms should be separated by spaces. All searches are case insensitive. Wild card characters are not used. Select
         the <b>Options...</b> button to configure specific search features.
-        The supported record types within this prototype are
+        The supported record types are
 <%
     String[] types = FreestyleSearch.getTypes();
     %><b><%=types[0]%><%
@@ -65,8 +65,7 @@
     {
         %>, <%=types[i]%><%
     }
-%>
-        </b>. The attributes searched include the following where applicable
+%></b>. The attributes searched include the following where applicable
 <%
     String[] colNames = FreestyleSearch.getColNames();
     %><b><%=colNames[0]%><%
@@ -74,8 +73,7 @@
     {
         %>, <%=colNames[i]%><%
     }
-%>
-        </b>.</p>
+%></b>.</p>
         <p>The search index is current as of <%
         String seedTime = (String) pageContext.getRequest().getAttribute("seedTime");
         %><%=seedTime%></p>

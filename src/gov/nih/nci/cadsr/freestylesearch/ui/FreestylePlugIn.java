@@ -1,9 +1,9 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/FreestylePlugIn.java,v 1.1 2006-06-30 13:46:47 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FreestylePlugIn.java,v 1.1 2006-07-24 14:55:21 hebell Exp $
 // $Name: not supported by cvs2svn $
 
-package gov.nih.nci.cadsr.freestylesearch.tool;
+package gov.nih.nci.cadsr.freestylesearch.ui;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
