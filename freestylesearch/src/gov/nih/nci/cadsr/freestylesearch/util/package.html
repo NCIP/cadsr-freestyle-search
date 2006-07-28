@@ -1,6 +1,6 @@
 <html>
     <!--
-    $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/package.html,v 1.2 2006-07-10 18:40:32 hebell Exp $
+    $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/package.html,v 1.3 2006-07-28 14:48:21 hebell Exp $
     $Name: not supported by cvs2svn $
 -->
     <body>
@@ -24,8 +24,8 @@
         <p>
             <b>Search Scoring</b>
         </p>
-        <p>
         <div style="margin-left: 0.5in">
+            <p>
             The Administered Components that could be returned from a search are:
             </p>
             <ul>
@@ -147,8 +147,8 @@
         <p>
             <b>Search Options</b>
         </p>
-        <p>
         <div style="margin-left: 0.5in">
+        <p>
             Controlling the search result is performed through the options. This search engine is not intended to provide a programmatic specification for specific columns but is designed from a user perspective to work toward answering a question. The
             user does not need to know how the database is designed or the name of specific columns or tables, e.g. search for something named "agent report", not 'long_name' equals 'agent report'. When the caDSR was curated the terms or words in the
             search phrase could appear in any order and in who knows which columns, i.e. "long_name", "preferred_name", "name", etc. The options available to control the results reflect this philosophy.
@@ -168,6 +168,24 @@
                 found with Google. If the desired link isn't on the first page of results most people will play with the search term by adding or arranging words. Some people will progress to the second results page. Statistically very few go beyond that.
                 This limit is the total number of results in the return, it is not the results per "page". Pagenation must be handled by the caller if desired. See the Search.setLimit() method for more details.
             </p>
+        </div>
+        <p>
+            <b>Software Dependencies</b>
+        </p>
+        <div style="margin-left: 0.5in">
+            <p>Following are the required dependent software when using the Freestyle API. These JAR files may appear anywhere on the Java CLASSPATH and should only be bundled as needed, e.g. deploying a WAR to JBoss need not
+            include commons-logging.jar if it is present in the JBoss/lib folder.</p>
+            <table>
+                <tr><th>JAR</th><th>Release</th></tr>
+                <tr><td>cglib-full-2.0.1.jar </td><td>2.0.1</td></tr>
+                <tr><td>client.jar</td><td>3.2</td></tr>
+                <tr><td>commons-logging.jar</td><td>1.0.3</td></tr>
+                <tr><td>freestylesearch.jar</td><td>3.2</td></tr>
+                <tr><td>hibernate3.jar</td><td>3.0.2</td></tr>
+                <tr><td>log4j-1.2.8.jar</td><td>1.2.8</td></tr>
+                <tr><td>ojdbc14.jar</td><td>Oracle 9i</td></tr>
+                <tr><td>spring.jar</td><td>1.2</td></tr>
+            </table>
         </div>
         <p>
             <b>Examples</b>

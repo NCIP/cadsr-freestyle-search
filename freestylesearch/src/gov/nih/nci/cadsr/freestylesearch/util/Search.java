@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.4 2006-07-24 14:55:21 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.5 2006-07-28 14:48:21 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -202,7 +202,7 @@ public class Search
                 if (acs.size() == 0)
                 {
                     SearchAC type = SearchAC.valueOf(record._desc.getMasterIndex());
-                    _logger.fatal("Failed to find (type, id) (" + type + ", " + record._idseq + ")");
+                    _logger.warn("Failed to find (type, id) (" + type + ", " + record._idseq + ")");
                 }
                 else
                     rs.add((AdministeredComponent) acs.get(0));
