@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.5 2006-07-28 14:48:21 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.6 2006-08-15 20:42:02 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -15,6 +15,7 @@ import gov.nih.nci.system.applicationservice.ApplicationService;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import javax.sql.DataSource;
@@ -191,27 +192,31 @@ public class Search
 
         ApplicationService coreapi = getCoreUrl();
 
+        List<AdministeredComponent> acID = new ArrayList<AdministeredComponent>();
         for (ResultsAC record : rs0)
         {
-            Class cvar = record._desc.getACClass();
-            AdministeredComponent var = record._desc.factoryAC();
+            AdministeredComponent var = new AdministeredComponent();
             var.setId(record._idseq);
-            try
+            acID.add(var);
+        }
+        
+        try
+        {
+            @SuppressWarnings("unchecked")
+            List<AdministeredComponent> acs = coreapi.search(AdministeredComponent.class, acID); 
+            for (int i = 0; i < acs.size(); ++i)
             {
-                List acs = coreapi.search(cvar, var);
-                if (acs.size() == 0)
-                {
-                    SearchAC type = SearchAC.valueOf(record._desc.getMasterIndex());
-                    _logger.warn("Failed to find (type, id) (" + type + ", " + record._idseq + ")");
-                }
-                else
-                    rs.add((AdministeredComponent) acs.get(0));
-            }
-            catch (ApplicationException ex)
-            {
-                _logger.fatal(ex.toString());
+                AdministeredComponent record =(AdministeredComponent)acs.get(i); 
+                if (!record.getId().equals(rs0.get(i)._idseq))
+                    _logger.warn("Mismatched results from caCORE API");
+                rs.add(record);
             }
         }
+        catch (ApplicationException ex)
+        {
+            _logger.fatal(ex.toString());
+        }
+
         return rs;
     }
 
@@ -275,7 +280,7 @@ public class Search
      * @param list_ the search results collection from find()
      * @return the AC default display in ASCII format.
      */
-    public Vector<String> getDefaultDisplay(Vector<ResultsAC> list_)
+    private Vector<String> getDefaultDisplay(Vector<ResultsAC> list_)
     {
         if (list_.size() == 0)
             return new Vector<String>();
@@ -492,7 +497,7 @@ public class Search
      *  
      * @return the search limit
      */
-    public int getLimit()
+    public int getResultsLimit()
     {
         return _limit;
     }
