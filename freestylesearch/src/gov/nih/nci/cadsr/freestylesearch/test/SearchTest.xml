@@ -1,32 +1,41 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 
-<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.xml,v 1.3 2006-07-05 14:53:51 hebell Exp $
+<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.xml,v 1.4 2006-08-15 20:42:02 hebell Exp $
        $Name: not supported by cvs2svn $
  -->
 
 <properties>
     
         <!-- The index database access values
-        -->
         <entry key="index.DSurl">cbiodb2-d.nci.nih.gov:1521:CBDEV</entry>
         <entry key="index.DSusername">freestylesearch</entry>
         <entry key="index.DSpassword">search0608</entry>
+        <entry key="index.DSschema">sbrext</entry>
+        <entry key="index.DSurl">cbiodb30.nci.nih.gov:1521:CBTEST</entry>
+        -->
+        <entry key="index.DSurl">cbiodb20.nci.nih.gov:1521:CBSTG</entry>
+        <entry key="index.DSusername">guest</entry>
+        <entry key="index.DSpassword">guest</entry>
         <entry key="index.DSschema">sbrext</entry>
     
         <!-- The caDSR referenced by the index database access values
         
         cbiodb10.nci.nih.gov:1521:CBPROD
-        -->
         <entry key="data.DSurl">cbiodb2-d.nci.nih.gov:1521:CBDEV</entry>
         <entry key="data.DSusername">freestylesearch</entry>
         <entry key="data.DSpassword">search0608</entry>
+        <entry key="data.DSurl">cbiodb30.nci.nih.gov:1521:CBTEST</entry>
+        -->
+        <entry key="data.DSurl">cbiodb20.nci.nih.gov:1521:CBSTG</entry>
+        <entry key="data.DSusername">guest</entry>
+        <entry key="data.DSpassword">guest</entry>
 
         <!-- Define the types of data returns:
             0 = default
             1 = abbreviated (idseq, score, type)
             2 = caCORE API Administered Component Objects
         -->
-        <entry key="returns">0, 1</entry>
+        <entry key="returns">1, 2</entry>
 
         <!-- Specify the match test type, 0 = exact, 1 = partial, 2 = best.
         -->

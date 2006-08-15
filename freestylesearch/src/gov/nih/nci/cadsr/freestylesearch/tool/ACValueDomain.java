@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/ACValueDomain.java,v 1.1 2006-07-24 14:56:18 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/ACValueDomain.java,v 1.2 2006-08-15 20:42:02 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.tool;
@@ -49,7 +49,6 @@ public class ACValueDomain extends GenericAC
     @Override
     public String getTableName()
     {
-        // TODO Auto-generated method stub
         return "sbr.value_domains_view";
     }
 

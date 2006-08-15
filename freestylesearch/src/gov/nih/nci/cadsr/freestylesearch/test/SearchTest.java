@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.java,v 1.4 2006-07-11 15:20:06 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.java,v 1.5 2006-08-15 20:42:02 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.test;
@@ -146,6 +146,21 @@ public class SearchTest
 
             int cnt;
 
+            if (outAbbrev)
+            {
+                // Perform search and get Search object results..
+                Vector<SearchResultObject> rs3 = var.findReturningResultSet(phrase);
+                
+                // Output results
+                cnt = 0;
+                for (SearchResultObject ac: rs3)
+                {
+                    _logger.info(String.valueOf(cnt + 1) + ": " + ac.getType() + ", " + ac.getIdseq() + ", " + ac.getScore());
+                    ++cnt;
+                }
+                _logger.info(cnt + " matches found");
+            }
+
             if (outDef)
             {
                 // Perform search and get default results.
@@ -169,21 +184,6 @@ public class SearchTest
                 for (AdministeredComponent ac: rs2)
                 {
                     _logger.info(String.valueOf(cnt + 1) + ": " + ac.getLongName() + "\n" + ac.getPublicID() + " / " + ac.getVersion());
-                    ++cnt;
-                }
-                _logger.info(cnt + " matches found");
-            }
-
-            if (outAbbrev)
-            {
-                // Perform search and get Search object results..
-                Vector<SearchResultObject> rs3 = var.findReturningResultSet(phrase);
-                
-                // Output results
-                cnt = 0;
-                for (SearchResultObject ac: rs3)
-                {
-                    _logger.info(String.valueOf(cnt + 1) + ": " + ac.getType() + ", " + ac.getIdseq() + ", " + ac.getScore());
                     ++cnt;
                 }
                 _logger.info(cnt + " matches found");
