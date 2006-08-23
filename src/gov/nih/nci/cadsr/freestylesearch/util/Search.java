@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.6 2006-08-15 20:42:02 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.7 2006-08-23 15:59:14 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -90,6 +90,24 @@ public class Search
     }
 
     /**
+     * Create the public result set from the internal result set.
+     * 
+     * @param rs_ the internal result set
+     * @return the public result set
+     */
+    private Vector<SearchResultObject> findReturningResultSet(Vector<ResultsAC> rs_)
+    {
+        Vector<SearchResultObject> rs = new Vector<SearchResultObject>();
+
+        for (ResultsAC obj : rs_)
+        {
+            SearchResultObject var = new SearchResultObject(obj._idseq, obj._score, SearchAC.valueOf(obj._desc.getMasterIndex()));
+            rs.add(var);
+        }
+        return rs;
+    }
+    
+    /**
      * Find AC's using the phrase (terms) provided, results are in objects containing
      * the AC type, database ID and result score.
      * 
@@ -99,14 +117,7 @@ public class Search
     public Vector<SearchResultObject> findReturningResultSet(String phrase_)
     {
         Vector<ResultsAC> rs0 = find(phrase_);
-        Vector<SearchResultObject> rs = new Vector<SearchResultObject>();
-
-        for (ResultsAC obj : rs0)
-        {
-            SearchResultObject var = new SearchResultObject(obj._idseq, obj._score, SearchAC.valueOf(obj._desc.getMasterIndex()));
-            rs.add(var);
-        }
-        return rs;
+        return findReturningResultSet(rs0);
     }
 
     /**
@@ -144,56 +155,44 @@ public class Search
     {
         Vector<ResultsAC> rs0 = find(phrase_);
         Vector<SearchResultsWithAC> rs = new Vector<SearchResultsWithAC>();
-
-        ApplicationService coreapi = getCoreUrl();
-
-        for (ResultsAC record : rs0)
+        
+        Vector<SearchResultObject> rs1 = findReturningResultSet(rs0);
+        Vector<AdministeredComponent> rs2 = findReturningAdministeredComponent(rs0);
+        
+        if (rs0.size() != rs1.size() || rs0.size() != rs2.size())
         {
-            SearchAC type = SearchAC.valueOf(record._desc.getMasterIndex());
-            SearchResultObject obj = new SearchResultObject(record._idseq, record._score, type);
-
-            Class cvar = record._desc.getACClass();
-            AdministeredComponent select = record._desc.factoryAC();
-            select.setId(record._idseq);
-
-            AdministeredComponent ac = null;
-            try
-            {
-                List acs = coreapi.search(cvar, select);
-
-                if (acs.size() == 0)
-                    _logger.fatal("Failed to find (type, id) (" + type + ", " + record._idseq + ")");
-                else
-                    ac = (AdministeredComponent) acs.get(0);
-            }
-            catch (ApplicationException ex)
-            {
-                _logger.fatal(ex.toString());
-            }
-
-            SearchResultsWithAC var = new SearchResultsWithAC(obj, ac);
-            rs.add(var);
+            _logger.error("Error retrieving results for method findReturningResultsWithAC [" + rs0.size() + ", " + rs1.size() + ", " + rs2.size() + "]");
         }
+        else
+        {
+            for (int i = 0; i < rs0.size(); ++i)
+            {
+                SearchResultsWithAC var = new SearchResultsWithAC(rs1.get(i), rs2.get(2));
+                rs.add(var);
+            }
+        }
+        
+        rs0 = null;
+        rs1 = null;
+        rs2 = null;
 
         return rs;
     }
 
     /**
-     * Find AC's using the phrase (terms) provided, results are in objects defined by
-     * the caCORE API in the client.jar.
+     * Create the public result set from the internal result set.
      * 
-     * @param phrase_ the terms of interest
-     * @return return the collection using the base interface AdministeredComponent.
+     * @param rs_ the internal result set
+     * @return the public result set
      */
-    public Vector<AdministeredComponent> findReturningAdministeredComponent(String phrase_)
+    private Vector<AdministeredComponent> findReturningAdministeredComponent(Vector<ResultsAC> rs_)
     {
-        Vector<ResultsAC> rs0 = find(phrase_);
         Vector<AdministeredComponent> rs = new Vector<AdministeredComponent>();
 
         ApplicationService coreapi = getCoreUrl();
 
         List<AdministeredComponent> acID = new ArrayList<AdministeredComponent>();
-        for (ResultsAC record : rs0)
+        for (ResultsAC record : rs_)
         {
             AdministeredComponent var = new AdministeredComponent();
             var.setId(record._idseq);
@@ -207,7 +206,7 @@ public class Search
             for (int i = 0; i < acs.size(); ++i)
             {
                 AdministeredComponent record =(AdministeredComponent)acs.get(i); 
-                if (!record.getId().equals(rs0.get(i)._idseq))
+                if (!record.getId().equals(rs_.get(i)._idseq))
                     _logger.warn("Mismatched results from caCORE API");
                 rs.add(record);
             }
@@ -218,6 +217,19 @@ public class Search
         }
 
         return rs;
+    }
+    
+    /**
+     * Find AC's using the phrase (terms) provided, results are in objects defined by
+     * the caCORE API in the client.jar.
+     * 
+     * @param phrase_ the terms of interest
+     * @return return the collection using the base interface AdministeredComponent.
+     */
+    public Vector<AdministeredComponent> findReturningAdministeredComponent(String phrase_)
+    {
+        Vector<ResultsAC> rs0 = find(phrase_);
+        return findReturningAdministeredComponent(rs0);
     }
 
     /**
