@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.7 2006-08-23 15:59:14 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.8 2006-08-25 15:37:54 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 import javax.sql.DataSource;
@@ -187,34 +188,45 @@ public class Search
      */
     private Vector<AdministeredComponent> findReturningAdministeredComponent(Vector<ResultsAC> rs_)
     {
-        Vector<AdministeredComponent> rs = new Vector<AdministeredComponent>();
-
         ApplicationService coreapi = getCoreUrl();
 
+        HashMap<String, Integer> rsMap = new HashMap<String, Integer>();
         List<AdministeredComponent> acID = new ArrayList<AdministeredComponent>();
+        int cnt = 0;
         for (ResultsAC record : rs_)
         {
             AdministeredComponent var = new AdministeredComponent();
             var.setId(record._idseq);
             acID.add(var);
+            rsMap.put(record._idseq, Integer.valueOf(cnt));
+            ++cnt;
         }
         
+        Vector<AdministeredComponent> rs = new Vector<AdministeredComponent>();
+
         try
         {
             @SuppressWarnings("unchecked")
             List<AdministeredComponent> acs = coreapi.search(AdministeredComponent.class, acID); 
-            for (int i = 0; i < acs.size(); ++i)
+            if (acs.size() != rs_.size())
+                _logger.error("Invalid results from caCORE API.");
+            else
             {
-                AdministeredComponent record =(AdministeredComponent)acs.get(i); 
-                if (!record.getId().equals(rs_.get(i)._idseq))
-                    _logger.warn("Mismatched results from caCORE API");
-                rs.add(record);
+                rs.setSize(acs.size());
+                for (int i = 0; i < acs.size(); ++i)
+                {
+                    AdministeredComponent record = acs.get(i);
+                    Integer x = rsMap.get(record.getId());
+                    rs.set(x.intValue(), record);
+                }
             }
         }
         catch (ApplicationException ex)
         {
             _logger.fatal(ex.toString());
         }
+
+        rsMap = null;
 
         return rs;
     }
