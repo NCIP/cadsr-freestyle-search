@@ -1,6 +1,6 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 
-<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.xml,v 1.6 2006-08-25 15:37:54 hebell Exp $
+<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.xml,v 1.7 2006-08-30 20:31:23 hebell Exp $
        $Name: not supported by cvs2svn $
  -->
 
@@ -36,8 +36,9 @@
             0 = default
             1 = abbreviated (idseq, score, type)
             2 = caCORE API Administered Component Objects
+            3 = a Generic AC Result Set
         -->
-        <entry key="returns">1, 2</entry>
+        <entry key="returns">1, 3</entry>
 
         <!-- Specify the match test type, 0 = exact, 1 = partial, 2 = best.
         -->

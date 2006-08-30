@@ -1,11 +1,12 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccess.java,v 1.1 2006-07-24 14:56:18 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccess.java,v 1.2 2006-08-30 20:31:23 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.tool;
 
 import gov.nih.nci.cadsr.freestylesearch.util.SearchAC;
+import gov.nih.nci.cadsr.freestylesearch.util.SearchResults;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -392,6 +393,70 @@ public class DBAccess
             while (_rs.next())
             {
                 String display = _rs.getString(1);
+                results.add(display);
+            }
+        }
+        
+        // We had an unexpected problem.
+        catch (SQLException ex)
+        {
+            _errorCode = ex.getErrorCode();
+            _errorMsg = _errorCode + ": " + select.substring(0, 80) + " ...\n" + ex.toString();
+            _logger.fatal(_errorMsg);
+        }
+
+        // Clean up any open statements, etc.
+        cleanupWithCatch();
+        
+        return results;
+    }
+    
+    /**
+     * Get the generic AC search results data.
+     * 
+     * @param list_ results from a Search.find().
+     * @return The generic AC data
+     */
+    public Vector<SearchResults> getSearchResults(Vector<ResultsAC> list_)
+    {
+        Vector<SearchResults> results = new Vector<SearchResults>();
+        if (list_ == null || list_.size() == 0)
+            return results;
+        
+        ResultsAC obj;
+        String data = "";
+        String uall = "union all ";
+        for (int i = 0; i < list_.size(); ++i)
+        {
+            obj = list_.get(i);
+            data += "union all select " + i + " as ac_order, '" + obj._idseq + "' as ac_idseq, " + obj._desc.getMasterIndex() + " as ac_table, " + obj._score + " as score from dual ";
+        }
+        data = data.substring(uall.length());
+
+        String select = "";
+        select = "select hits.ac_table, ac.long_name, ac.preferred_name, ac.public_id, ac.version, ac.preferred_definition, c.name, nvl(rs.registration_status, ' ') "
+            + "from (" + data + ") hits, sbr.admin_components_view ac, sbr.contexts_view c, sbr.ac_registrations_view rs "
+            + "where ac.ac_idseq = hits.ac_idseq and c.conte_idseq = ac.conte_idseq and rs.ac_idseq(+) = ac.ac_idseq "
+            + "order by hits.ac_order asc";
+        
+        try
+        {
+            // Set the database id for each sub-select.
+            _pstmt = _conn.prepareStatement(select);
+            
+            // Get the display and save for later.
+            _rs = _pstmt.executeQuery();
+            while (_rs.next())
+            {
+                SearchResults display = new SearchResults(
+                                SearchAC.valueOf(_rs.getInt(1)),
+                                _rs.getString(2),
+                                _rs.getString(3),
+                                _rs.getInt(4),
+                                _rs.getString(5),
+                                _rs.getString(6),
+                                _rs.getString(7),
+                                _rs.getString(8).trim());
                 results.add(display);
             }
         }
