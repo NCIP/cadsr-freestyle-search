@@ -1,26 +1,28 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/SearchResults.java,v 1.1 2006-08-30 20:31:23 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/SearchResults.java,v 1.2 2006-08-30 20:43:58 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
 
 /**
+ * Map the search results to the generic AC attributes.
+ * 
  * @author lhebel
- *
  */
 public class SearchResults
 {
     /**
      * Constructor
-     * @param type_ 
-     * @param lname_ 
-     * @param pname_ 
-     * @param id_ 
-     * @param vers_ 
-     * @param pdef_ 
-     * @param cname_ 
-     * @param reg_ 
+     * 
+     * @param type_ the AC type
+     * @param lname_ the long name
+     * @param pname_ the preferred name
+     * @param id_ the public id
+     * @param vers_ the version
+     * @param pdef_ the preferred definition
+     * @param cname_ the context name
+     * @param reg_ the registration status
      *
      */
     public SearchResults(SearchAC type_, String lname_, String pname_, int id_, String vers_, String pdef_, String cname_, String reg_)
