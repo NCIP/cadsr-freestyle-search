@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.java,v 1.5 2006-08-15 20:42:02 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.java,v 1.6 2006-08-30 20:31:23 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.test;
@@ -10,6 +10,7 @@ import gov.nih.nci.cadsr.freestylesearch.util.Search;
 import gov.nih.nci.cadsr.freestylesearch.util.SearchAC;
 import gov.nih.nci.cadsr.freestylesearch.util.SearchMatch;
 import gov.nih.nci.cadsr.freestylesearch.util.SearchResultObject;
+import gov.nih.nci.cadsr.freestylesearch.util.SearchResults;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -111,6 +112,7 @@ public class SearchTest
         boolean outDef = false;
         boolean outAbbrev = false;
         boolean outAC = false;
+        boolean outRS = false;
         
         restrict = prop.getProperty("returns");
         if (restrict != null)
@@ -124,6 +126,7 @@ public class SearchTest
                     {
                     case 1: outAbbrev = true; break;
                     case 2: outAC = true; break;
+                    case 3: outRS = true; break;
                     case 0:
                     default: outDef = true; break;
                     }
@@ -170,6 +173,28 @@ public class SearchTest
                 for (cnt = 0; cnt < rs.size(); ++cnt)
                 {
                     _logger.info(String.valueOf(cnt + 1) + ": " + rs.get(cnt));
+                }
+                _logger.info(cnt + " matches found");
+            }
+
+            if (outRS)
+            {
+                // Perform search and get default results.
+                Vector<SearchResults> rs = var.findReturningSearchResults(phrase);
+        
+                // Output results
+                for (cnt = 0; cnt < rs.size(); ++cnt)
+                {
+                    SearchResults obj = rs.get(cnt);
+                    _logger.info(String.valueOf(cnt + 1) + ": ["
+                                    + obj.getType() + "] ["
+                                    + obj.getLongName() + "] ["
+                                    + obj.getPreferredName() + "] ["
+                                    + obj.getPublicID() + "] ["
+                                    + obj.getVersion() + "] ["
+                                    + obj.getPreferredDefinition() + "] ["
+                                    + obj.getContextName() + "] ["
+                                    + obj.getRegistrationStatus() + "]");
                 }
                 _logger.info(cnt + " matches found");
             }

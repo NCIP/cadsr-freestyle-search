@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.8 2006-08-25 15:37:54 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.9 2006-08-30 20:31:23 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -119,6 +119,19 @@ public class Search
     {
         Vector<ResultsAC> rs0 = find(phrase_);
         return findReturningResultSet(rs0);
+    }
+    
+    /**
+     * Find AC's using the phrase (terms) provided, results are in objects containing
+     * the AC name, definition, public id, etc.
+     * 
+     * @param phrase_ the terms of interest
+     * @return return the collection using SearchResults
+     */
+    public Vector<SearchResults> findReturningSearchResults(String phrase_)
+    {
+        Vector<ResultsAC> rs0 = find(phrase_);
+        return findReturningSearchResults(rs0);
     }
 
     /**
@@ -296,6 +309,34 @@ public class Search
             return var;
         }
         return new Vector<ResultsAC>();
+    }
+
+    /**
+     * Get the search results in usable form
+     * 
+     * @param list_ the search results collection from find()
+     * @return the AC search results
+     */
+    private Vector<SearchResults> findReturningSearchResults(Vector<ResultsAC> list_)
+    {
+        if (list_.size() == 0)
+            return new Vector<SearchResults>();
+
+        DBAccess dbData = new DBAccess();
+        try
+        {
+            open(dbData);
+        }
+        catch (SQLException ex)
+        {
+            _logger.fatal(ex.toString());
+            return new Vector<SearchResults>();
+        }
+
+        // Retrieve the results
+        Vector<SearchResults> rs = dbData.getSearchResults(list_);
+        dbData.close();
+        return rs;
     }
 
     /**
