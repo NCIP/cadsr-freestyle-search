@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccess.java,v 1.3 2006-08-30 20:43:58 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccess.java,v 1.4 2006-09-19 20:46:55 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.tool;
@@ -483,6 +483,10 @@ public class DBAccess
      */
     public void parseDatabase(Timestamp start_, DBAccessIndex indexTable_)
     {
+        // Clean anything we will be replacing.
+        if (start_.getTime() <= Timestamp.valueOf("2000-01-01 00:00:00.0").getTime())
+            indexTable_.truncateTables();
+
         // Loop through table descriptions and read the desired records
         // from the database.
         for (int i = 0; i < _desc.length; ++i)
@@ -495,16 +499,7 @@ public class DBAccess
             _logger.info("Doing... " + ac.getTypeName() + " " + total + " records");
 
             // Clean anything we will be replacing.
-            if (start_.getTime() < Timestamp.valueOf("2000-01-01 00:00:00.0").getTime())
-                ;
-/*
-            else if (_dbData.equals(_dbIndex))
-            {
-                _logger.info("... deleting changed records ...");
-                indexTable_.erase(ac, start_);
-            }
-*/
-            else
+            if (start_.getTime() > Timestamp.valueOf("2000-01-01 00:00:00.0").getTime())
             {
                 _logger.info("... deleting changed records ...");
                 String[] ids = eraseList(ac, alt, start_);
