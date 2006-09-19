@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccessIndex.java,v 1.2 2006-07-28 14:48:21 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccessIndex.java,v 1.3 2006-09-19 20:46:55 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.tool;
@@ -621,6 +621,45 @@ public class DBAccessIndex
     }
     
     /**
+     * Truncate the index tables in preparation for a complete reload.
+     *
+     */
+    public void truncateTables()
+    {
+        String sql;
+
+        sql = "truncate table " + _indexTable;
+        try
+        {
+            _pstmt = _conn.prepareStatement(sql);
+            _pstmt.execute();
+            _logger.info("Table truncated " + _indexTable);
+        }
+        catch (SQLException ex)
+        {
+            _errorCode = ex.getErrorCode();
+            _errorMsg = _errorCode + ": " + sql
+                + "\n" + ex.toString();
+            _logger.error(_errorMsg);
+        }
+
+        sql = "truncate table " + _compositeTable;
+        try
+        {
+            _pstmt = _conn.prepareStatement(sql);
+            _pstmt.execute();
+            _logger.info("Table truncated " + _compositeTable);
+        }
+        catch (SQLException ex)
+        {
+            _errorCode = ex.getErrorCode();
+            _errorMsg = _errorCode + ": " + sql
+                + "\n" + ex.toString();
+            _logger.error(_errorMsg);
+        }
+    }
+    
+    /**
      * Erase existing records in the freestyle index tables.
      * 
      * @param ids_ the list of database id's
@@ -631,57 +670,69 @@ public class DBAccessIndex
         if (ids_ == null || ids_.length == 0)
             return;
 
-        String inc = "";
-        for (int i = 0; i < ids_.length; ++i)
+        int pos = 0;
+        while (true)
         {
-            inc += ", '" + ids_[i] + "'";
-        }
-        inc = inc.substring(2);
-        
-        // Build the delete using a sub-select to match that used to query
-        // the database for records to load into the search index table.
-        String delete = "delete from " + _indexTable + " gst where gst.ac_idseq in (" + inc + ")";
+            if (pos == ids_.length)
+                break;
 
-        try
-        {
-            _pstmt = _conn.prepareStatement(delete);
+            String inc = "";
+            for (int i = 0; pos < ids_.length && i < 1000; ++i)
+            {
+                inc += ", '" + ids_[pos++] + "'";
+            }
+            inc = inc.substring(2);
             
-            _pstmt.execute();
+            // Build the delete using a sub-select to match that used to query
+            // the database for records to load into the search index table.
+            String delete = "delete from " + _indexTable + " where ac_idseq in (" + inc + ")";
+    
+            try
+            {
+                _pstmt = _conn.prepareStatement(delete);
+                
+                _pstmt.execute();
+                
+                int count = _pstmt.getUpdateCount();
+                _logger.info("Deleted " + count + " records from " + _indexTable);
+            }
             
-            _pstmt.close();
-        }
-        
-        // We had an unexpected problem.
-        catch (SQLException ex)
-        {
-            _errorCode = ex.getErrorCode();
-            _errorMsg = _errorCode + ": " + delete
-                + "\n" + ex.toString();
-            _logger.fatal(_errorMsg);
-        }
-        cleanupWithCatch();
-        
-        delete = "delete from " + _compositeTable + " gst where gst.ac_idseq in ( " + inc + ")";
-
-        try
-        {
-            _pstmt = _conn.prepareStatement(delete);
+            // We had an unexpected problem.
+            catch (SQLException ex)
+            {
+                _errorCode = ex.getErrorCode();
+                _errorMsg = _errorCode + ": " + delete
+                    + "\n" + ex.toString();
+                _logger.fatal(_errorMsg);
+            }
+            cleanupWithCatch();
+            commit();
             
-            _pstmt.execute();
+            delete = "delete from " + _compositeTable + " where ac_idseq in ( " + inc + ")";
+    
+            try
+            {
+                _pstmt = _conn.prepareStatement(delete);
+                
+                _pstmt.execute();
+                
+                int count = _pstmt.getUpdateCount();
+                _logger.info("Deleted " + count + " records from " + _compositeTable);
+            }
+            
+            // We had an unexpected problem.
+            catch (SQLException ex)
+            {
+                _errorCode = ex.getErrorCode();
+                _errorMsg = _errorCode + ": " + delete
+                    + "\n" + ex.toString();
+                _logger.fatal(_errorMsg);
+            }
+            
+            // Cleanup and commit changes.
+            cleanupWithCatch();
+            commit();
         }
-        
-        // We had an unexpected problem.
-        catch (SQLException ex)
-        {
-            _errorCode = ex.getErrorCode();
-            _errorMsg = _errorCode + ": " + delete
-                + "\n" + ex.toString();
-            _logger.fatal(_errorMsg);
-        }
-        
-        // Cleanup and commit changes.
-        cleanupWithCatch();
-        commit();
     }
     
     /**

@@ -1,6 +1,6 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 
-<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.xml,v 1.8 2006-08-30 20:43:58 hebell Exp $
+<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.xml,v 1.9 2006-09-19 20:46:55 hebell Exp $
        $Name: not supported by cvs2svn $
  -->
 
@@ -14,7 +14,7 @@
         <entry key="index.DSschema">sbrext</entry>
         <entry key="index.DSurl">cbiodb30.nci.nih.gov:1521:CBTEST</entry>
         -->
-        <entry key="data.DSurl">cbiodb20.nci.nih.gov:1521:CBSTG</entry>
+        <entry key="index.DSurl">cbiodb2-d.nci.nih.gov:1521:CBDEV</entry>
         <entry key="index.DSusername">guest</entry>
         <entry key="index.DSpassword">guest</entry>
         <entry key="index.DSschema">sbrext</entry>
@@ -28,7 +28,7 @@
         <entry key="data.DSpassword">search0608</entry>
         <entry key="data.DSurl">cbiodb30.nci.nih.gov:1521:CBTEST</entry>
         -->
-        <entry key="data.DSurl">cbiodb20.nci.nih.gov:1521:CBSTG</entry>
+        <entry key="data.DSurl">cbiodb2-d.nci.nih.gov:1521:CBDEV</entry>
         <entry key="data.DSusername">guest</entry>
         <entry key="data.DSpassword">guest</entry>
 
@@ -38,7 +38,7 @@
             2 = caCORE API Administered Component Objects
             3 = a Generic AC Result Set
         -->
-        <entry key="returns">1, 3</entry>
+        <entry key="returns">1</entry>
 
         <!-- Specify the match test type, 0 = exact, 1 = partial, 2 = best.
         -->
@@ -50,7 +50,7 @@
     
         <!-- Specify the maximum number of scores, e.g. 3 is the top 3 scores which may be 56, 23, 2.
         -->
-        <entry key="scores">0</entry>
+        <entry key="scores">3</entry>
     
         <!-- Specify the return types of the results. If all are desired comment out this block.
                0 = DE, 1 = DEC, 2 = VD, etc.
@@ -68,6 +68,6 @@
         <entry key="terms.2">heart</entry>
         <entry key="terms.3">congestive failure heart</entry>
         -->
-        <entry key="terms.0">person</entry>
+        <entry key="terms.0">gene</entry>
 
 </properties>
