@@ -1,10 +1,11 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccessIndex.java,v 1.3 2006-09-19 20:46:55 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccessIndex.java,v 1.4 2006-09-20 17:42:12 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.tool;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -627,28 +628,14 @@ public class DBAccessIndex
     public void truncateTables()
     {
         String sql;
-
-        sql = "truncate table " + _indexTable;
+        sql = "begin sbrext.freestyle_pkg.truncate_gs_tables; end;";
         try
         {
-            _pstmt = _conn.prepareStatement(sql);
-            _pstmt.execute();
-            _logger.info("Table truncated " + _indexTable);
-        }
-        catch (SQLException ex)
-        {
-            _errorCode = ex.getErrorCode();
-            _errorMsg = _errorCode + ": " + sql
-                + "\n" + ex.toString();
-            _logger.error(_errorMsg);
-        }
+            CallableStatement stmt = _conn.prepareCall(sql);
+            stmt.executeUpdate();
+            stmt.close();
 
-        sql = "truncate table " + _compositeTable;
-        try
-        {
-            _pstmt = _conn.prepareStatement(sql);
-            _pstmt.execute();
-            _logger.info("Table truncated " + _compositeTable);
+            _logger.info("Index Tables truncated.");
         }
         catch (SQLException ex)
         {
