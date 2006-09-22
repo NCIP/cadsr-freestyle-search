@@ -1,5 +1,5 @@
 <!-- Copyright ScenPro, Inc. 2005
-     $Header: /share/content/gforge/freestylesearch/freestylesearch/ui/jsp/freestylesearch.jsp,v 1.4 2006-07-24 14:55:21 hebell Exp $
+     $Header: /share/content/gforge/freestylesearch/freestylesearch/ui/jsp/freestylesearch.jsp,v 1.5 2006-09-22 17:41:26 hebell Exp $
      $Name: not supported by cvs2svn $
 -->
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
@@ -17,8 +17,21 @@
         <script type="text/javascript">
             function doSearch()
             {
+                if (freestyleForm.limit.value == null || freestyleForm.limit.value.length == 0 || isNaN(freestyleForm.limit.value))
+                {
+                    alert("The maximum number of possible results is not valid, please correct.");
+                    freestyleForm.limit.focus();
+                    return;
+                }
+                if (freestyleForm.score.value == null || freestyleForm.score.value.length == 0 || isNaN(freestyleForm.score.value))
+                {
+                    alert("The number of top score groups is not valid, please correct.");
+                    freestyleForm.score.focus();
+                    return;
+                }
                 workingmsg.innerHTML = "Searching, please wait...";
                 freestyleForm.search.disabled = true;
+                freestyleForm.submit();
             }
             function toggleOptions()
             {
@@ -38,10 +51,15 @@
                 if (freestyleForm.displayOptions.value == "Y")
                     toggleOptions();
             }
+            function checkEnter()
+            {
+                if (window.event.keyCode == 13)
+                    doSearch();
+            }
         </script>
     </head>
 
-<body onload="loaded();">
+<body onload="loaded();" onkeyup="checkEnter();">
               <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#A90101">
               <tr bgcolor="#A90101">
               <td valign="center" align="left"><a href="http://www.cancer.gov" target="_blank" alt="NCI Logo">
@@ -53,7 +71,7 @@
               <tr><td><a target="_blank" href="http://ncicb.nci.nih.gov/NCICB/infrastructure/cacore_overview/cadsr"><img style="border: 0px solid black" title="NCICB caDSR" src="freestyle_banner.gif"></a></td></tr>
               <tr><td align="center"><p class="ttl18"><bean:message key="search.title"/></p></td></tr>
               </table>
-    <html:form method="post" action="/search" focus="phrase" onsubmit="doSearch();">
+    <html:form method="post" action="/search" focus="phrase">
         <p>This page is provided to exercise the freestyle search engine and offer a simple search into the NCICB Cancer
         Data Standards Repository (caDSR).</p><p>Multiple terms should be separated by spaces. All searches are case insensitive. Wild card characters are not used. Select
         the <b>Options...</b> button to configure specific search features.
@@ -110,7 +128,7 @@
         </tr></table>
         <hr></div>
         <p style="text-align: center"><html:text property="phrase" styleClass="std" style="width: 5in" />&nbsp;&nbsp;
-        <html:submit property="search" styleClass="but2">Search</html:submit><br/><span id="workingmsg" style="color: #0000ff; font-weight: bold">&nbsp;</span></p><hr/>
+        <html:button property="search" styleClass="but2" onclick="doSearch();">Search</html:button><br/><span id="workingmsg" style="color: #0000ff; font-weight: bold">&nbsp;</span></p><hr/>
         <html:errors />
 <%
     Vector results = (Vector) pageContext.getRequest().getAttribute(FreestyleSearch._results);
