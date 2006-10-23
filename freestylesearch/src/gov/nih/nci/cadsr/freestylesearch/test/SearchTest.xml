@@ -1,6 +1,6 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 
-<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.xml,v 1.9 2006-09-19 20:46:55 hebell Exp $
+<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.xml,v 1.10 2006-10-23 21:29:41 hebell Exp $
        $Name: not supported by cvs2svn $
  -->
 
@@ -31,6 +31,10 @@
         <entry key="data.DSurl">cbiodb2-d.nci.nih.gov:1521:CBDEV</entry>
         <entry key="data.DSusername">guest</entry>
         <entry key="data.DSpassword">guest</entry>
+        
+        <!-- The caCORE API URL should it need to be different than that stored in the data.DSurl
+        -->
+        <entry key="core.url">http://cbiodev104.nci.nih.gov:59080/cacore32/http/remoteService</entry>
 
         <!-- Define the types of data returns:
             0 = default
@@ -38,7 +42,7 @@
             2 = caCORE API Administered Component Objects
             3 = a Generic AC Result Set
         -->
-        <entry key="returns">1</entry>
+        <entry key="returns">1, 2</entry>
 
         <!-- Specify the match test type, 0 = exact, 1 = partial, 2 = best.
         -->

@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.10 2006-08-30 20:43:58 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.11 2006-10-23 21:29:41 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -141,6 +141,9 @@ public class Search
      */
     private ApplicationService getCoreUrl()
     {
+        if (_coreApiUrl != null)
+            return ApplicationService.getRemoteInstance(_coreApiUrl);
+
         // Get the coreapi url
         DBAccess db = new DBAccess();
         try
@@ -236,7 +239,7 @@ public class Search
         }
         catch (ApplicationException ex)
         {
-            _logger.fatal(ex.toString());
+            _logger.fatal(ex.toString(), ex);
         }
 
         rsMap = null;
@@ -889,6 +892,18 @@ public class Search
         }
         return seedTime;
     }
+    
+    /**
+     * Set the caCORE API URL should the AdministeredComponent related methods be used. This is
+     * ONLY required if the value stored in the caDSR is not desired. Normally this method is not
+     * used unless testing a new pre-release of the client.jar or on the development environments.
+     * 
+     * @param url_ The caCORE URL
+     */
+    public void setCoreApiUrl(String url_)
+    {
+        _coreApiUrl = url_;
+    }
 
     private boolean _excludeWFSretired;
     private String _indexUrl;
@@ -906,6 +921,7 @@ public class Search
     private Connection _indexConn;
     private DataSource _dataDS;
     private Connection _dataConn;
+    private String _coreApiUrl;
 
     private static final Logger _logger = Logger.getLogger(Search.class.getName());
 }

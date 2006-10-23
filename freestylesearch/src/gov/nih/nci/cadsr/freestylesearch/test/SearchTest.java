@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.java,v 1.7 2006-08-30 20:43:58 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.java,v 1.8 2006-10-23 21:29:41 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.test;
@@ -85,9 +85,14 @@ public class SearchTest
         
         String schema = prop.getProperty("index.DSschema");
         Search.setSchema(schema);
+
+        String coreURL = prop.getProperty("core.url");
+        if (coreURL != null)
+            _logger.info("Using caCORE API URL: " + coreURL);
         
         // Create the search object and set configuration options
         Search var = new Search(match, limit, scores);
+        var.setCoreApiUrl(coreURL);
         var.setIndexDescription(indexUrl, indexUser, indexPswd);
         var.setDataDescription(dataUrl, dataUser, dataPswd);
         
