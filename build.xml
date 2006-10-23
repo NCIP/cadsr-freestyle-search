@@ -54,6 +54,19 @@
             </fileset>
         </copy>
         <copy todir="${olib}">
+            <fileset file="${lib}/antlr.jar"/>
+            <fileset file="${lib}/asm.jar"/>
+            <fileset file="${lib}/cacore32-client.jar"/>
+            <fileset file="${lib}/cglib-2.1.3.jar"/>
+            <fileset file="${lib}/commons-beanutils.jar"/>
+            <fileset file="${lib}/commons-collections.jar"/>
+            <fileset file="${lib}/commons-digester.jar"/>
+            <fileset file="${lib}/commons-fileupload.jar"/>
+            <fileset file="${lib}/commons-logging-1.1.jar"/>
+            <fileset file="${lib}/commons-validator.jar"/>
+            <fileset file="${lib}/hibernate3.jar"/>
+            <fileset file="${lib}/jakarta-oro.jar"/>
+            <fileset file="${lib}/spring.jar"/>
             <fileset file="${lib}/struts.jar" />
             <fileset file="${lib}/struts-config_1_0.dtd"/>
             <fileset file="${lib}/struts-config_1_1.dtd"/>
@@ -61,17 +74,7 @@
             <fileset file="${lib}/tiles-config_1_1.dtd"/>
             <fileset file="${lib}/web-app_2_2.dtd"/>
             <fileset file="${lib}/web-app_2_3.dtd"/>
-            <fileset file="${lib}/antlr.jar"/>
-            <fileset file="${lib}/commons-beanutils.jar"/>
-            <fileset file="${lib}/commons-collections.jar"/>
-            <fileset file="${lib}/commons-digester.jar"/>
-            <fileset file="${lib}/commons-fileupload.jar"/>
-            <fileset file="${lib}/commons-validator.jar"/>
-            <fileset file="${lib}/jakarta-oro.jar"/>
             <fileset file="${lib}/validator-rules.xml"/>
-            <fileset file="${lib}/client.jar"/>
-            <fileset file="${lib}/spring.jar"/>
-            <fileset file="${lib}/hibernate3.jar"/>
         </copy>
         <copy todir="${orootC6}/tool">
             <fileset file="${conf}/../common/Freestyle.properties" />
@@ -91,10 +94,10 @@
             <compilerarg line="-deprecation"/>
             <compilerarg line="-Xlint:unchecked"/>
             <classpath path="${lib}/ojdbc14.jar"/>
-            <classpath path="${lib}/log4j-1.2.8.jar"/>
+            <classpath path="${lib}/log4j-1.2.13.jar"/>
             <classpath path="${lib}/j2ee.jar"/>
             <classpath path="${lib}/struts.jar"/>
-            <classpath path="${lib}/client.jar"/>
+            <classpath path="${lib}/cacore32-client.jar"/>
         </javac>
         <delete file="${obin}/freestylesearch.jar"/>
         <cvs command="status -v" output="${oclasses}/cvsdeploy.txt"/>
