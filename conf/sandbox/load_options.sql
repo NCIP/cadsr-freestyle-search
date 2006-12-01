@@ -1,6 +1,6 @@
 /* Copyright ScenPro, Inc, 2005
 
-   $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/sandbox/load_options.sql,v 1.2 2006-11-29 17:05:59 hebell Exp $
+   $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/sandbox/load_options.sql,v 1.3 2006-12-01 00:35:09 hebell Exp $
    $Name: not supported by cvs2svn $
 
    Author: Larry Hebel
@@ -27,7 +27,7 @@ delete from sbrext.tool_options_view_ext where tool_name = 'FREESTYLE';
 */
 
 insert into sbrext.tool_options_view_ext (tool_name, property, value, ua_name, description)
-values ('FREESTYLE', 'SEED.LASTUPDATE', '1999-01-01 00:00:00.0', 'SBREXT'
+values ('FREESTYLE', 'SEED.LASTUPDATE', '1999-01-01 00:00:00.0', 'SBREXT',
 'The last execution of the seed process.');
 
 /*
