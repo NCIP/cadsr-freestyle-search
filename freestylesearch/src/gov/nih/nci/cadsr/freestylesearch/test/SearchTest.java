@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.java,v 1.9 2006-10-23 22:04:30 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.java,v 1.10 2006-12-12 15:24:53 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.test;
@@ -89,6 +89,41 @@ public class SearchTest
         String coreURL = prop.getProperty("core.url");
         if (coreURL != null)
             _logger.info("Using caCORE API URL: " + coreURL);
+        
+        // Hardcode a test for a remote call
+        Search t1;
+        t1 = new Search();
+        t1.setDataDescription("http://freestyle-dev.nci.nih.gov");
+        Vector<String> rst1 = t1.findReturningDefault("congestive heart failure");
+        // Output results
+        for (int cnt = 0; cnt < rst1.size(); ++cnt)
+        {
+            _logger.info(String.valueOf(cnt + 1) + ": " + rst1.get(cnt));
+        }
+        _logger.info(rst1.size() + " matches found");
+        
+        t1 = new Search();
+        t1.setDataDescription("http://freestyle-dev.nci.nih.gov");
+        Vector<SearchResults> rst1x = t1.findReturningSearchResults("congestive heart failure");
+        // Output results
+        for (int cnt = 0; cnt < rst1x.size(); ++cnt)
+        {
+            SearchResults rec = rst1x.get(cnt);
+            _logger.info(String.valueOf(cnt + 1) + ": " + rec.getPublicID() + " : " + rec.getVersion() + " : " + rec.getLongName());
+        }
+        _logger.info(rst1.size() + " matches found");
+        
+        // Hardcode a test for a remote call
+        t1 = new Search();
+        t1.setCoreApiUrl(coreURL);
+        t1.setDataDescription("http://freestyle-dev.nci.nih.gov");
+        Vector<AdministeredComponent> rst2 = t1.findReturningAdministeredComponent("congestive heart failure");
+        // Output results
+        for (int cnt = 0; cnt < rst2.size(); ++cnt)
+        {
+            _logger.info(String.valueOf(cnt + 1) + ": " + rst2.get(cnt).getId() + " : " + rst2.get(cnt).getLongName());
+        }
+        _logger.info(rst2.size() + " matches found");
         
         // Create the search object and set configuration options
         Search var = new Search(match, limit, scores);
