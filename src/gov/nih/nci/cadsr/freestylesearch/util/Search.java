@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.12 2006-10-23 22:04:31 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.13 2006-12-12 15:24:53 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -85,8 +85,19 @@ public class Search
      */
     public Vector<String> findReturningDefault(String phrase_)
     {
-        Vector<ResultsAC> rs0 = find(phrase_);
-        Vector<String> rs = getDefaultDisplay(rs0);
+        Vector<String> rs = new Vector<String>();
+
+        if (_serverURL == null)
+        {
+            Vector<ResultsAC> rs0 = find(phrase_);
+            rs = getDefaultDisplay(rs0);
+        }
+        else
+        {
+            SearchRequest sr = new SearchRequest(_serverURL);
+            rs = sr.findReturningDefault(this, phrase_);
+        }
+
         return rs;
     }
 
@@ -117,8 +128,15 @@ public class Search
      */
     public Vector<SearchResultObject> findReturningResultSet(String phrase_)
     {
-        Vector<ResultsAC> rs0 = find(phrase_);
-        return findReturningResultSet(rs0);
+        Vector<SearchResultObject> rs = new Vector<SearchResultObject>();
+        
+        if (_serverURL == null)
+        {
+            Vector<ResultsAC> rs0 = find(phrase_);
+            rs = findReturningResultSet(rs0);
+        }
+        
+        return rs;
     }
     
     /**
@@ -130,8 +148,20 @@ public class Search
      */
     public Vector<SearchResults> findReturningSearchResults(String phrase_)
     {
-        Vector<ResultsAC> rs0 = find(phrase_);
-        return findReturningSearchResults(rs0);
+        Vector<SearchResults> rs = new Vector<SearchResults>();
+        
+        if (_serverURL == null)
+        {
+            Vector<ResultsAC> rs0 = find(phrase_);
+            rs = findReturningSearchResults(rs0);
+        }
+        else
+        {
+            SearchRequest sr = new SearchRequest(_serverURL);
+            rs = sr.findReturningSearchResults(this, phrase_);
+        }
+        
+        return rs;
     }
 
     /**
@@ -170,52 +200,73 @@ public class Search
      */
     public Vector<SearchResultsWithAC> findReturningResultsWithAC(String phrase_)
     {
-        Vector<ResultsAC> rs0 = find(phrase_);
         Vector<SearchResultsWithAC> rs = new Vector<SearchResultsWithAC>();
         
-        Vector<SearchResultObject> rs1 = findReturningResultSet(rs0);
-        Vector<AdministeredComponent> rs2 = findReturningAdministeredComponent(rs0);
-        
-        if (rs0.size() != rs1.size() || rs0.size() != rs2.size())
+        if (_serverURL == null)
         {
-            _logger.error("Error retrieving results for method findReturningResultsWithAC [" + rs0.size() + ", " + rs1.size() + ", " + rs2.size() + "]");
-        }
-        else
-        {
-            for (int i = 0; i < rs0.size(); ++i)
+            Vector<ResultsAC> rs0 = find(phrase_);
+            
+            Vector<SearchResultObject> rs1 = findReturningResultSet(rs0);
+            Vector<AdministeredComponent> rs2 = findReturningAdministeredComponent(rs0);
+            
+            if (rs0.size() != rs1.size() || rs0.size() != rs2.size())
             {
-                SearchResultsWithAC var = new SearchResultsWithAC(rs1.get(i), rs2.get(2));
-                rs.add(var);
+                _logger.error("Error retrieving results for method findReturningResultsWithAC [" + rs0.size() + ", " + rs1.size() + ", " + rs2.size() + "]");
             }
+            else
+            {
+                for (int i = 0; i < rs0.size(); ++i)
+                {
+                    SearchResultsWithAC var = new SearchResultsWithAC(rs1.get(i), rs2.get(2));
+                    rs.add(var);
+                }
+            }
+            
+            rs0 = null;
+            rs1 = null;
+            rs2 = null;
         }
-        
-        rs0 = null;
-        rs1 = null;
-        rs2 = null;
 
         return rs;
+    }
+    
+    private Vector<AdministeredComponent> findReturningAdministeredComponent2(Vector<String> idseq_)
+    {
+        String[] idseq = new String[idseq_.size()];
+        for (int i = 0; i < idseq.length; ++i)
+            idseq[i] = idseq_.get(i);
+        
+        return findReturningAdministeredComponent(idseq);
+    }
+    
+    private Vector<AdministeredComponent> findReturningAdministeredComponent(Vector<ResultsAC> rs_)
+    {
+        String[] idseq = new String[rs_.size()];
+        for (int i = 0; i < idseq.length; ++i)
+            idseq[i] = rs_.get(i)._idseq;
+        
+        return findReturningAdministeredComponent(idseq);
     }
 
     /**
      * Create the public result set from the internal result set.
      * 
-     * @param rs_ the internal result set
+     * @param idseq_ the internal result set
      * @return the public result set
      */
-    private Vector<AdministeredComponent> findReturningAdministeredComponent(Vector<ResultsAC> rs_)
+    private Vector<AdministeredComponent> findReturningAdministeredComponent(String[] idseq_)
     {
         ApplicationService coreapi = getCoreUrl();
 
         HashMap<String, Integer> rsMap = new HashMap<String, Integer>();
         List<AdministeredComponent> acID = new ArrayList<AdministeredComponent>();
-        int cnt = 0;
-        for (ResultsAC record : rs_)
+
+        for (int cnt = 0; cnt < idseq_.length; ++cnt)
         {
             AdministeredComponent var = new AdministeredComponent();
-            var.setId(record._idseq);
+            var.setId(idseq_[cnt]);
             acID.add(var);
-            rsMap.put(record._idseq, Integer.valueOf(cnt));
-            ++cnt;
+            rsMap.put(idseq_[cnt], Integer.valueOf(cnt));
         }
         
         Vector<AdministeredComponent> rs = new Vector<AdministeredComponent>();
@@ -224,7 +275,7 @@ public class Search
         {
             @SuppressWarnings("unchecked")
             List<AdministeredComponent> acs = coreapi.search(AdministeredComponent.class, acID); 
-            if (acs.size() != rs_.size())
+            if (acs.size() != idseq_.length)
                 _logger.error("Invalid results from caCORE API.");
             else
             {
@@ -256,8 +307,21 @@ public class Search
      */
     public Vector<AdministeredComponent> findReturningAdministeredComponent(String phrase_)
     {
-        Vector<ResultsAC> rs0 = find(phrase_);
-        return findReturningAdministeredComponent(rs0);
+        Vector<AdministeredComponent> rs = new Vector<AdministeredComponent>();
+
+        if (_serverURL == null)
+        {
+            Vector<ResultsAC> rs0 = find(phrase_);
+            rs = findReturningAdministeredComponent(rs0);
+        }
+        else
+        {
+            SearchRequest sr = new SearchRequest(_serverURL);
+            Vector<String> idseq = sr.findReturningIdseq(this, phrase_);
+            rs = findReturningAdministeredComponent2(idseq);
+        }
+
+        return rs;
     }
 
     /**
@@ -592,6 +656,29 @@ public class Search
             _restrict[args[i].toInt()] = 1;
         }
 
+        restrictCheck();
+    }
+    
+    /**
+     * Reserved.
+     * 
+     * @param restrict_ reserved
+     */
+    public void restrictResultsByType(int[] restrict_)
+    {
+        if (restrict_ != null)
+            _restrict = restrict_;
+        else
+        {
+            for (int i = 0; i < _restrict.length; ++i)
+                _restrict[i] = 1;
+        }
+        
+        restrictCheck();
+    }
+    
+    private void restrictCheck()
+    {
         int total = 0;
         for (int i = 0; i < _restrict.length; ++i)
         {
@@ -904,24 +991,97 @@ public class Search
     {
         _coreApiUrl = url_;
     }
+    
+    /**
+     * Set the server URL for the data connection. When this is used all other connection information
+     * is ignored in preference for the server configuration.
+     * 
+     * @param url_ the Freestyle server, i.e. http://freestyle.nci.nih.gov
+     */
+    public void setDataDescription(String url_)
+    {
+        _serverURL = url_;
+    }
+    
+    /**
+     * Get the Exclude WFS Retired flag
+     * 
+     * @return flag value
+     */
+    public boolean getExcludeWFS()
+    {
+        return _excludeWFSretired;
+    }
+    
+    /**
+     * Get the Limit value
+     * 
+     * @return the value
+     */
+    public int getLimit()
+    {
+        return _limit;
+    }
+    
+    /**
+     * Get the Results By Score value
+     * 
+     * @return the value
+     */
+    public int getResultsByScore()
+    {
+        return _highestScores;
+    }
+    
+    /**
+     * Get the Match Flag value
+     * 
+     * @return the value
+     */
+    public SearchMatch getMatch()
+    {
+        return _matchFlag;
+    }
+    
+    /**
+     * Get the Restrict All Flag value
+     * 
+     * @return the value
+     */
+    public boolean getRestrictAll()
+    {
+        return _restrictAll;
+    }
+    
+    /**
+     * Get the Restrict list
+     * 
+     * @return the list
+     */
+    public int[] getRestrict()
+    {
+        return _restrict;
+    }
 
-    private boolean _excludeWFSretired;
     private String _indexUrl;
     private String _indexUser;
     private String _indexPswd;
-    private int _limit;
     private String _dataUrl;
     private String _dataUser;
     private String _dataPswd;
-    private int[] _restrict;
-    private boolean _restrictAll;
-    private int _highestScores;
-    private SearchMatch _matchFlag;
     private DataSource _indexDS;
     private Connection _indexConn;
     private DataSource _dataDS;
     private Connection _dataConn;
     private String _coreApiUrl;
+    private String _serverURL;
+
+    private boolean _excludeWFSretired;
+    private int _limit;
+    private int[] _restrict;
+    private boolean _restrictAll;
+    private int _highestScores;
+    private SearchMatch _matchFlag;
 
     private static final Logger _logger = Logger.getLogger(Search.class.getName());
 }
