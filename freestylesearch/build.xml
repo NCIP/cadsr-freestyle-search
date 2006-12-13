@@ -114,6 +114,70 @@
         </war>
     </target>
 
+    <target name="ospack">
+        <delete dir="ospackage"/>
+        <mkdir dir="ospackage"/>
+        <copy todir="ospackage">
+            <fileset file="build.xml"/>
+        </copy>
+        <mkdir dir="ospackage/conf"/>
+        <mkdir dir="ospackage/conf/common"/>
+        <copy todir="ospackage/conf/common">
+            <fileset dir="conf/common"/>
+        </copy>
+        <mkdir dir="ospackage/conf/web"/>
+        <copy todir="ospackage/conf/web">
+            <fileset dir="conf/web"/>
+        </copy>
+        <copy todir="ospackage/conf/web" overwrite="true">
+            <fileset dir="conf/osiweb"/>
+        </copy>
+        <mkdir dir="ospackage/conf/prod"/>
+        <copy todir="ospackage/conf/prod">
+            <fileset dir="conf/osi"/>
+        </copy>
+        <mkdir dir="ospackage/conf/stage"/>
+        <copy todir="ospackage/conf/stage">
+            <fileset dir="conf/osi"/>
+        </copy>
+        <mkdir dir="ospackage/conf/qa"/>
+        <copy todir="ospackage/conf/qa">
+            <fileset dir="conf/osi"/>
+        </copy>
+        <mkdir dir="ospackage/conf/dev"/>
+        <copy todir="ospackage/conf/dev">
+            <fileset dir="conf/osi"/>
+        </copy>
+        <mkdir dir="ospackage/conf/proto"/>
+        <copy todir="ospackage/conf/proto">
+            <fileset dir="conf/osi"/>
+        </copy>
+        <mkdir dir="ospackage/distrib"/>
+        <copy todir="ospackage/distrib">
+            <fileset dir="distrib"/>
+        </copy>
+        <delete dir="ospackage/distrib/war"/>
+        <mkdir dir="ospackage/doc"/>
+        <copy todir="ospackage/doc">
+            <fileset dir="doc"/>
+        </copy>
+        <mkdir dir="ospackage/lib"/>
+        <copy todir="ospackage/lib">
+            <fileset dir="lib"/>
+        </copy>
+        <mkdir dir="ospackage/src"/>
+        <copy todir="ospackage/src">
+            <fileset dir="src"/>
+        </copy>
+        <mkdir dir="ospackage/ui"/>
+        <copy todir="ospackage/ui">
+            <fileset dir="ui"/>
+        </copy>
+        <zip destfile="ospackage/freestylesearch_ospack.zip">
+            <zipfileset dir="ospackage"/>
+        </zip>
+    </target>
+
     <target name="build-doc">
         <mkdir dir="${temp}"/>
         <mkdir dir="${oroot}"/>
