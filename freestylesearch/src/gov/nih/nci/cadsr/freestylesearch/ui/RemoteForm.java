@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/RemoteForm.java,v 1.1 2006-12-12 15:24:53 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/RemoteForm.java,v 1.2 2007-01-25 20:24:07 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.ui;
@@ -28,6 +28,76 @@ public class RemoteForm extends ActionForm
      */
     public RemoteForm()
     {
+        _phrase = null;
+        _ewfsr = "false";
+        _limit = "5";
+        _highest = "5";
+        _match = "BEST";
+        _rall = "true";
+        _restrict = null;
+        _version = "1";
+        _xtest = "false";
+        _xtrain = "false";
+    }
+    
+    /**
+     * Get the Exclude Test Context setting
+     * 
+     * @return "true" to exclude "Test"
+     */
+    public String getXtest()
+    {
+        return _xtest;
+    }
+    
+    /**
+     * Get the Exclude Test Context setting
+     * 
+     * @return "true" to exclude "Test"
+     */
+    public boolean getXtestBool()
+    {
+        return _xtest.equals("true");
+    }
+    
+    /**
+     * Set the Exclude Test Context setting
+     * 
+     * @param val_ "true" to exclude "Test"
+     */
+    public void setXtest(String val_)
+    {
+        _xtest = val_;
+    }
+    
+    /**
+     * Get the Exclude Training Context setting
+     * 
+     * @return "true" to exclude "Training"
+     */
+    public String getXtrain()
+    {
+        return _xtrain;
+    }
+    
+    /**
+     * Get the Exclude Training Context setting
+     * 
+     * @return "true" to exclude "Training"
+     */
+    public boolean getXtrainBool()
+    {
+        return _xtrain.equals("true");
+    }
+    
+    /**
+     * Set the Exclude Training Context setting
+     * 
+     * @param val_ "true" to exclude "Training"
+     */
+    public void setXtrain(String val_)
+    {
+        _xtrain = val_;
     }
 
     /**
@@ -297,7 +367,11 @@ public class RemoteForm extends ActionForm
         sobj_.setResultsLimit(getLimitInt());
         sobj_.setMatchFlag(getMatchEnum());
         if (getEwfsrBool())
-            sobj_.restrictResultsByWorkflowNotRetired();
+            sobj_.excludeWorkflowStatusRetired(true);
+        if (getXtestBool())
+            sobj_.excludeTest(true);
+        if (getXtrainBool())
+            sobj_.excludeTraining(true);
         sobj_.restrictResultsByType(getRestrictInt());
     }
 
@@ -309,6 +383,8 @@ public class RemoteForm extends ActionForm
     private String _rall;
     private String _restrict;
     private String _version;
+    private String _xtest;
+    private String _xtrain;
 
     private static final long serialVersionUID = -3462090858792943710L;
 }

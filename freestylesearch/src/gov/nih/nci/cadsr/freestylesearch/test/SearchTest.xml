@@ -1,6 +1,6 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 
-<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.xml,v 1.12 2006-12-12 15:24:53 hebell Exp $
+<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.xml,v 1.13 2007-01-25 20:24:07 hebell Exp $
        $Name: not supported by cvs2svn $
  -->
 
@@ -32,17 +32,23 @@
         <entry key="data.DSusername">guest</entry>
         <entry key="data.DSpassword">guest</entry>
         
+        <!-- The Freestyle URL for remote testing. When this property is provided the
+                data.* and index.* properties above are ignored.
+        -->
+        <entry key="remote.url">http://freestyle-dev.nci.nih.gov</entry>
+        
         <!-- The caCORE API URL should it need to be different than that stored in the data.DSurl
         -->
-        <entry key="core.url">http://cabio-dev.nci.nih.gov/cacore32/http/remoteService</entry>
+        <entry key="core.url">http://cabio-qa.nci.nih.gov/cacore32/http/remoteService</entry>
 
         <!-- Define the types of data returns:
             0 = default
             1 = abbreviated (idseq, score, type)
             2 = caCORE API Administered Component Objects
             3 = a Generic AC Result Set
+            4 = the combination object of 1 and 2
         -->
-        <entry key="returns">1, 2</entry>
+        <entry key="returns">0</entry>
 
         <!-- Specify the match test type, 0 = exact, 1 = partial, 2 = best.
         -->
@@ -54,16 +60,24 @@
     
         <!-- Specify the maximum number of scores, e.g. 3 is the top 3 scores which may be 56, 23, 2.
         -->
-        <entry key="scores">3</entry>
+        <entry key="scores">1</entry>
     
         <!-- Specify the return types of the results. If all are desired comment out this block.
-               0 = DE, 1 = DEC, 2 = VD, etc.
-        <entry key="restricts">0, 1, 2</entry>
+               0 = DE, 1 = DEC, 2 = VD, 3 = OC, 4 = PROP, 5 = CON, 6 = CD, 7 = VM
         -->
+        <entry key="restricts">0</entry>
         
         <!-- Restrict the results to non-retired Workflow Status
         -->
-        <entry key="restrictResultsByWorkflowNotRetired">false</entry>
+        <entry key="restrictResultsByWorkflowNotRetired">true</entry>
+        
+        <!-- Remove the Test Context from the search
+        -->
+        <entry key="excludeTest">false</entry>
+        
+        <!-- Remove the Training Context from the search
+        -->
+        <entry key="excludeTraining">false</entry>
     
         <!-- Specify the terms for which to search. Start numbering with zero (0) and each set
                will run a separate search.
@@ -71,6 +85,7 @@
         <entry key="terms.1">failure congestive heart</entry>
         <entry key="terms.2">heart</entry>
         <entry key="terms.3">congestive failure heart</entry>
+        <entry key="terms.0">limb pain scale</entry>
         -->
         <entry key="terms.0">gene</entry>
 

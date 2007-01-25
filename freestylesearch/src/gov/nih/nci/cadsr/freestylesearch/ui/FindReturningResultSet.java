@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FindReturningIdseq.java,v 1.2 2007-01-25 20:24:07 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FindReturningResultSet.java,v 1.1 2007-01-25 20:24:07 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.ui;
@@ -21,21 +21,16 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 /**
- * This class supports the remote request made through the Search.findReturningAdministeredComponent() method
- * when Search.setDataDescription(URL) has been used. Unlike the other remote services this service returns
- * only the database id's of the matching records. The client then calls the caCORE API using those id's to retrieve
- * the record details.
- * 
  * @author lhebel
  *
  */
-public class FindReturningIdseq extends Action
+public class FindReturningResultSet extends Action
 {
     /**
      * Constructor
      *
      */
-    public FindReturningIdseq()
+    public FindReturningResultSet()
     {
     }
 
@@ -87,48 +82,35 @@ public class FindReturningIdseq extends Action
         try
         {
             // Give a response the caller can understand.
-            int vers = form.getVersionInt(); 
-            switch (vers)
+            if (form.getVersionInt() == 1)
             {
-                case 1:
+                try
                 {
+                    String url = var.getDsrCoreUrl();
                     response_.setStatus(HttpURLConnection.HTTP_OK);
                     PrintWriter out = response_.getWriter();
+                    
+                    out.println(SearchRequest.CACOREURL + url);
                     for (SearchResultObject line : results)
                     {
-                        out.println(line.getIdseq());
+                        out.println(SearchRequest.TYPE + line.getType());
+                        out.println(SearchRequest.IDSEQ + line.getIdseq());
+                        out.println(SearchRequest.SCORE + line.getScore());
+                        out.println(SearchRequest.RECEND);
                     }
                     out.close();
-                    break;
                 }
-                case 2:
+                catch (SearchException ex)
                 {
-                    try
-                    {
-                        String url = var.getDsrCoreUrl();
-                        response_.setStatus(HttpURLConnection.HTTP_OK);
-                        PrintWriter out = response_.getWriter();
-                        out.println(SearchRequest.CACOREURL + url);
-                        for (SearchResultObject line : results)
-                        {
-                            out.println(SearchRequest.IDSEQ + line.getIdseq());
-                        }
-                        out.close();
-                    }
-                    catch (SearchException ex)
-                    {
-                        response_.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
-                        PrintWriter out = response_.getWriter();
-                        out.println(ex.toString());
-                        out.close();
-                    }
-                    break;
+                    response_.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
+                    PrintWriter out = response_.getWriter();
+                    out.println(ex.toString());
+                    out.close();
                 }
-                default:
-                {
-                    response_.setStatus(HttpURLConnection.HTTP_NOT_IMPLEMENTED);
-                    break;
-                }
+            }
+            else
+            {
+                response_.setStatus(HttpURLConnection.HTTP_NOT_IMPLEMENTED);
             }
         }
         catch (java.io.IOException ex)
@@ -139,5 +121,5 @@ public class FindReturningIdseq extends Action
         return null;
     }
 
-    private static final Logger _logger = Logger.getLogger(FindReturningIdseq.class.getName());
+    private static final Logger _logger = Logger.getLogger(FindReturningResultSet.class.getName());
 }

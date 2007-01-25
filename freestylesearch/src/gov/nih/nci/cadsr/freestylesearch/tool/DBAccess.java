@@ -1,11 +1,12 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccess.java,v 1.4 2006-09-19 20:46:55 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccess.java,v 1.5 2007-01-25 20:24:07 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.tool;
 
 import gov.nih.nci.cadsr.freestylesearch.util.SearchAC;
+import gov.nih.nci.cadsr.freestylesearch.util.SearchException;
 import gov.nih.nci.cadsr.freestylesearch.util.SearchResults;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -69,13 +70,13 @@ public class DBAccess
      *        The  user id.
      * @param pswd_
      *        The password which must match 'user_'.
-     * @return The database error code.
+     * @exception SearchException
      */
-    public int open(String dburl_, String user_, String pswd_)
+    public void open(String dburl_, String user_, String pswd_) throws SearchException
     {
         // If we already have a connection, don't bother.
         if (_conn != null)
-            return 0;
+            return;
 
         try
         {
@@ -99,15 +100,13 @@ public class DBAccess
             _conn = ods.getConnection(user_, pswd_);
             _conn.setAutoCommit(false);
             _needCommit = false;
-            return 0;
+            return;
         }
         catch (SQLException ex)
         {
             _errorCode = ex.getErrorCode();
-            _errorMsg = _errorCode + ": "
-                + dburl_ + ", " + user_ + ", " + pswd_ + "\n" + ex.toString();
-            _logger.fatal(_errorMsg);
-            return _errorCode;
+            _errorMsg = _errorCode + ": " + dburl_ + ", " + user_ + ", " + pswd_ + "\n" + ex.toString();
+            throw new SearchException(ex);
         }
     }
     
@@ -117,24 +116,25 @@ public class DBAccess
      * 
      * @param conn_ a database connection to use.
      * 
-     * @return 0 if successful, otherwise not 0.
+     * @exception SearchException
      */
-    public int open(Connection conn_)
+    public void open(Connection conn_) throws SearchException
     {
         // Since we didn't create the connection set a flag to ensure we
         // don't close the connection.
+        _conn = conn_;
         try
         {
-            _conn = conn_;
             _conn.setAutoCommit(false);
-            _needCommit = false;
-            _connFlag = false;
-            return 0;
         }
         catch (SQLException ex)
         {
-            _logger.fatal(ex.toString());
-            return ex.getErrorCode();
+            throw new SearchException(ex);
+        }
+        finally
+        {
+            _needCommit = false;
+            _connFlag = false;
         }
     }
     
@@ -145,21 +145,22 @@ public class DBAccess
      * @param user_ the user name/account for the connection.
      * @param pswd_ the password for the account.
      * 
-     * @return 0 if successful, otherwise not 0.
+     * @exception SearchException
      */
-    public int open(DataSource ds_, String user_, String pswd_)
+    public void open(DataSource ds_, String user_, String pswd_) throws SearchException
     {
         try
         {
             _conn = ds_.getConnection(user_, pswd_);
             _conn.setAutoCommit(false);
-            _needCommit = false;
-            return 0;
         }
         catch (SQLException ex)
         {
-            _logger.fatal(ex.toString());
-            return ex.getErrorCode();
+            throw new SearchException(ex);
+        }
+        finally
+        {
+            _needCommit = false;
         }
     }
     
@@ -168,21 +169,22 @@ public class DBAccess
      * 
      * @param ds_ a datasource to provide the connection.
      * 
-     * @return 0 if successful, otherwise not 0.
+     * @exception SearchException
      */
-    public int open(DataSource ds_)
+    public void open(DataSource ds_) throws SearchException
     {
         try
         {
             _conn = ds_.getConnection();
             _conn.setAutoCommit(false);
-            _needCommit = false;
-            return 0;
         }
         catch (SQLException ex)
         {
-            _logger.fatal(ex.toString());
-            return ex.getErrorCode();
+            throw new SearchException(ex);
+        }
+        finally
+        {
+            _needCommit = false;
         }
     }
     
@@ -209,26 +211,36 @@ public class DBAccess
                 _conn = null;
             }
         }
-        catch (SQLException e)
+        catch (SQLException ex)
         {
-            _logger.fatal(e.toString());
+            _logger.error(ex.toString());
         }
     }
     
     /**
      * Clean up the open handles.
      *
-     * @throws SQLException 
+     * @throws SearchException 
      */
-    public void cleanup() throws SQLException
+    public void cleanup() throws SearchException
     {
-        if (_rs != null)
-            _rs.close();
-        if (_pstmt != null)
-            _pstmt.close();
-        
-        _rs = null;
-        _pstmt = null;
+        try
+        {
+            if (_rs != null)
+            {
+                _rs.close();
+                _rs = null;
+            }
+            if (_pstmt != null)
+            {
+                _pstmt.close();
+                _pstmt = null;
+            }
+        }
+        catch (SQLException ex)
+        {
+            throw new SearchException(ex);
+        }
     }
 
     /**
@@ -241,12 +253,17 @@ public class DBAccess
         {
             cleanup();
         }
-        catch (SQLException ex)
+        catch (SearchException ex)
         {
-            _errorCode = ex.getErrorCode();
-            _errorMsg = _errorCode + ": " 
-                + ex.toString();
-            _logger.fatal(_errorMsg);
+            if (ex.getCause() instanceof SQLException)
+            {
+                SQLException et = (SQLException) ex.getCause();
+                _errorCode = et.getErrorCode();
+            }
+            else
+                _errorCode = -1;
+            _errorMsg = _errorCode + ": " + ex.toString();
+            _logger.error(_errorMsg);
         }
     }
     
@@ -256,8 +273,9 @@ public class DBAccess
      * @param ac_ the record/table description
      * @param start_ the timestamp from which to select records
      * @return the result set from the select.
+     * @exception SearchException
      */
-    private ResultSet readTable(GenericAC ac_, ACAlternate alt_, Timestamp start_)
+    private ResultSet readTable(GenericAC ac_, ACAlternate alt_, Timestamp start_) throws SearchException
     {
         // Build the select column list.
         String[] cols = ac_.getColumns();
@@ -272,7 +290,7 @@ public class DBAccess
         
         // Add the From clause
         select = "select " + select.substring(2)
-            + ", conte.name, rs.registration_status, nvl(rv.display_order, 1000) as reg_order, nvl(wfs.display_order, 1000) as wfs_order from ("
+            + ", conte.name as " + COLOWNEDBYCONTEXT + ", rs.registration_status, nvl(rv.display_order, 1000) as reg_order, nvl(wfs.display_order, 1000) as wfs_order from ("
             + buildIDselect(ac_, alt_, start_) + ") xx, " + ac_.getTableName()
             +" zz, sbr.contexts_view conte, sbr.ac_registrations_view rs, sbr.reg_status_lov_view rv, sbr.ac_status_lov_view wfs "
             +  "where zz." + ac_.getIdseqName()
@@ -289,9 +307,9 @@ public class DBAccess
         catch (SQLException ex)
         {
             _errorCode = ex.getErrorCode();
-            _errorMsg = _errorCode + ": " + select
-                + "\n" + ex.toString();
-            _logger.fatal(_errorMsg);
+            _errorMsg = _errorCode + ": " + select + "\n" + ex.toString();
+            _logger.error(_errorMsg);
+            throw new SearchException(ex);
         }
 
         return _rs;
@@ -303,8 +321,9 @@ public class DBAccess
      * @param alt_ the record/table description
      * @param start_ the timestamp from which to select records
      * @return the result set from the select.
+     * @exception SearchException
      */
-    private ResultSet readAlternateTable(GenericAC ac_, ACAlternate alt_, Timestamp start_)
+    private ResultSet readAlternateTable(GenericAC ac_, ACAlternate alt_, Timestamp start_) throws SearchException
     {
         // Build the select column list.
         String[] cols = alt_.getColumns();
@@ -318,7 +337,7 @@ public class DBAccess
         }
         
         // Add the From clause
-        select = "select " + select.substring(2) + ", conte.name from (" + buildIDselect(ac_, alt_, start_) + ") xx, "
+        select = "select " + select.substring(2) + ", conte.name as conte_name_usedby from (" + buildIDselect(ac_, alt_, start_) + ") xx, "
             + alt_.getTableName() + " alt, sbr.contexts_view conte where alt."
             + alt_.getIdseqName() + " = xx.idseq and conte.conte_idseq = alt.conte_idseq";
 
@@ -333,9 +352,9 @@ public class DBAccess
         catch (SQLException ex)
         {
             _errorCode = ex.getErrorCode();
-            _errorMsg = _errorCode + ": " + select
-                + "\n" + ex.toString();
-            _logger.fatal(_errorMsg);
+            _errorMsg = _errorCode + ": " + select + "\n" + ex.toString();
+            _logger.error(_errorMsg);
+            throw new SearchException(ex);
         }
 
         return _rs;
@@ -346,8 +365,9 @@ public class DBAccess
      * 
      * @param list_ results from a Search.find().
      * @return The default display information.
+     * @exception SearchException
      */
-    public Vector<String> getDisplay(Vector<ResultsAC> list_)
+    public Vector<String> getDisplay(Vector<ResultsAC> list_) throws SearchException
     {
         Vector<String> results = new Vector<String>();
         if (list_ == null || list_.size() == 0)
@@ -402,11 +422,15 @@ public class DBAccess
         {
             _errorCode = ex.getErrorCode();
             _errorMsg = _errorCode + ": " + select.substring(0, 80) + " ...\n" + ex.toString();
-            _logger.fatal(_errorMsg);
+            _logger.error(_errorMsg);
+            throw new SearchException(ex);
         }
 
-        // Clean up any open statements, etc.
-        cleanupWithCatch();
+        finally
+        {
+            // Clean up any open statements, etc.
+            cleanupWithCatch();
+        }
         
         return results;
     }
@@ -416,8 +440,9 @@ public class DBAccess
      * 
      * @param list_ results from a Search.find().
      * @return The generic AC data
+     * @exception SearchException
      */
-    public Vector<SearchResults> getSearchResults(Vector<ResultsAC> list_)
+    public Vector<SearchResults> getSearchResults(Vector<ResultsAC> list_) throws SearchException
     {
         Vector<SearchResults> results = new Vector<SearchResults>();
         if (list_ == null || list_.size() == 0)
@@ -434,7 +459,7 @@ public class DBAccess
         data = data.substring(uall.length());
 
         String select = "";
-        select = "select hits.ac_table, ac.long_name, ac.preferred_name, ac.public_id, ac.version, ac.preferred_definition, c.name, nvl(rs.registration_status, ' ') "
+        select = "select hits.ac_table, ac.long_name, ac.preferred_name, ac.public_id, ac.version, ac.preferred_definition, c.name, nvl(rs.registration_status, ' '), ac.asl_name "
             + "from (" + data + ") hits, sbr.admin_components_view ac, sbr.contexts_view c, sbr.ac_registrations_view rs "
             + "where ac.ac_idseq = hits.ac_idseq and c.conte_idseq = ac.conte_idseq and rs.ac_idseq(+) = ac.ac_idseq "
             + "order by hits.ac_order asc";
@@ -456,7 +481,8 @@ public class DBAccess
                                 _rs.getString(5),
                                 _rs.getString(6),
                                 _rs.getString(7),
-                                _rs.getString(8).trim());
+                                _rs.getString(8).trim(),
+                                _rs.getString(9));
                 results.add(display);
             }
         }
@@ -466,11 +492,15 @@ public class DBAccess
         {
             _errorCode = ex.getErrorCode();
             _errorMsg = _errorCode + ": " + select.substring(0, 80) + " ...\n" + ex.toString();
-            _logger.fatal(_errorMsg);
+            _logger.error(_errorMsg);
+            throw new SearchException(ex);
         }
 
-        // Clean up any open statements, etc.
-        cleanupWithCatch();
+        finally
+        {
+            // Clean up any open statements, etc.
+            cleanupWithCatch();
+        }
         
         return results;
     }
@@ -480,8 +510,9 @@ public class DBAccess
      *
      * @param start_ the start date for records of interest.
      * @param indexTable_ The database object which holds the index table.
+     * @exception SearchException
      */
-    public void parseDatabase(Timestamp start_, DBAccessIndex indexTable_)
+    public void parseDatabase(Timestamp start_, DBAccessIndex indexTable_) throws SearchException
     {
         // Clean anything we will be replacing.
         if (start_.getTime() <= Timestamp.valueOf("2000-01-01 00:00:00.0").getTime())
@@ -512,9 +543,10 @@ public class DBAccess
             {
                 int updcnt = 0;
                 int count = 0;
+
+                // Read form the database.
                 try
                 {
-                    // Read form the database.
                     while (rs.next())
                     {
                         ++count;
@@ -526,12 +558,12 @@ public class DBAccess
                         --updcnt;
                         parseRecord(ac, rs, indexTable_);
                     }
-                    cleanup();
                 }
-                catch (SQLException e)
+                catch (SQLException ex)
                 {
-                    _logger.fatal(e.toString());
+                    throw new SearchException(ex);
                 }
+                cleanup();
             }
 
             // Read the alternate table.
@@ -543,9 +575,10 @@ public class DBAccess
             {
                 int updcnt = 0;
                 int count = 0;
+
+                // Read form the database.
                 try
                 {
-                    // Read form the database.
                     while (rs.next())
                     {
                         ++count;
@@ -557,12 +590,12 @@ public class DBAccess
                         --updcnt;
                         parseRecord(alt, rs, indexTable_);
                     }
-                    cleanup();
                 }
-                catch (SQLException e)
+                catch (SQLException ex)
                 {
-                    _logger.fatal(e.toString());
+                    throw new SearchException(ex);
                 }
+                cleanup();
             }
         }
     }
@@ -588,8 +621,9 @@ public class DBAccess
      * @param ac_ the AC of interest
      * @param start_ the comparison date
      * @return the list of ID's to be updated in the freestyle index tables
+     * @exception SearchException
      */
-    private String[] eraseList(GenericAC ac_, ACAlternate alt_, Timestamp start_)
+    private String[] eraseList(GenericAC ac_, ACAlternate alt_, Timestamp start_) throws SearchException
     {
         String[] ids = new String[0];
         
@@ -618,12 +652,15 @@ public class DBAccess
         catch (SQLException ex)
         {
             _errorCode = ex.getErrorCode();
-            _errorMsg = _errorCode + ": " + select
-                + "\n" + ex.toString();
-            _logger.fatal(_errorMsg);
+            _errorMsg = _errorCode + ": " + select + "\n" + ex.toString();
+            _logger.error(_errorMsg);
+            throw new SearchException(ex);
         }
         
-        cleanupWithCatch();
+        finally
+        {
+            cleanupWithCatch();
+        }
         
         return ids;
     }
@@ -634,8 +671,9 @@ public class DBAccess
      * @param ac_ the record/table type of interest
      * @param start_ the start date for records of interest
      * @return return the record count for the number of changes
+     * @exception SearchException
      */
-    private int updateCount(GenericAC ac_, ACAlternate alt_, Timestamp start_, boolean prime_)
+    private int updateCount(GenericAC ac_, ACAlternate alt_, Timestamp start_, boolean prime_) throws SearchException
     {
         // Build the delete using a sub-select to match that used to query
         // the database for records to load into the search index table.
@@ -658,13 +696,17 @@ public class DBAccess
         catch (SQLException ex)
         {
             _errorCode = ex.getErrorCode();
-            _errorMsg = _errorCode + ": " + select
-                + "\n" + ex.toString();
-            _logger.fatal(_errorMsg);
+            _errorMsg = _errorCode + ": " + select + "\n" + ex.toString();
+            _logger.error(_errorMsg);
+            throw new SearchException(ex);
         }
 
-        // Cleanup and commit changes.
-        cleanupWithCatch();
+        finally
+        {
+            // Cleanup and commit changes.
+            cleanupWithCatch();
+        }
+
         return count;
     }
 
@@ -675,125 +717,140 @@ public class DBAccess
      * @param rs_ the current record to process
      * @param dbWrite_ the connection to update the search index table
      * 
-     * @throws SQLException
+     * @throws SearchException
      */
-    private void parseRecord(GenericAC ac_, ResultSet rs_, DBAccessIndex dbWrite_) throws SQLException
+    private void parseRecord(GenericAC ac_, ResultSet rs_, DBAccessIndex dbWrite_) throws SearchException
     {
-        // Get the list of columns for this record/table type.
-        int type = ac_.getMasterIndex();
-        String idseq = "(none)";
-        int rsLen = rs_.getMetaData().getColumnCount();
-        String[] cols = new String[rsLen];
-        for (int i = 0; i < cols.length; ++i)
+        try
         {
-            cols[i] = rs_.getMetaData().getColumnName(i + 1).toLowerCase();
-        }
-        
-        // The results of the read will be in the same order and have the same number of columns.
-        String composite = "";
-        int wfs_order = 0;
-        int reg_order = 0;
-        for (int i = 0; i < cols.length; ++i)
-        {
-            String temp = rs_.getString(i + 1);
-            if (temp == null)
-                continue;
-            
-            // Split the column value into multiple tokens.
-            String[] tokens = DBAccessIndex.split(temp);
-            switch (ReservedColumns.valueOf(i))
+            // Get the list of columns for this record/table type.
+            int type = ac_.getMasterIndex();
+            String idseq = "(none)";
+            int rsLen = rs_.getMetaData().getColumnCount();
+            String[] cols = new String[rsLen];
+            for (int i = 0; i < cols.length; ++i)
             {
-                // This is the database id column so just remember it for all future
-                // output.
-                case IDSEQ:
-                    idseq = temp;
-                    break;
-                    
-                // This is the 'version' column so remember the original value
-                // and append a '.0' when necessary.
-                case VERSION:
-                    dbWrite_.insertTerm(type, idseq, cols[i], temp);
-                    if (tokens.length == 1)
-                    {
-                        temp = temp + ".0";
-                        dbWrite_.insertTerm(type, idseq, cols[i], temp);
-                    }
-                    break;
-                    
-                // This is the 'type' column so remember the returned value
-                // and expand to the full description of the type.
-                case TYPE:
-                    dbWrite_.insertTerm(type, idseq, cols[i], temp);
-                    tokens = ac_.getTypeName().split(" ");
-
-                    // Fall through and let the normal processing handle the expanded type name.
-
-                default:
-                    if (cols[i].equals("reg_order"))
-                    {
-                        reg_order = Integer.valueOf(temp);
-                        break;
-                    }
+                int col = i + 1;
+                cols[i] = rs_.getMetaData().getColumnName(col).toLowerCase();
+                if (cols[i].equals("name"))
+                    cols[i] = rs_.getMetaData().getColumnLabel(col).toLowerCase();
+            }
+            
+            // The results of the read will be in the same order and have the same number of columns.
+            String composite = "";
+            int wfs_order = 0;
+            int reg_order = 0;
+            for (int i = 0; i < cols.length; ++i)
+            {
+                String temp = rs_.getString(i + 1);
+                if (temp == null)
+                    continue;
                 
-                    if (cols[i].equals("wfs_order"))
-                    {
-                        wfs_order = Integer.valueOf(temp);
+                // Split the column value into multiple tokens.
+                String[] tokens = DBAccessIndex.split(temp);
+                switch (ReservedColumns.valueOf(i))
+                {
+                    // This is the database id column so just remember it for all future
+                    // output.
+                    case IDSEQ:
+                        idseq = temp;
                         break;
-                    }
-
-                // Write every token to the search index table.
-                    for (int j = 0; j < tokens.length; ++j)
-                    {
-                        // Of course the token has to be longer than 1 character, we aren't
-                        // going to save words like "I" or "A".
-                        if (tokens[j] != null && tokens[j].length() > 1)
+                        
+                    // This is the 'version' column so remember the original value
+                    // and append a '.0' when necessary.
+                    case VERSION:
+                        dbWrite_.insertTerm(type, idseq, cols[i], temp);
+                        if (tokens.length == 1)
                         {
-                            // All tokens will be saved in lower case.
-                            String lower = tokens[j].toLowerCase();
-                            
-                            // If there is only one token, then save it, if there are
-                            // multiple tokens then qualify the word using an exclude
-                            // list.
-                            if (tokens.length > 1 && dbWrite_.checkExcludes(lower))
-                                continue;
-                            
-                            // Write the token.
-                            dbWrite_.insertTerm(type, idseq, cols[i], lower);
-                            
-                            // Some words are different because they are hyphenated or
-                            // combinations. Now that we've saved the original we need
-                            // to save the individual pieces of a compound word.
-                            String[] tokens2 = lower.split("[-/]");
-                            if (tokens2.length > 1)
+                            temp = temp + ".0";
+                            dbWrite_.insertTerm(type, idseq, cols[i], temp);
+                        }
+                        break;
+                        
+                    // This is the 'type' column so remember the returned value
+                    // and expand to the full description of the type.
+                    case TYPE:
+                        dbWrite_.insertTerm(type, idseq, cols[i], temp);
+                        tokens = ac_.getTypeName().split(" ");
+    
+                        // Fall through and let the normal processing handle the expanded type name.
+    
+                    default:
+                        if (cols[i].equals("reg_order"))
+                        {
+                            reg_order = Integer.valueOf(temp);
+                            break;
+                        }
+                    
+                        if (cols[i].equals("wfs_order"))
+                        {
+                            wfs_order = Integer.valueOf(temp);
+                            break;
+                        }
+                        
+                        if (cols[i].equals("asl_name"))
+                        {
+                            dbWrite_.insertTerm(type, idseq, "rawWorkflowStatus", temp);
+                        }
+    
+                    // Write every token to the search index table.
+                        for (int j = 0; j < tokens.length; ++j)
+                        {
+                            // Of course the token has to be longer than 1 character, we aren't
+                            // going to save words like "I" or "A".
+                            if (tokens[j] != null && tokens[j].length() > 1)
                             {
-                                for (int k = 0; k < tokens2.length; ++k)
+                                // All tokens will be saved in lower case.
+                                String lower = tokens[j].toLowerCase();
+                                
+                                // If there is only one token, then save it, if there are
+                                // multiple tokens then qualify the word using an exclude
+                                // list.
+                                if (tokens.length > 1 && dbWrite_.checkExcludes(lower))
+                                    continue;
+                                
+                                // Write the token.
+                                dbWrite_.insertTerm(type, idseq, cols[i], lower);
+                                
+                                // Some words are different because they are hyphenated or
+                                // combinations. Now that we've saved the original we need
+                                // to save the individual pieces of a compound word.
+                                String[] tokens2 = lower.split("[-/]");
+                                if (tokens2.length > 1)
                                 {
-                                    // Because this is a compound word we save all parts
-                                    // and do not worry about the excluded words list.
-                                    if (tokens2[k] != null && tokens2[k].length() > 0)
+                                    for (int k = 0; k < tokens2.length; ++k)
                                     {
-                                        dbWrite_.insertTerm(type, idseq, cols[i], tokens2[k]);
-                                        composite += " " + tokens2[k];
+                                        // Because this is a compound word we save all parts
+                                        // and do not worry about the excluded words list.
+                                        if (tokens2[k] != null && tokens2[k].length() > 0)
+                                        {
+                                            dbWrite_.insertTerm(type, idseq, cols[i], tokens2[k]);
+                                            composite += " " + tokens2[k];
+                                        }
                                     }
                                 }
-                            }
-                            else
-                            {
-                                composite += " " + lower;
+                                else
+                                {
+                                    composite += " " + lower;
+                                }
                             }
                         }
-                    }
-                    break;
+                        break;
+                }
             }
+            dbWrite_.cleanupWithCatch();
+            
+            // Add the composite string.
+            if (composite.length() > 0)
+                dbWrite_.insertComposite(type, idseq, composite + " ", reg_order, wfs_order);
+    
+            // Cleanup and stuff.
+            dbWrite_.commit();
         }
-        dbWrite_.cleanupWithCatch();
-        
-        // Add the composite string.
-        if (composite.length() > 0)
-            dbWrite_.insertComposite(type, idseq, composite + " ", reg_order, wfs_order);
-
-        // Cleanup and stuff.
-        dbWrite_.commit();
+        catch (SQLException ex)
+        {
+            throw new SearchException(ex);
+        }
     }
     
     /**
@@ -816,8 +873,9 @@ public class DBAccess
      * Get the last seed operation timestamp.
      * 
      * @return the last seed operation timestamp.
+     * @exception SearchException
      */
-    public Timestamp getLastSeedTimestamp()
+    public Timestamp getLastSeedTimestamp() throws SearchException
     {
         String schema = DBAccessIndex._schema.toUpperCase();
         String select = "select value from sbrext.tool_options_view_ext where tool_name = 'FREESTYLE' and property = 'SEED.LASTUPDATE' and ua_name = '" + schema + "'";
@@ -835,13 +893,17 @@ public class DBAccess
         catch (SQLException ex)
         {
             _errorCode = ex.getErrorCode();
-            _errorMsg = _errorCode + ": " + select
-                + "\n" + ex.toString();
-            _logger.fatal(_errorMsg);
+            _errorMsg = _errorCode + ": " + select + "\n" + ex.toString();
+            _logger.error(_errorMsg);
+            throw new SearchException(ex);
         }
 
-        // Cleanup and commit changes.
-        cleanupWithCatch();
+        finally
+        {
+            // Cleanup and commit changes.
+            cleanupWithCatch();
+        }
+
         return rc;
     }
     
@@ -849,9 +911,9 @@ public class DBAccess
      * Set the last seed operation timestamp.
      * 
      * @param millis_ the time in milliseconds. 
-     * 
+     * @exception SearchException
      */
-    public void setLastSeedTimestamp(long millis_)
+    public void setLastSeedTimestamp(long millis_) throws SearchException
     {
         // Round back to the last second - make the milliseconds fraction a zero (.0).
         Timestamp ts = new Timestamp((millis_ / 1000) * 1000);
@@ -884,21 +946,25 @@ public class DBAccess
         catch (SQLException ex)
         {
             _errorCode = ex.getErrorCode();
-            _errorMsg = _errorCode + ": " + update
-                + "\n" + ex.toString();
-            _logger.fatal(_errorMsg);
+            _errorMsg = _errorCode + ": " + update + "\n" + ex.toString();
+            _logger.error(_errorMsg);
+            throw new SearchException(ex);
         }
 
-        // Cleanup and commit changes.
-        cleanupWithCatch();
+        finally
+        {
+            // Cleanup and commit changes.
+            cleanupWithCatch();
+        }
     }
     
     /**
      * Get the URL to access the caCORE API.
      * 
      * @return the URL.
+     * @exception SearchException
      */
-    public String getCoreUrl()
+    public String getCoreUrl() throws SearchException
     {
         String select = "select value from sbrext.tool_options_view_ext where tool_name = 'EVS' and property = 'URL'";
         String url = null;
@@ -915,13 +981,17 @@ public class DBAccess
         catch (SQLException ex)
         {
             _errorCode = ex.getErrorCode();
-            _errorMsg = _errorCode + ": " + select
-                + "\n" + ex.toString();
-            _logger.fatal(_errorMsg);
+            _errorMsg = _errorCode + ": " + select + "\n" + ex.toString();
+            _logger.error(_errorMsg);
+            throw new SearchException(ex);
         }
 
-        // Cleanup and commit changes.
-        cleanupWithCatch();
+        finally
+        {
+            // Cleanup and commit changes.
+            cleanupWithCatch();
+        }
+
         return url;
     }
 
@@ -935,8 +1005,14 @@ public class DBAccess
         new ACObjectClass(SearchAC.OC.toInt()),
         new ACProperty(SearchAC.PROP.toInt()),
         new ACConcepts(SearchAC.CON.toInt()),
-        new ACConceptualDomain(SearchAC.CD.toInt())
+        new ACConceptualDomain(SearchAC.CD.toInt()),
+        new ACValueMeaning(SearchAC.VM.toInt())
     };
+
+    /**
+     * This is the reserved ac_col value for an Owned By Context Name.
+     */
+    public static final String COLOWNEDBYCONTEXT = "conte_name_ownedby";
     
     private boolean _needCommit;
     private int _errorCode;

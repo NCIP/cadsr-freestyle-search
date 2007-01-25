@@ -1,6 +1,6 @@
 /* Copyright ScenPro, Inc, 2005
 
-   $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/prod/load_options.sql,v 1.2 2006-12-01 00:35:09 hebell Exp $
+   $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/prod/load_options.sql,v 1.3 2007-01-25 20:24:04 hebell Exp $
    $Name: not supported by cvs2svn $
 
    Author: Larry Hebel
@@ -37,6 +37,35 @@ values ('FREESTYLE', 'SEED.LASTUPDATE', '1999-01-01 00:00:00.0', 'SBREXT',
 insert into sbrext.tool_options_view_ext (tool_name, property, value, description)
 values ('FREESTYLE', 'URL', 'http://freestyle.nci.nih.gov',
 'The URL to the Freestyle Search Engine browser interface.');
+
+/*
+    Define the retired WFS values.
+*/
+insert into sbrext.tool_options_view_ext (tool_name, property, value, description) values ('FREESTYLE', 'RETIRED.WFS.1', 'CMTE APPROVED', 'Workflow Status considered RETIRED by Search');
+insert into sbrext.tool_options_view_ext (tool_name, property, value, description) values ('FREESTYLE', 'RETIRED.WFS.2', 'CMTE SUBMTD', 'Workflow Status considered RETIRED by Search');
+insert into sbrext.tool_options_view_ext (tool_name, property, value, description) values ('FREESTYLE', 'RETIRED.WFS.3', 'CMTE SUBMTD USED', 'Workflow Status considered RETIRED by Search');
+insert into sbrext.tool_options_view_ext (tool_name, property, value, description) values ('FREESTYLE', 'RETIRED.WFS.4', 'RETIRED ARCHIVED', 'Workflow Status considered RETIRED by Search');
+insert into sbrext.tool_options_view_ext (tool_name, property, value, description) values ('FREESTYLE', 'RETIRED.WFS.5', 'RETIRED PHASED OUT', 'Workflow Status considered RETIRED by Search');
+insert into sbrext.tool_options_view_ext (tool_name, property, value, description) values ('FREESTYLE', 'RETIRED.WFS.6', 'RETIRED WITHDRAWN', 'Workflow Status considered RETIRED by Search');
+insert into sbrext.tool_options_view_ext (tool_name, property, value, description) values ('FREESTYLE', 'RETIRED.WFS.7', 'RETIRED DELETED', 'Workflow Status considered RETIRED by Search');
+
+/*
+    Be sure the LOV table is up to date and correct.
+*/
+merge into sbrext.gs_tables_lov s
+using (
+      select 0 as ac_table, 'Data Element' as name, 'de' as abbrev from dual
+union select 1 as ac_table, 'Data Element Concept' as name, 'dec' as abbrev from dual
+union select 2 as ac_table, 'Value Domain' as name, 'vd' as abbrev from dual
+union select 3 as ac_table, 'Object Class' as name, 'oc' as abbrev from dual
+union select 4 as ac_table, 'Property' as name, 'prop' as abbrev from dual
+union select 5 as ac_table, 'Concept' as name, 'con' as abbrev from dual
+union select 6 as ac_table, 'Conceptual Domain' as name, 'cd' as abbrev from dual
+union select 7 as ac_table, 'Value Meaning' as name, 'vm' as abbrev from dual
+) t
+on (s.ac_table = t.ac_table)
+when matched then update set s.name = t.name, s.abbrev = t.abbrev
+when not matched then insert (ac_table, name, abbrev) values (t.ac_table, t.name, t.abbrev);
 
 /*
    Commit Settings.

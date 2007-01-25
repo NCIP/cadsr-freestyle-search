@@ -1,0 +1,28 @@
+<!-- This is an incomplete log4j.xml file. It contains only the example appender and category
+       needed for Freestyle within the JBoss container.
+       
+       $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/common/jboss_log4j.xml,v 1.1 2007-01-25 20:24:04 hebell Exp $
+       $Name: not supported by cvs2svn $
+-->
+
+<!-- ============================ -->
+<!-- Setup the freestyle Appender -->
+<!-- ============================ -->
+<appender name="FREESTYLESEARCH_FILE" class="org.jboss.logging.appender.RollingFileAppender">
+  <errorHandler class="org.jboss.logging.util.OnlyOnceErrorHandler"/>
+  <param name="File" value="/local/content/cadsrsentinel/reports/freestylesearch_log.txt"/>
+  <param name="Append" value="true"/>
+  <param name="MaxFileSize" value="200KB"/>
+  <param name="MaxBackupIndex" value="3"/>
+  <layout class="org.apache.log4j.PatternLayout">
+    <param name="ConversionPattern" value="%d %-5p [%c : %L] %m%n"/>
+  </layout>
+</appender>
+ 
+<!-- ============================ -->
+<!-- Setup the freestyle category debug-->
+<!-- ============================ -->
+<category name="gov.nih.nci.cadsr.freestylesearch" additivity="false">
+  <priority value="DEBUG"/>
+  <appender-ref ref="FREESTYLESEARCH_FILE"/>
+</category>

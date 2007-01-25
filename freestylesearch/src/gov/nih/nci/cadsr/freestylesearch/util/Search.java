@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.13 2006-12-12 15:24:53 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.14 2007-01-25 20:24:07 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -10,10 +10,10 @@ import gov.nih.nci.cadsr.freestylesearch.tool.DBAccess;
 import gov.nih.nci.cadsr.freestylesearch.tool.DBAccessIndex;
 import gov.nih.nci.cadsr.freestylesearch.tool.GenericAC;
 import gov.nih.nci.cadsr.freestylesearch.tool.ResultsAC;
+import gov.nih.nci.cadsr.freestylesearch.tool.SearchRequest;
 import gov.nih.nci.system.applicationservice.ApplicationException;
 import gov.nih.nci.system.applicationservice.ApplicationService;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +36,18 @@ import org.apache.log4j.Logger;
  */
 public class Search
 {
+    private static final String _vers ="3.2.0.1.20061221"; 
+    
+    /**
+     * Return the version marker for the freestylesearch.jar
+     * 
+     * @return the version marker
+     */
+    public static String getVersion()
+    {
+        return _vers;
+    }
+
     /**
      * Constructor using programmed defaults.
      *
@@ -82,8 +94,9 @@ public class Search
      * 
      * @param phrase_ the terms of interest
      * @return return the default display results as ASCII text
+     * @exception SearchException
      */
-    public Vector<String> findReturningDefault(String phrase_)
+    public Vector<String> findReturningDefault(String phrase_) throws SearchException
     {
         Vector<String> rs = new Vector<String>();
 
@@ -125,8 +138,9 @@ public class Search
      * 
      * @param phrase_ the terms of interest
      * @return return the collection using SearchResultObject.
+     * @exception SearchException
      */
-    public Vector<SearchResultObject> findReturningResultSet(String phrase_)
+    public Vector<SearchResultObject> findReturningResultSet(String phrase_) throws SearchException
     {
         Vector<SearchResultObject> rs = new Vector<SearchResultObject>();
         
@@ -134,6 +148,11 @@ public class Search
         {
             Vector<ResultsAC> rs0 = find(phrase_);
             rs = findReturningResultSet(rs0);
+        }
+        else
+        {
+            SearchRequest sr = new SearchRequest(_serverURL);
+            rs = sr.findReturningResultSet(this, phrase_);
         }
         
         return rs;
@@ -145,8 +164,9 @@ public class Search
      * 
      * @param phrase_ the terms of interest
      * @return return the collection using SearchResults
+     * @exception SearchException
      */
-    public Vector<SearchResults> findReturningSearchResults(String phrase_)
+    public Vector<SearchResults> findReturningSearchResults(String phrase_) throws SearchException
     {
         Vector<SearchResults> rs = new Vector<SearchResults>();
         
@@ -168,27 +188,38 @@ public class Search
      * Get the ApplicationService for the caCORE API
      * 
      * @return the ApplicationService
+     * @exception SearchException
      */
-    private ApplicationService getCoreUrl()
+    private ApplicationService getCoreUrl() throws SearchException
     {
         if (_coreApiUrl != null)
             return ApplicationService.getRemoteInstance(_coreApiUrl);
 
-        // Get the coreapi url
-        DBAccess db = new DBAccess();
-        try
-        {
-            open(db);
-        }
-        catch (SQLException ex)
-        {
-            _logger.fatal(ex.toString());
-            return null;
-        }
-        String url = db.getCoreUrl();
-        db.close();
-
+        String url = getDsrCoreUrl();
+        
         return ApplicationService.getRemoteInstance(url);
+    }
+
+    /**
+     * Get the caCORE url registered in the caDSR. Can not be used when the setDataDescription(URL) has been used.
+     * 
+     * @return the caCORE url
+     * @exception SearchException
+     */
+    public String getDsrCoreUrl() throws SearchException
+    {
+        String url = null;
+
+        if (_serverURL == null)
+        {
+            // Get the coreapi url
+            DBAccess db = new DBAccess();
+            open(db);
+            url = db.getCoreUrl();
+            db.close();
+        }
+        
+        return url;
     }
 
     /**
@@ -197,40 +228,64 @@ public class Search
      * 
      * @param phrase_ the terms of interest
      * @return return the collection using SearchResultsWithAC.
+     * @exception SearchException
      */
-    public Vector<SearchResultsWithAC> findReturningResultsWithAC(String phrase_)
+    public Vector<SearchResultsWithAC> findReturningResultsWithAC(String phrase_) throws SearchException
     {
         Vector<SearchResultsWithAC> rs = new Vector<SearchResultsWithAC>();
+        Vector<SearchResultObject> rs1 = null;
+        Vector<AdministeredComponent> rs2 = null;
         
         if (_serverURL == null)
         {
             Vector<ResultsAC> rs0 = find(phrase_);
             
-            Vector<SearchResultObject> rs1 = findReturningResultSet(rs0);
-            Vector<AdministeredComponent> rs2 = findReturningAdministeredComponent(rs0);
+            rs1 = findReturningResultSet(rs0);
+            rs2 = findReturningAdministeredComponent(rs0);
             
             if (rs0.size() != rs1.size() || rs0.size() != rs2.size())
             {
                 _logger.error("Error retrieving results for method findReturningResultsWithAC [" + rs0.size() + ", " + rs1.size() + ", " + rs2.size() + "]");
-            }
-            else
-            {
-                for (int i = 0; i < rs0.size(); ++i)
-                {
-                    SearchResultsWithAC var = new SearchResultsWithAC(rs1.get(i), rs2.get(2));
-                    rs.add(var);
-                }
+                rs1 = new Vector<SearchResultObject>();
             }
             
             rs0 = null;
-            rs1 = null;
-            rs2 = null;
+        }
+        else
+        {
+            SearchRequest sr = new SearchRequest(_serverURL);
+            rs1 = sr.findReturningResultSet(this, phrase_);
+            setCoreApiUrl(sr.getCaCoreUrl());
+
+            String[] idseq = new String[rs1.size()];
+            for (int i = 0; i < idseq.length; ++i)
+            {
+                idseq[i] = rs1.get(i).getIdseq();
+            }
+            rs2 = findReturningAdministeredComponent(idseq);
+
+            if (rs1.size() != rs2.size())
+            {
+                _logger.error("Error retrieving results for method findReturningResultsWithAC [" + rs1.size() + ", " + rs2.size() + "]");
+                rs1 = new Vector<SearchResultObject>();
+            }
+            
+            idseq = null;
         }
 
+        for (int i = 0; i < rs1.size(); ++i)
+        {
+            SearchResultsWithAC var = new SearchResultsWithAC(rs1.get(i), rs2.get(2));
+            rs.add(var);
+        }
+        
+        rs1 = null;
+        rs2 = null;
+        
         return rs;
     }
     
-    private Vector<AdministeredComponent> findReturningAdministeredComponent2(Vector<String> idseq_)
+    private Vector<AdministeredComponent> findReturningAdministeredComponent2(Vector<String> idseq_) throws SearchException
     {
         String[] idseq = new String[idseq_.size()];
         for (int i = 0; i < idseq.length; ++i)
@@ -239,7 +294,7 @@ public class Search
         return findReturningAdministeredComponent(idseq);
     }
     
-    private Vector<AdministeredComponent> findReturningAdministeredComponent(Vector<ResultsAC> rs_)
+    private Vector<AdministeredComponent> findReturningAdministeredComponent(Vector<ResultsAC> rs_) throws SearchException
     {
         String[] idseq = new String[rs_.size()];
         for (int i = 0; i < idseq.length; ++i)
@@ -254,7 +309,7 @@ public class Search
      * @param idseq_ the internal result set
      * @return the public result set
      */
-    private Vector<AdministeredComponent> findReturningAdministeredComponent(String[] idseq_)
+    private Vector<AdministeredComponent> findReturningAdministeredComponent(String[] idseq_) throws SearchException
     {
         ApplicationService coreapi = getCoreUrl();
 
@@ -290,7 +345,8 @@ public class Search
         }
         catch (ApplicationException ex)
         {
-            _logger.fatal(ex.toString(), ex);
+            _logger.error(ex.toString(), ex);
+            throw new SearchException(ex.toString());
         }
 
         rsMap = null;
@@ -304,8 +360,9 @@ public class Search
      * 
      * @param phrase_ the terms of interest
      * @return return the collection using the base interface AdministeredComponent.
+     * @exception SearchException
      */
-    public Vector<AdministeredComponent> findReturningAdministeredComponent(String phrase_)
+    public Vector<AdministeredComponent> findReturningAdministeredComponent(String phrase_) throws SearchException
     {
         Vector<AdministeredComponent> rs = new Vector<AdministeredComponent>();
 
@@ -318,6 +375,7 @@ public class Search
         {
             SearchRequest sr = new SearchRequest(_serverURL);
             Vector<String> idseq = sr.findReturningIdseq(this, phrase_);
+            setCoreApiUrl(sr.getCaCoreUrl());
             rs = findReturningAdministeredComponent2(idseq);
         }
 
@@ -330,8 +388,9 @@ public class Search
      * @param phrase_ the terms of interest
      * 
      * @return the internal results object collection.
+     * @exception SearchException
      */
-    private Vector<ResultsAC> find(String phrase_)
+    private Vector<ResultsAC> find(String phrase_) throws SearchException
     {
         _logger.debug("match: " + _matchFlag + " limit: " + _limit + " score: " + _highestScores);
         _logger.debug(phrase_);
@@ -343,21 +402,22 @@ public class Search
         dbIndex.setLimit(_limit);
         dbIndex.restrictResultsByScore(_highestScores);
         dbIndex.excludeWorkflowStatusRetired(_excludeWFSretired);
+        if (_excludeTest == false && _excludeTraining == false)
+            dbIndex.setExcludeContextNames();
+        else
+        {
+            if (_excludeTest)
+                dbIndex.setExcludeContextNames("Test");
+            if (_excludeTraining)
+                dbIndex.setExcludeContextNames("Training");
+        }
 
         // Pre-qualify the phrase.
         String phrase = DBAccessIndex.replaceAll(phrase_);
         phrase = phrase.trim();
         if (phrase != null && phrase.length() > 0)
         {
-            try
-            {
-                open(dbIndex);
-            }
-            catch (SQLException ex)
-            {
-                _logger.fatal(ex.toString());
-                return new Vector<ResultsAC>();
-            }
+            open(dbIndex);
 
             // We do a case sensitive search on a lower case string
             // which has the effect of a case insensitive search without
@@ -383,22 +443,15 @@ public class Search
      * 
      * @param list_ the search results collection from find()
      * @return the AC search results
+     * @exception SearchException
      */
-    private Vector<SearchResults> findReturningSearchResults(Vector<ResultsAC> list_)
+    private Vector<SearchResults> findReturningSearchResults(Vector<ResultsAC> list_) throws SearchException
     {
         if (list_.size() == 0)
             return new Vector<SearchResults>();
 
         DBAccess dbData = new DBAccess();
-        try
-        {
-            open(dbData);
-        }
-        catch (SQLException ex)
-        {
-            _logger.fatal(ex.toString());
-            return new Vector<SearchResults>();
-        }
+        open(dbData);
 
         // Retrieve the results
         Vector<SearchResults> rs = dbData.getSearchResults(list_);
@@ -411,22 +464,15 @@ public class Search
      * 
      * @param list_ the search results collection from find()
      * @return the AC default display in ASCII format.
+     * @exception SearchException
      */
-    private Vector<String> getDefaultDisplay(Vector<ResultsAC> list_)
+    private Vector<String> getDefaultDisplay(Vector<ResultsAC> list_) throws SearchException
     {
         if (list_.size() == 0)
             return new Vector<String>();
 
         DBAccess dbData = new DBAccess();
-        try
-        {
-            open(dbData);
-        }
-        catch (SQLException ex)
-        {
-            _logger.fatal(ex.toString());
-            return new Vector<String>();
-        }
+        open(dbData);
 
         // Retrieve the displayable results for the user.
         Vector<String> rs = dbData.getDisplay(list_);
@@ -440,9 +486,9 @@ public class Search
      * target caDSR database.
      * 
      * @param indexDB_ the access object to the freestyle index tables
-     * @throws SQLException
+     * @throws SearchException
      */
-    private void open(DBAccessIndex indexDB_) throws SQLException
+    private void open(DBAccessIndex indexDB_) throws SearchException
     {
         if (indexDB_ != null)
         {
@@ -450,21 +496,23 @@ public class Search
             {
                 if (_indexUser == null)
                 {
-                    if (indexDB_.open(_indexDS) != 0)
-                        throw new SQLException("Failed to open connection from DataSource.", "Failed", -101);
+                    indexDB_.open(_indexDS);
                 }
-                else if (indexDB_.open(_indexDS, _indexUser, _indexPswd) != 0)
-                    throw new SQLException("Failed to open connection from DataSource.", "Failed", -101);
+                else
+                {
+                    indexDB_.open(_indexDS, _indexUser, _indexPswd);
+                }
             }
 
             else if (_indexConn != null)
             {
-                if (indexDB_.open(_indexConn) != 0)
-                    throw new SQLException("Failed to use supplied Connection.", "Failed", -102);
+                indexDB_.open(_indexConn);
             }
 
-            else if (indexDB_.open(_indexUrl, _indexUser, _indexPswd) != 0)
-                throw new SQLException("Failed to open connection to index.", "Failed", -103);
+            else
+            {
+                indexDB_.open(_indexUrl, _indexUser, _indexPswd);
+            }
         }
     }
 
@@ -474,9 +522,9 @@ public class Search
      * target caDSR database.
      * 
      * @param dataDB_ the access object to the caDSR target data
-     * @throws SQLException
+     * @throws SearchException
      */
-    private void open(DBAccess dataDB_) throws SQLException
+    private void open(DBAccess dataDB_) throws SearchException
     {
         if (dataDB_ != null)
         {
@@ -484,21 +532,23 @@ public class Search
             {
                 if (_dataUser == null)
                 {
-                    if (dataDB_.open(_dataDS) != 0)
-                        throw new SQLException("Failed to open connection from DataSource.", "Failed", -201);
+                    dataDB_.open(_dataDS);
                 }
-                else if (dataDB_.open(_dataDS, _dataUser, _dataPswd) != 0)
-                    throw new SQLException("Failed to open connection from DataSource.", "Failed", -201);
+                else
+                {
+                    dataDB_.open(_dataDS, _dataUser, _dataPswd);
+                }
             }
 
             else if (_dataConn != null)
             {
-                if (dataDB_.open(_dataConn) != 0)
-                    throw new SQLException("Failed to use supplied Connection.", "Failed", -202);
+                dataDB_.open(_dataConn);
             }
 
-            else if (dataDB_.open(_dataUrl, _dataUser, _dataPswd) != 0)
-                throw new SQLException("Failed to open connection to caDSR.", "Failed", -203);
+            else
+            {
+                dataDB_.open(_dataUrl, _dataUser, _dataPswd);
+            }
         }
     }
 
@@ -508,8 +558,9 @@ public class Search
      * @param dbIndex_ the index tables access object
      * @param phrase_ the terms of interest
      * @return the collection of successful matches in descending order by score
+     * @exception SearchException
      */
-    private Vector<ResultsAC> doMatchExact(DBAccessIndex dbIndex_, String phrase_)
+    private Vector<ResultsAC> doMatchExact(DBAccessIndex dbIndex_, String phrase_) throws SearchException
     {
         // Remove words we don't keep.
         String[] terms = phrase_.split(" ");
@@ -550,8 +601,9 @@ public class Search
      * @param dbIndex_ the index tables access object
      * @param phrase_ the terms of interest
      * @return the collection of successful matches in descending order by score
+     * @exception SearchException
      */
-    private Vector<ResultsAC> doMatchPartial(DBAccessIndex dbIndex_, String phrase_)
+    private Vector<ResultsAC> doMatchPartial(DBAccessIndex dbIndex_, String phrase_) throws SearchException
     {
         // The SQL is optomized to filter by type when not including all possible
         // AC's. Excluded words are not removed as they may appear as part of
@@ -575,8 +627,9 @@ public class Search
      * @param dbIndex_ the index tables access object
      * @param phrase_ the terms of interest
      * @return the collection of successful matches in descending order by score
+     * @exception SearchException
      */
-    private Vector<ResultsAC> doMatchBest(DBAccessIndex dbIndex_, String phrase_)
+    private Vector<ResultsAC> doMatchBest(DBAccessIndex dbIndex_, String phrase_) throws SearchException
     {
         // Remove words we don't keep.
         String[] terms = phrase_.split(" ");
@@ -722,21 +775,21 @@ public class Search
     }
 
     /**
-     * Restrict the results to those with Workflow Status not "retired".
+     * @deprecated Use excludeWorkflowStatus(true)
      * 
      */
     public void restrictResultsByWorkflowNotRetired()
     {
-        _excludeWFSretired = true;
+        excludeWorkflowStatusRetired(true);
     }
 
     /**
-     * Clear the Workflow Status restriction. All are returned in the results.
+     * @deprecated Use excludeWorkflowStatus(false)
      * 
      */
     public void resetResultsByWorkflowNotRetired()
     {
-        _excludeWFSretired = false;
+        excludeWorkflowStatusRetired(false);
     }
 
     /**
@@ -933,28 +986,24 @@ public class Search
      * parsing method.
      * 
      * @return the timestamp as a string
+     * @exception SearchException
      */
-    public String getLastSeedTimestampString()
+    public String getLastSeedTimestampString() throws SearchException
     {
         DBAccess db = new DBAccess();
         String seedTime = null;
-        try
+
+        open(db);
+        Timestamp ts = db.getLastSeedTimestamp();
+        if (ts == null)
         {
-            open(db);
-            Timestamp ts = db.getLastSeedTimestamp();
-            if (ts == null)
-            {
-                seedTime = "";
-                _logger.fatal("Can not retrieve the Index Table timestamp - installation incomplete or in error.");
-            }
-            else
-                seedTime = ts.toString() + " (yyyy-mm-dd hh:mm:ss Eastern Time)";
-            db.close();
+            seedTime = "";
+            _logger.error("Can not retrieve the Index Table timestamp - installation incomplete or in error.");
         }
-        catch (SQLException ex)
-        {
-            _logger.fatal(ex.toString());
-        }
+        else
+            seedTime = ts.toString() + " (yyyy-mm-dd hh:mm:ss Eastern Time)";
+        db.close();
+
         return seedTime;
     }
 
@@ -962,21 +1011,17 @@ public class Search
      * Get the last seed timestamp.
      * 
      * @return the timestamp
+     * @exception SearchException
      */
-    public Timestamp getLastSeedTimestamp()
+    public Timestamp getLastSeedTimestamp() throws SearchException
     {
         DBAccess db = new DBAccess();
         Timestamp seedTime = null;
-        try
-        {
-            open(db);
-            seedTime = db.getLastSeedTimestamp();
-            db.close();
-        }
-        catch (SQLException ex)
-        {
-            _logger.fatal(ex.toString());
-        }
+
+        open(db);
+        seedTime = db.getLastSeedTimestamp();
+        db.close();
+
         return seedTime;
     }
     
@@ -1062,6 +1107,64 @@ public class Search
     {
         return _restrict;
     }
+    
+    /**
+     * Exclude everything Owned By the Test Context from the search results.
+     * 
+     * @param flag_ true to exclude "Test", false to include "Test"
+     */
+    public void excludeTest(boolean flag_)
+    {
+        _excludeTest = flag_;
+    }
+    
+    /**
+     * Get the setting to exclude the "Test" Context
+     * 
+     * @return true to exclude "Test"
+     */
+    public boolean getExcludeTest()
+    {
+        return _excludeTest;
+    }
+    
+    /**
+     * Exclude everything Owned By the Training Context from the search results.
+     * 
+     * @param flag_ true to exclude "Training", false to include "Training"
+     */
+    public void excludeTraining(boolean flag_)
+    {
+        _excludeTraining = flag_;
+    }
+    
+    /**
+     * Exclude every AC with a Workflow Status "RETIRED*"
+     * 
+     * @param flag_ true to exclude AC's, false to include AC's
+     */
+    public void excludeWorkflowStatusRetired(boolean flag_)
+    {
+        _excludeWFSretired = flag_;
+    }
+    
+    /**
+     * Get the setting to exclude the "Training" Context
+     * 
+     * @return true to exclude "Training"
+     */
+    public boolean getExcludeTraining()
+    {
+        return _excludeTraining;
+    }
+
+    {
+        if (_versLog)
+        {
+            _versLog = false;
+            _logger.info("Freestyle Search Engine JAR (freestylesearch.jar)  version " + _vers);
+        }
+    }
 
     private String _indexUrl;
     private String _indexUser;
@@ -1082,6 +1185,10 @@ public class Search
     private boolean _restrictAll;
     private int _highestScores;
     private SearchMatch _matchFlag;
+    private boolean _excludeTest;
+    private boolean _excludeTraining;
+    
+    private static boolean _versLog = true;
 
     private static final Logger _logger = Logger.getLogger(Search.class.getName());
 }

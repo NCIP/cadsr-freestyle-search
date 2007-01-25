@@ -1,5 +1,5 @@
 <!-- Copyright ScenPro, Inc. 2005
-     $Header: /share/content/gforge/freestylesearch/freestylesearch/ui/jsp/freestylesearch.jsp,v 1.5 2006-09-22 17:41:26 hebell Exp $
+     $Header: /share/content/gforge/freestylesearch/freestylesearch/ui/jsp/freestylesearch.jsp,v 1.6 2007-01-25 20:24:07 hebell Exp $
      $Name: not supported by cvs2svn $
 -->
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
@@ -111,6 +111,10 @@
         <p style="margin: 0.2in 0in 0in 0.2in">Number of top score groups is <html:text property="score" styleClass="std" style="width: 0.5in" maxlength="3"/>
         </p>
         <p style="margin: 0.2in 0in 0in 0.2in"><html:checkbox property="excludeRetired" value="Y"/>&nbsp;Exclude the AC's with a "RETIRED" Workflow Status
+        </p>
+        <p style="margin: 0.2in 0in 0in 0.2in"><html:checkbox property="excludeTest" value="Y"/>&nbsp;Exclude the AC's Owned By the Test Context
+        </p>
+        <p style="margin: 0.2in 0in 0in 0.2in"><html:checkbox property="excludeTrain" value="Y"/>&nbsp;Exclude the AC's Owned By the Training Context
         </p>
         </td>
         <td style="vertical-align: top; padding-left: 0.2in">

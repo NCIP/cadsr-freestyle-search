@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FreestylePlugIn.java,v 1.1 2006-07-24 14:55:21 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FreestylePlugIn.java,v 1.2 2007-01-25 20:24:07 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.ui;
@@ -69,7 +69,7 @@ public class FreestylePlugIn implements PlugIn
         catch (Exception ex) 
         {
             String stErr = "Error retrieving datasource from JBoss [" + ex.getMessage() + "].";
-            _logger.fatal(stErr, ex);
+            _logger.error(stErr, ex);
         }
     }
 
