@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FreestyleSearch.java,v 1.1 2006-07-24 14:55:21 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FreestyleSearch.java,v 1.2 2007-01-25 20:24:07 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.ui;
@@ -18,6 +18,7 @@ import org.apache.struts.action.ActionMapping;
 
 import gov.nih.nci.cadsr.freestylesearch.util.Search;
 import gov.nih.nci.cadsr.freestylesearch.util.SearchAC;
+import gov.nih.nci.cadsr.freestylesearch.util.SearchException;
 
 
 /**
@@ -67,7 +68,11 @@ public class FreestyleSearch extends Action
         var.setResultsLimit(form.getLimitInt());
         var.setMatchFlag(form.getMatchingEnum());
         if (form.getExcludeRetiredBool())
-            var.restrictResultsByWorkflowNotRetired();
+            var.excludeWorkflowStatusRetired(true);
+        if (form.getExcludeTestBool())
+            var.excludeTest(true);
+        if (form.getExcludeTrainBool())
+            var.excludeTraining(true);
 
         // Set the type restrictions for the search.
         String restricts = "";
@@ -87,7 +92,16 @@ public class FreestyleSearch extends Action
             _logger.debug("AC types selected " + restricts.substring(2));
 
         // Perform the search.
-        Vector<String> results = var.findReturningDefault(form.getPhrase());
+        Vector<String> results = null;
+        try
+        {
+            results = var.findReturningDefault(form.getPhrase());
+        }
+        catch (SearchException ex)
+        {
+            results = new Vector<String>();
+            results.add(ex.toString());
+        }
         
         // Make the results available to the JSP.
         request_.setAttribute(_results, results);

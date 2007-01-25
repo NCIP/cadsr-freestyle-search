@@ -1,10 +1,11 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccessIndex.java,v 1.4 2006-09-20 17:42:12 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccessIndex.java,v 1.5 2007-01-25 20:24:07 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.tool;
 
+import gov.nih.nci.cadsr.freestylesearch.util.SearchException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -86,13 +87,13 @@ public class DBAccessIndex
      *        The  user id.
      * @param pswd_
      *        The password which must match 'user_'.
-     * @return The database error code.
+     * @exception SearchException
      */
-    public int open(String dburl_, String user_, String pswd_)
+    public void open(String dburl_, String user_, String pswd_) throws SearchException
     {
         // If we already have a connection, don't bother.
         if (_conn != null)
-            return 0;
+            return;
 
         try
         {
@@ -116,15 +117,13 @@ public class DBAccessIndex
             _conn = ods.getConnection(user_, pswd_);
             _conn.setAutoCommit(false);
             _needCommit = false;
-            return 0;
+            return;
         }
         catch (SQLException ex)
         {
             _errorCode = ex.getErrorCode();
-            _errorMsg = _errorCode + ": "
-                + dburl_ + ", " + user_ + ", " + pswd_ + "\n" + ex.toString();
-            _logger.fatal(_errorMsg);
-            return _errorCode;
+            _errorMsg = _errorCode + ": " + dburl_ + ", " + user_ + ", " + pswd_ + "\n" + ex.toString();
+            throw new SearchException(ex);
         }
     }
     
@@ -134,24 +133,25 @@ public class DBAccessIndex
      * 
      * @param conn_ a database connection to use.
      * 
-     * @return 0 if successful, otherwise not 0.
+     * @exception SearchException
      */
-    public int open(Connection conn_)
+    public void open(Connection conn_) throws SearchException
     {
         // Since we didn't create the connection set a flag to ensure we
         // don't close the connection.
+        _conn = conn_;
         try
         {
-            _conn = conn_;
             _conn.setAutoCommit(false);
-            _needCommit = false;
-            _connFlag = false;
-            return 0;
         }
         catch (SQLException ex)
         {
-            _logger.fatal(ex.toString());
-            return ex.getErrorCode();
+            throw new SearchException(ex);
+        }
+        finally
+        {
+            _needCommit = false;
+            _connFlag = false;
         }
     }
     
@@ -162,21 +162,22 @@ public class DBAccessIndex
      * @param user_ the user name/account for the connection.
      * @param pswd_ the password for the account.
      * 
-     * @return 0 if successful, otherwise not 0.
+     * @exception SearchException
      */
-    public int open(DataSource ds_, String user_, String pswd_)
+    public void open(DataSource ds_, String user_, String pswd_) throws SearchException
     {
         try
         {
             _conn = ds_.getConnection(user_, pswd_);
             _conn.setAutoCommit(false);
-            _needCommit = false;
-            return 0;
         }
         catch (SQLException ex)
         {
-            _logger.fatal(ex.toString());
-            return ex.getErrorCode();
+            throw new SearchException(ex);
+        }
+        finally
+        {
+            _needCommit = false;
         }
     }
     
@@ -185,21 +186,22 @@ public class DBAccessIndex
      * 
      * @param ds_ a datasource to provide the connection.
      * 
-     * @return 0 if successful, otherwise not 0.
+     * @exception SearchException
      */
-    public int open(DataSource ds_)
+    public void open(DataSource ds_) throws SearchException
     {
         try
         {
             _conn = ds_.getConnection();
             _conn.setAutoCommit(false);
-            _needCommit = false;
-            return 0;
         }
         catch (SQLException ex)
         {
-            _logger.fatal(ex.toString());
-            return ex.getErrorCode();
+            throw new SearchException(ex);
+        }
+        finally
+        {
+            _needCommit = false;
         }
     }
     
@@ -228,24 +230,34 @@ public class DBAccessIndex
         }
         catch (SQLException e)
         {
-            _logger.fatal(e.toString());
+            _logger.error(e.toString());
         }
     }
     
     /**
      * Clean up the open handles.
      *
-     * @throws SQLException 
+     * @throws SearchException 
      */
-    private void cleanup() throws SQLException
+    private void cleanup() throws SearchException
     {
-        if (_rs != null)
-            _rs.close();
-        if (_pstmt != null)
-            _pstmt.close();
-        
-        _rs = null;
-        _pstmt = null;
+        try
+        {
+            if (_rs != null)
+            {
+                _rs.close();
+                _rs = null;
+            }
+            if (_pstmt != null)
+            {
+                _pstmt.close();
+                _pstmt = null;
+            }
+        }
+        catch (SQLException ex)
+        {
+            throw new SearchException(ex);
+        }
     }
 
     /**
@@ -258,12 +270,17 @@ public class DBAccessIndex
         {
             cleanup();
         }
-        catch (SQLException ex)
+        catch (SearchException ex)
         {
-            _errorCode = ex.getErrorCode();
-            _errorMsg = _errorCode + ": " 
-                + ex.toString();
-            _logger.fatal(_errorMsg);
+            if (ex.getCause() instanceof SQLException)
+            {
+                SQLException et = (SQLException) ex.getCause();
+                _errorCode = et.getErrorCode();
+            }
+            else
+                _errorCode = -1;
+            _errorMsg = _errorCode + ": " + ex.toString();
+            _logger.error(_errorMsg);
         }
     }
     
@@ -274,8 +291,9 @@ public class DBAccessIndex
      * @param idseq_ the unique database id for the record
      * @param col_ the column name from which the 'token_' was read
      * @param term_ the token to save in the search index table
+     * @exception SearchException
      */
-    public void insertTerm(int type_, String idseq_, String col_, String term_)
+    public void insertTerm(int type_, String idseq_, String col_, String term_) throws SearchException
     {
         // Build the SQL insert statement and save the data. 
         String insert = "insert into " + _indexTable
@@ -302,12 +320,11 @@ public class DBAccessIndex
             // but we care about everything else.
             if (_errorCode != 1)
             {
-                _errorMsg = _errorCode + ": " + insert
-                    + "\n" + ex.toString();
-                _logger.fatal(_errorMsg);
+                _errorMsg = _errorCode + ": " + insert + "\n" + ex.toString();
+                _logger.error(_errorMsg);
+                throw new SearchException(ex);
             }
-            else
-                _errorCode = 0;
+            _errorCode = 0;
         }
     }
 
@@ -319,8 +336,9 @@ public class DBAccessIndex
      * @param comp_ the composite term string
      * @param reg_ the registration order/weight
      * @param wfs_ the workflow status order/weight
+     * @exception SearchException
      */
-    public void insertComposite(int type_, String idseq_, String comp_, int reg_, int wfs_)
+    public void insertComposite(int type_, String idseq_, String comp_, int reg_, int wfs_) throws SearchException
     {
         // Build the SQL insert statement and save the data. 
         String insert = "insert into " + _compositeTable
@@ -348,12 +366,11 @@ public class DBAccessIndex
             // but we care about everything else.
             if (_errorCode != 1)
             {
-                _errorMsg = _errorCode + ": " + insert
-                    + "\n" + ex.toString();
-                _logger.fatal(_errorMsg);
+                _errorMsg = _errorCode + ": " + insert + "\n" + ex.toString();
+                _logger.error(_errorMsg);
+                throw new SearchException(ex);
             }
-            else
-                _errorCode = 0;
+            _errorCode = 0;
         }
 
         cleanupWithCatch();
@@ -438,8 +455,9 @@ public class DBAccessIndex
      * @param restrict_ the list of types to restrict the search results
      * @param phrase_ the terms of interest
      * @return the results list.
+     * @exception SearchException
      */
-    public Vector<ResultsAC> searchExact(int[] restrict_, String phrase_)
+    public Vector<ResultsAC> searchExact(int[] restrict_, String phrase_) throws SearchException
     {
         Vector<ResultsAC> var = new Vector<ResultsAC>();
 
@@ -479,7 +497,12 @@ public class DBAccessIndex
         
         if (_excludeWFSretired)
         {
-            select += " hits.ac_idseq not in (select tt.ac_idseq from " + _indexTable + " tt where tt.ac_idseq = hits.ac_idseq and tt.ac_col = 'asl_name' and tt.token = 'retired') and";
+            select += " hits.ac_idseq not in (select tt.ac_idseq from " + _indexTable + " tt, sbrext.tool_options_view_ext opt where tt.ac_idseq = hits.ac_idseq and tt.ac_col = 'rawWorkflowStatus' and opt.value = tt.token and opt.tool_name = 'FREESTYLE' and opt.property like 'RETIRED.WFS.%') and";
+        }
+        
+        if (_excludeContextNames != null)
+        {
+            select += " hits.ac_idseq not in (select tt.ac_idseq from " + _indexTable + " tt where tt.ac_idseq = hits.ac_idseq and tt.ac_col = '" + DBAccess.COLOWNEDBYCONTEXT + "' and tt.token in (" + _excludeContextNames + ")) and";
         }
         
         select += " cp.ac_idseq = hits.ac_idseq and cp.reg_order > 0 group by hits.ac_idseq, hits.ac_table, cp.reg_order, cp.wfs_order  order by score desc, hits.ac_table asc, cp.reg_order asc, cp.wfs_order asc";
@@ -496,13 +519,16 @@ public class DBAccessIndex
         catch (SQLException ex)
         {
             _errorCode = ex.getErrorCode();
-            _errorMsg = _errorCode + ": " + select
-                + "\n" + ex.toString();
-            _logger.fatal(_errorMsg);
+            _errorMsg = _errorCode + ": " + select + "\n" + ex.toString();
+            _logger.error(_errorMsg);
+            throw new SearchException(ex);
         }
-
-        // Clean up the open statements, etc.
-        cleanupWithCatch();
+        
+        finally
+        {
+            // Clean up the open statements, etc.
+            cleanupWithCatch();
+        }
 
         return var;
     }
@@ -513,8 +539,9 @@ public class DBAccessIndex
      * @param restrict_ the list of AC types to restrict the results
      * @param phrase_ the terms of interest
      * @return the results list.
+     * @exception SearchException
      */
-    public Vector<ResultsAC> searchPartial(int[] restrict_, String phrase_)
+    public Vector<ResultsAC> searchPartial(int[] restrict_, String phrase_) throws SearchException
     {
         Vector<ResultsAC> var = new Vector<ResultsAC>();
 
@@ -544,6 +571,11 @@ public class DBAccessIndex
             select += " hits.ac_idseq not in (select tt.ac_idseq from " + _indexTable + " tt where tt.ac_idseq = hits.ac_idseq and tt.ac_col = 'asl_name' and tt.token = 'retired') and";
         }
         
+        if (_excludeContextNames != null)
+        {
+            select += " hits.ac_idseq not in (select tt.ac_idseq from " + _indexTable + " tt where tt.ac_idseq = hits.ac_idseq and tt.ac_col = '" + DBAccess.COLOWNEDBYCONTEXT + "' and tt.token in (" + _excludeContextNames + ")) and";
+        }
+        
         if (inClause != null)
             select += " hits.ac_table in (" + inClause + ") and";
 
@@ -563,13 +595,16 @@ public class DBAccessIndex
         catch (SQLException ex)
         {
             _errorCode = ex.getErrorCode();
-            _errorMsg = _errorCode + ": " + select
-                + "\n" + ex.toString();
-            _logger.fatal(_errorMsg);
+            _errorMsg = _errorCode + ": " + select + "\n" + ex.toString();
+            _logger.error(_errorMsg);
+            throw new SearchException(ex);
         }
         
-        // Clean up the open statements, etc.
-        cleanupWithCatch();
+        finally
+        {
+            // Clean up the open statements, etc.
+            cleanupWithCatch();
+        }
 
         return var;
     }
@@ -578,8 +613,9 @@ public class DBAccessIndex
      * Copy the results from the database search for further processing.
      * 
      * @param var_ the results vector
+     * @exception SearchException
      */
-    private void copyResults(Vector<ResultsAC> var_)
+    private void copyResults(Vector<ResultsAC> var_) throws SearchException
     {
         try
         {
@@ -617,15 +653,16 @@ public class DBAccessIndex
         {
             _errorCode = ex.getErrorCode();
             _errorMsg = _errorCode + ": " + ex.toString();
-            _logger.fatal(_errorMsg);
+            throw new SearchException(ex);
         }
     }
     
     /**
      * Truncate the index tables in preparation for a complete reload.
      *
+     * @exception SearchException
      */
-    public void truncateTables()
+    public void truncateTables() throws SearchException
     {
         String sql;
         sql = "begin sbrext.freestyle_pkg.truncate_gs_tables; end;";
@@ -640,9 +677,9 @@ public class DBAccessIndex
         catch (SQLException ex)
         {
             _errorCode = ex.getErrorCode();
-            _errorMsg = _errorCode + ": " + sql
-                + "\n" + ex.toString();
+            _errorMsg = _errorCode + ": " + sql + "\n" + ex.toString();
             _logger.error(_errorMsg);
+            throw new SearchException(ex);
         }
     }
     
@@ -650,9 +687,9 @@ public class DBAccessIndex
      * Erase existing records in the freestyle index tables.
      * 
      * @param ids_ the list of database id's
-     * 
+     * @exception SearchException
      */
-    public void erase(String[] ids_)
+    public void erase(String[] ids_) throws SearchException
     {
         if (ids_ == null || ids_.length == 0)
             return;
@@ -688,11 +725,16 @@ public class DBAccessIndex
             catch (SQLException ex)
             {
                 _errorCode = ex.getErrorCode();
-                _errorMsg = _errorCode + ": " + delete
-                    + "\n" + ex.toString();
-                _logger.fatal(_errorMsg);
+                _errorMsg = _errorCode + ": " + delete + "\n" + ex.toString();
+                _logger.error(_errorMsg);
+                throw new SearchException(ex);
             }
-            cleanupWithCatch();
+            
+            finally
+            {
+                cleanupWithCatch();
+            }
+            
             commit();
             
             delete = "delete from " + _compositeTable + " where ac_idseq in ( " + inc + ")";
@@ -711,13 +753,17 @@ public class DBAccessIndex
             catch (SQLException ex)
             {
                 _errorCode = ex.getErrorCode();
-                _errorMsg = _errorCode + ": " + delete
-                    + "\n" + ex.toString();
-                _logger.fatal(_errorMsg);
+                _errorMsg = _errorCode + ": " + delete + "\n" + ex.toString();
+                _logger.error(_errorMsg);
+                throw new SearchException(ex);
             }
             
-            // Cleanup and commit changes.
-            cleanupWithCatch();
+            finally
+            {
+                // Cleanup and commit changes.
+                cleanupWithCatch();
+            }
+            
             commit();
         }
     }
@@ -725,20 +771,21 @@ public class DBAccessIndex
     /**
      * Commit any changes.
      *
+     *@exception SearchException
      */
-    public void commit()
+    public void commit() throws SearchException
     {
         try
         {
             _conn.commit();
-            _needCommit = false;
         }
         catch (SQLException ex)
         {
-            _errorCode = ex.getErrorCode();
-            _errorMsg = _errorCode + ": " 
-                + ex.toString();
-            _logger.fatal(_errorMsg);
+            throw new SearchException(ex);
+        }
+        finally
+        {
+            _needCommit = false;
         }
     }
     
@@ -819,6 +866,31 @@ public class DBAccessIndex
         return phrase_.replaceAll(_tokenChars, " ");
     }
     
+    /**
+     * Set the names of Contexts which should be excluded from the
+     * search. These are "Owned By" Contexts only, not "Used By". Use
+     * this method with no arguments to clear the exclusion list.
+     * 
+     * @param names_ the context name(s)
+     */
+    public void setExcludeContextNames(String ... names_)
+    {
+        if (names_ == null || names_.length == 0)
+        {
+            _excludeContextNames = null;
+            return;
+        }
+
+        for (String name : names_)
+        {
+            if (_excludeContextNames == null)
+                _excludeContextNames = "'" + name.toLowerCase() + "'";
+            else
+                _excludeContextNames += ",'" + name.toLowerCase() + "'";
+        }
+    }
+    
+    private String _excludeContextNames;
     private int _limit;
     private boolean _excludeWFSretired;
     private int _scoreLimit;

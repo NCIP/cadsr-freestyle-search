@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.java,v 1.10 2006-12-12 15:24:53 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.java,v 1.11 2007-01-25 20:24:07 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.test;
@@ -8,9 +8,11 @@ package gov.nih.nci.cadsr.freestylesearch.test;
 import gov.nih.nci.cadsr.domain.AdministeredComponent;
 import gov.nih.nci.cadsr.freestylesearch.util.Search;
 import gov.nih.nci.cadsr.freestylesearch.util.SearchAC;
+import gov.nih.nci.cadsr.freestylesearch.util.SearchException;
 import gov.nih.nci.cadsr.freestylesearch.util.SearchMatch;
 import gov.nih.nci.cadsr.freestylesearch.util.SearchResultObject;
 import gov.nih.nci.cadsr.freestylesearch.util.SearchResults;
+import gov.nih.nci.cadsr.freestylesearch.util.SearchResultsWithAC;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -86,56 +88,38 @@ public class SearchTest
         String schema = prop.getProperty("index.DSschema");
         Search.setSchema(schema);
 
+        String remoteURL = prop.getProperty("remote.url");
+
         String coreURL = prop.getProperty("core.url");
         if (coreURL != null)
             _logger.info("Using caCORE API URL: " + coreURL);
         
-        // Hardcode a test for a remote call
-        Search t1;
-        t1 = new Search();
-        t1.setDataDescription("http://freestyle-dev.nci.nih.gov");
-        Vector<String> rst1 = t1.findReturningDefault("congestive heart failure");
-        // Output results
-        for (int cnt = 0; cnt < rst1.size(); ++cnt)
-        {
-            _logger.info(String.valueOf(cnt + 1) + ": " + rst1.get(cnt));
-        }
-        _logger.info(rst1.size() + " matches found");
-        
-        t1 = new Search();
-        t1.setDataDescription("http://freestyle-dev.nci.nih.gov");
-        Vector<SearchResults> rst1x = t1.findReturningSearchResults("congestive heart failure");
-        // Output results
-        for (int cnt = 0; cnt < rst1x.size(); ++cnt)
-        {
-            SearchResults rec = rst1x.get(cnt);
-            _logger.info(String.valueOf(cnt + 1) + ": " + rec.getPublicID() + " : " + rec.getVersion() + " : " + rec.getLongName());
-        }
-        _logger.info(rst1.size() + " matches found");
-        
-        // Hardcode a test for a remote call
-        t1 = new Search();
-        t1.setCoreApiUrl(coreURL);
-        t1.setDataDescription("http://freestyle-dev.nci.nih.gov");
-        Vector<AdministeredComponent> rst2 = t1.findReturningAdministeredComponent("congestive heart failure");
-        // Output results
-        for (int cnt = 0; cnt < rst2.size(); ++cnt)
-        {
-            _logger.info(String.valueOf(cnt + 1) + ": " + rst2.get(cnt).getId() + " : " + rst2.get(cnt).getLongName());
-        }
-        _logger.info(rst2.size() + " matches found");
-        
         // Create the search object and set configuration options
         Search var = new Search(match, limit, scores);
-        var.setCoreApiUrl(coreURL);
-        var.setIndexDescription(indexUrl, indexUser, indexPswd);
-        var.setDataDescription(dataUrl, dataUser, dataPswd);
+        if (remoteURL == null)
+        {
+            var.setCoreApiUrl(coreURL);
+            var.setIndexDescription(indexUrl, indexUser, indexPswd);
+            var.setDataDescription(dataUrl, dataUser, dataPswd);
+        }
+        else
+        {
+            var.setDataDescription(remoteURL);
+        }
         
         String restrictWFS = prop.getProperty("restrictResultsByWorkflowNotRetired");
         if (restrictWFS != null && restrictWFS.equals("true"))
-            var.restrictResultsByWorkflowNotRetired();
+            var.excludeWorkflowStatusRetired(true);
         else
-            var.resetResultsByWorkflowNotRetired();
+            var.excludeWorkflowStatusRetired(false);
+        
+        String excludeTest = prop.getProperty("excludeTest");
+        if (excludeTest != null && excludeTest.equals("true"))
+            var.excludeTest(true);
+        
+        String excludeTraining = prop.getProperty("excludeTraining");
+        if (excludeTraining != null && excludeTraining.equals("true"))
+            var.excludeTraining(true);
 
         String[] vals;
         String restrict = prop.getProperty("restricts");
@@ -153,6 +137,7 @@ public class SearchTest
         boolean outAbbrev = false;
         boolean outAC = false;
         boolean outRS = false;
+        boolean outWAC = false;
         
         restrict = prop.getProperty("returns");
         if (restrict != null)
@@ -167,6 +152,7 @@ public class SearchTest
                     case 1: outAbbrev = true; break;
                     case 2: outAC = true; break;
                     case 3: outRS = true; break;
+                    case 4: outWAC = true; break;
                     case 0:
                     default: outDef = true; break;
                     }
@@ -181,77 +167,99 @@ public class SearchTest
         // Perform a search on each phrase.
         for (int i = 0; true; ++i)
         {
-            // Get the search phrase.
-            String phrase = prop.getProperty("terms." + i);
-            if (phrase == null)
-                break;
-            _logger.info("Looking for \"" + phrase + "\"");
-
-            int cnt;
-
-            if (outAbbrev)
+            try
             {
-                // Perform search and get Search object results..
-                Vector<SearchResultObject> rs3 = var.findReturningResultSet(phrase);
-                
-                // Output results
-                cnt = 0;
-                for (SearchResultObject ac: rs3)
+                // Get the search phrase.
+                String phrase = prop.getProperty("terms." + i);
+                if (phrase == null)
+                    break;
+                _logger.info("Looking for \"" + phrase + "\"");
+    
+                int cnt;
+    
+                if (outAbbrev)
                 {
-                    _logger.info(String.valueOf(cnt + 1) + ": " + ac.getType() + ", " + ac.getIdseq() + ", " + ac.getScore());
-                    ++cnt;
+                    // Perform search and get Search object results..
+                    Vector<SearchResultObject> rs3 = var.findReturningResultSet(phrase);
+                    
+                    // Output results
+                    cnt = 0;
+                    for (SearchResultObject ac: rs3)
+                    {
+                        _logger.info(String.valueOf(cnt + 1) + ": " + ac.getType() + ", " + ac.getIdseq() + ", " + ac.getScore());
+                        ++cnt;
+                    }
+                    _logger.info(cnt + " matches found");
                 }
-                _logger.info(cnt + " matches found");
+    
+                if (outDef)
+                {
+                    // Perform search and get default results.
+                    Vector<String> rs = var.findReturningDefault(phrase);
+            
+                    // Output results
+                    for (cnt = 0; cnt < rs.size(); ++cnt)
+                    {
+                        _logger.info(String.valueOf(cnt + 1) + ": " + rs.get(cnt));
+                    }
+                    _logger.info(cnt + " matches found");
+                }
+    
+                if (outRS)
+                {
+                    // Perform search and get default results.
+                    Vector<SearchResults> rs = var.findReturningSearchResults(phrase);
+            
+                    // Output results
+                    for (cnt = 0; cnt < rs.size(); ++cnt)
+                    {
+                        SearchResults obj = rs.get(cnt);
+                        _logger.info(String.valueOf(cnt + 1) + ": ["
+                                        + obj.getType() + "] ["
+                                        + obj.getLongName() + "] ["
+                                        + obj.getPreferredName() + "] ["
+                                        + obj.getPublicID() + "] ["
+                                        + obj.getVersion() + "] ["
+                                        + obj.getPreferredDefinition() + "] ["
+                                        + obj.getContextName() + "] ["
+                                        + obj.getRegistrationStatus() + "]");
+                    }
+                    _logger.info(cnt + " matches found");
+                }
+    
+                if (outAC)
+                {
+                    // Perform search and get caCORE object results.
+                    Vector<AdministeredComponent> rs2 = var.findReturningAdministeredComponent(phrase);
+                    
+                    // Output results
+                    cnt = 0;
+                    for (AdministeredComponent ac: rs2)
+                    {
+                        _logger.info(String.valueOf(cnt + 1) + ": " + ac.getLongName() + "\n" + ac.getPublicID() + " / " + ac.getVersion());
+                        ++cnt;
+                    }
+                    _logger.info(cnt + " matches found");
+                }
+    
+                if (outWAC)
+                {
+                    // Perform search and get caCORE object results.
+                    Vector<SearchResultsWithAC> rs2 = var.findReturningResultsWithAC(phrase);
+                    
+                    // Output results
+                    cnt = 0;
+                    for (SearchResultsWithAC ac: rs2)
+                    {
+                        _logger.info(String.valueOf(cnt + 1) + ": " + ac.getResultObject().getScore() + " : " + ac.getAdministeredComponent().getLongName() + "\n" + ac.getAdministeredComponent().getPublicID() + " / " + ac.getAdministeredComponent().getVersion());
+                        ++cnt;
+                    }
+                    _logger.info(cnt + " matches found");
+                }
             }
-
-            if (outDef)
+            catch (SearchException ex)
             {
-                // Perform search and get default results.
-                Vector<String> rs = var.findReturningDefault(phrase);
-        
-                // Output results
-                for (cnt = 0; cnt < rs.size(); ++cnt)
-                {
-                    _logger.info(String.valueOf(cnt + 1) + ": " + rs.get(cnt));
-                }
-                _logger.info(cnt + " matches found");
-            }
-
-            if (outRS)
-            {
-                // Perform search and get default results.
-                Vector<SearchResults> rs = var.findReturningSearchResults(phrase);
-        
-                // Output results
-                for (cnt = 0; cnt < rs.size(); ++cnt)
-                {
-                    SearchResults obj = rs.get(cnt);
-                    _logger.info(String.valueOf(cnt + 1) + ": ["
-                                    + obj.getType() + "] ["
-                                    + obj.getLongName() + "] ["
-                                    + obj.getPreferredName() + "] ["
-                                    + obj.getPublicID() + "] ["
-                                    + obj.getVersion() + "] ["
-                                    + obj.getPreferredDefinition() + "] ["
-                                    + obj.getContextName() + "] ["
-                                    + obj.getRegistrationStatus() + "]");
-                }
-                _logger.info(cnt + " matches found");
-            }
-
-            if (outAC)
-            {
-                // Perform search and get caCORE object results.
-                Vector<AdministeredComponent> rs2 = var.findReturningAdministeredComponent(phrase);
-                
-                // Output results
-                cnt = 0;
-                for (AdministeredComponent ac: rs2)
-                {
-                    _logger.info(String.valueOf(cnt + 1) + ": " + ac.getLongName() + "\n" + ac.getPublicID() + " / " + ac.getVersion());
-                    ++cnt;
-                }
-                _logger.info(cnt + " matches found");
+                _logger.error(ex.toString());
             }
         }
     }

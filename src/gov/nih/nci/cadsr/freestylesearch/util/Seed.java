@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Seed.java,v 1.3 2006-07-24 14:55:21 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Seed.java,v 1.4 2007-01-25 20:24:07 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -82,7 +82,14 @@ public class Seed
         _logger.info("---------------------------------------------------------------------------------");
         _logger.info("Seed started for schema... " + schema.toUpperCase());
 
-        var.parseDatabase(millis);
+        try
+        {
+            var.parseDatabase(millis);
+        }
+        catch (SearchException ex)
+        {
+            _logger.error(ex.toString());
+        }
 
         _logger.info("Seed ended ...");
     }
@@ -91,16 +98,20 @@ public class Seed
      * Parse the database and extract selected tokens.
      * 
      * @param millis_ the marker time for this run in milliseconds 
-     *
+     * @exception SearchException
      */
-    public void parseDatabase(long millis_)
+    public void parseDatabase(long millis_) throws SearchException
     {
         // Connect to database.
         DBAccess data = new DBAccess();
-        if (data.open(_dbData, _userData, _pswdData) != 0)
-            return;
+        data.open(_dbData, _userData, _pswdData);
+
         DBAccessIndex index = new DBAccessIndex();
-        if (index.open(_dbIndex, _userIndex, _pswdIndex) != 0)
+        try
+        {
+            index.open(_dbIndex, _userIndex, _pswdIndex);
+        }
+        catch (SearchException ex)
         {
             data.close();
             return;
@@ -139,8 +150,9 @@ public class Seed
      * 
      * @param index_ the index table database access object
      * @param millis_ >0 resets the seed timestamp, ==0 does not
+     * @exception SearchException
      */
-    private void getLastSeedTimestamp(DBAccess index_, long millis_)
+    private void getLastSeedTimestamp(DBAccess index_, long millis_) throws SearchException
     {
         _start = index_.getLastSeedTimestamp();
         if (_start == null)

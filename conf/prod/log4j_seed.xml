@@ -7,7 +7,7 @@
 <!--                                                                       -->
 <!-- ===================================================================== -->
 
-<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/prod/log4j_seed.xml,v 1.1 2006-06-30 13:46:46 hebell Exp $ -->
+<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/prod/log4j_seed.xml,v 1.2 2007-01-25 20:24:04 hebell Exp $ -->
 <!-- $Name: not supported by cvs2svn $ -->
 
 <!--
@@ -64,7 +64,7 @@
     <!-- Setup the sentinel category debug-->
     <!-- ============================ -->
     <category name="gov.nih.nci.cadsr.freestylesearch" additivity="false">
-        <priority value="WARN" />
+        <priority value="INFO" />
         <appender-ref ref="FREESTYLESEED_FILE" />
     </category>
 

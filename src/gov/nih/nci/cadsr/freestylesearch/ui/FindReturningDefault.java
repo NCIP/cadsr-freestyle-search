@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FindReturningDefault.java,v 1.1 2006-12-12 15:24:53 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FindReturningDefault.java,v 1.2 2007-01-25 20:24:07 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.ui;
@@ -8,7 +8,9 @@ package gov.nih.nci.cadsr.freestylesearch.ui;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.util.Vector;
+import gov.nih.nci.cadsr.freestylesearch.tool.SearchRequest;
 import gov.nih.nci.cadsr.freestylesearch.util.Search;
+import gov.nih.nci.cadsr.freestylesearch.util.SearchException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
@@ -56,28 +58,69 @@ public class FindReturningDefault extends Action
         // Copy settings from the form
         RemoteForm form = (RemoteForm) form_;
         form.loadSearch(var);
-        
-        // Perform the search.
-        Vector<String> results = var.findReturningDefault(form.getPhrase());
+
+        Vector<String> results = null;
+        try
+        {
+            // Perform the search.
+            results = var.findReturningDefault(form.getPhrase());
+        }
+        catch(SearchException ex)
+        {
+            response_.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
+            try
+            {
+                PrintWriter out = response_.getWriter();
+                out.println(ex.toString());
+                out.close();
+            }
+            catch (java.io.IOException ex2)
+            {
+                _logger.error(ex2.toString());
+            }
+            return null;
+        }
 
         try
         {
             // Give a response the caller can understand.
-            if (form.getVersionInt() == 1)
+            int vers = form.getVersionInt(); 
+            switch (vers)
             {
-                response_.setStatus(HttpURLConnection.HTTP_OK);
-                PrintWriter out = response_.getWriter();
-                for (String line : results)
+                case 1:
                 {
-                    String temp = line.replace("\n", "<br/>");
-                    out.println(temp);
+                    response_.setStatus(HttpURLConnection.HTTP_OK);
+                    PrintWriter out = response_.getWriter();
+                    for (String line : results)
+                    {
+                        String temp = line.replace("\n", "<br/>");
+                        out.println(temp);
+                    }
+                    out.close();
+                    break;
                 }
-                out.close();
+                case 2:
+                {
+                    response_.setStatus(HttpURLConnection.HTTP_OK);
+                    PrintWriter out = response_.getWriter();
+                    for (String line : results)
+                    {
+                        String temp = line.replace("\n", "<br/>");
+                        out.println(SearchRequest.TEXT + temp);
+                    }
+                    out.close();
+                    break;
+                }
+                default:
+                {
+                    response_.setStatus(HttpURLConnection.HTTP_NOT_IMPLEMENTED);
+                    break;
+                }
             }
         }
         catch (java.io.IOException ex)
         {
-            _logger.fatal(ex.toString());
+            _logger.error(ex.toString());
         }
         
         return null;

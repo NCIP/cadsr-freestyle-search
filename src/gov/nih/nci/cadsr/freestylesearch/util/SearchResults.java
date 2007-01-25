@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/SearchResults.java,v 1.3 2006-09-07 15:31:02 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/SearchResults.java,v 1.4 2007-01-25 20:24:07 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -23,9 +23,10 @@ public class SearchResults
      * @param pdef_ the preferred definition
      * @param cname_ the context name
      * @param reg_ the registration status
+     * @param wfs_ the workflow status
      *
      */
-    public SearchResults(SearchAC type_, String lname_, String pname_, int id_, String vers_, String pdef_, String cname_, String reg_)
+    public SearchResults(SearchAC type_, String lname_, String pname_, int id_, String vers_, String pdef_, String cname_, String reg_, String wfs_)
     {
         _type = type_;
         _longName = lname_;
@@ -35,6 +36,7 @@ public class SearchResults
         _preferredDefinition = pdef_;
         _contextName = cname_;
         _registrationStatus = reg_;
+        _workflowStatus = wfs_;
     }
 
     /**
@@ -116,6 +118,16 @@ public class SearchResults
     {
         return _registrationStatus;
     }
+    
+    /**
+     * The AC Workflow Status
+     * 
+     * @return the workflow status
+     */
+    public String getWorkflowStatus()
+    {
+        return _workflowStatus;
+    }
 
     private SearchAC _type;
     private String _longName;
@@ -125,4 +137,5 @@ public class SearchResults
     private String _preferredDefinition;
     private String _contextName;
     private String _registrationStatus;
+    private String _workflowStatus;
 }

@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/SearchAC.java,v 1.1 2006-07-10 18:40:32 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/SearchAC.java,v 1.2 2007-01-25 20:24:07 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -46,7 +46,12 @@ public enum SearchAC
     /**
      * Conceptual Domain
      */
-    CD ( 6 );
+    CD ( 6 ),
+
+    /**
+     * Value Meaning
+     */
+    VM ( 7 );
 
     /**
      * Return the number of AC's

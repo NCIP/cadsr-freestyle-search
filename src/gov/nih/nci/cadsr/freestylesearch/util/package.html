@@ -1,6 +1,6 @@
 <html>
     <!--
-    $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/package.html,v 1.3 2006-07-28 14:48:21 hebell Exp $
+    $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/package.html,v 1.4 2007-01-25 20:24:07 hebell Exp $
     $Name: not supported by cvs2svn $
 -->
     <body>
@@ -203,9 +203,10 @@
                 Search var = new Search();
                 <br>
                 <br>
-                // Connect to the database - <u><b>One of the setDataDescription(...) methods MUST be called prior to any other class method.</b></u>
+                // Connect to the server/database<br/>
+                // <u><b>One of the setDataDescription(...) methods MUST be called prior to any other class method. The preferred method takes a URL as the argument.</b></u>
                 <br>
-                var.setDataDescription(ds);
+                var.setDataDescription("http://freestyle.nci.nih.gov");
                 <br>
                 <br>
                 // Perform a search and get a default ASCII result

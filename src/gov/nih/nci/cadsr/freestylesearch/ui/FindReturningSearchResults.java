@@ -1,13 +1,13 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FindReturningSearchResults.java,v 1.1 2006-12-12 15:24:53 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FindReturningSearchResults.java,v 1.2 2007-01-25 20:24:07 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.ui;
 
+import gov.nih.nci.cadsr.freestylesearch.tool.SearchRequest;
 import gov.nih.nci.cadsr.freestylesearch.util.Search;
-import gov.nih.nci.cadsr.freestylesearch.util.SearchRequest;
-import gov.nih.nci.cadsr.freestylesearch.util.SearchResultObject;
+import gov.nih.nci.cadsr.freestylesearch.util.SearchException;
 import gov.nih.nci.cadsr.freestylesearch.util.SearchResults;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
@@ -60,13 +60,33 @@ public class FindReturningSearchResults extends Action
         RemoteForm form = (RemoteForm) form_;
         form.loadSearch(var);
         
-        // Perform the search.
-        Vector<SearchResults> results = var.findReturningSearchResults(form.getPhrase());
+        Vector<SearchResults> results = null;
+        try
+        {
+            // Perform the search.
+            results = var.findReturningSearchResults(form.getPhrase());
+        }
+        catch (SearchException ex)
+        {
+            response_.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
+            try
+            {
+                PrintWriter out = response_.getWriter();
+                out.println(ex.toString());
+                out.close();
+            }
+            catch (java.io.IOException ex2)
+            {
+                _logger.error(ex2.toString());
+            }
+            return null;
+        }
 
         try
         {
             // Give a response the caller can understand.
-            if (form.getVersionInt() == 1)
+            int vers = form.getVersionInt();
+            if (vers == 1 || vers == 2)
             {
                 response_.setStatus(HttpURLConnection.HTTP_OK);
                 PrintWriter out = response_.getWriter();
@@ -80,14 +100,19 @@ public class FindReturningSearchResults extends Action
                     out.println(SearchRequest.PDEF + line.getPreferredDefinition().replace("\n", "<br/>"));
                     out.println(SearchRequest.CNAME + line.getContextName());
                     out.println(SearchRequest.REG + line.getRegistrationStatus());
+                    out.println(SearchRequest.WFS + line.getWorkflowStatus());
                     out.println(SearchRequest.RECEND);
                 }
                 out.close();
             }
+            else
+            {
+                response_.setStatus(HttpURLConnection.HTTP_NOT_IMPLEMENTED);
+            }
         }
         catch (java.io.IOException ex)
         {
-            _logger.fatal(ex.toString());
+            _logger.error(ex.toString());
         }
         
         return null;

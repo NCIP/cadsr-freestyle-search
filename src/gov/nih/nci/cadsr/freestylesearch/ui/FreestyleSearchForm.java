@@ -1,12 +1,13 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FreestyleSearchForm.java,v 1.1 2006-07-24 14:55:21 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FreestyleSearchForm.java,v 1.2 2007-01-25 20:24:07 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.ui;
 
 import gov.nih.nci.cadsr.freestylesearch.util.Search;
 import gov.nih.nci.cadsr.freestylesearch.util.SearchAC;
+import gov.nih.nci.cadsr.freestylesearch.util.SearchException;
 import gov.nih.nci.cadsr.freestylesearch.util.SearchMatch;
 
 import javax.servlet.http.HttpServletRequest;
@@ -234,6 +235,72 @@ public class FreestyleSearchForm extends ActionForm
     {
         return _excludeRetired;
     }
+    
+    /**
+     * Set the exclude Test Context flag
+     * 
+     * @param flag_ "Y" to exclude "Test"
+     */
+    public void setExcludeTest(String flag_)
+    {
+        if (flag_ != null && flag_.equals("Y"))
+            _excludeTest = true;
+        else
+            _excludeTest = false;
+    }
+    
+    /**
+     * Get the exclude Test Context flag
+     * 
+     * @return "Y" to exclude "Test"
+     */
+    public String getExcludeTest()
+    {
+        return (_excludeTest) ? "Y" : "N";
+    }
+    
+    /**
+     * Get the exclude Training Context flag
+     * 
+     * @return true to exclude "Training"
+     */
+    public boolean getExcludeTrainBool()
+    {
+        return _excludeTrain;
+    }
+    
+    /**
+     * Set the exclude Training Context flag
+     * 
+     * @param flag_ "Y" to exclude "Training"
+     */
+    public void setExcludeTrain(String flag_)
+    {
+        if (flag_ != null && flag_.equals("Y"))
+            _excludeTrain = true;
+        else
+            _excludeTrain = false;
+    }
+    
+    /**
+     * Get the exclude Trianing Context flag
+     * 
+     * @return "Y" to exclude "Training"
+     */
+    public String getExcludeTrain()
+    {
+        return (_excludeTrain) ? "Y" : "N";
+    }
+    
+    /**
+     * Get the exclude Test Context flag
+     * 
+     * @return true to exclude "Test"
+     */
+    public boolean getExcludeTestBool()
+    {
+        return _excludeTest;
+    }
 
     /**
      * Validate the content of the Edit Screen.
@@ -252,7 +319,15 @@ public class FreestyleSearchForm extends ActionForm
 
         Search var = new Search();
         var.setDataDescription(ds.getDataSource(), ds.getUser(), ds.getPswd());
-        String seedTime = var.getLastSeedTimestampString();
+        String seedTime = null;
+        try
+        {
+            seedTime = var.getLastSeedTimestampString();
+        }
+        catch (SearchException ex)
+        {
+            seedTime = ex.toString();
+        }
         request_.setAttribute("seedTime", seedTime);
 
         // The absence of a search phrase is not really an error but we don't want
@@ -289,6 +364,8 @@ public class FreestyleSearchForm extends ActionForm
     private static final long serialVersionUID = 88840366374682878L;
 
     private boolean _excludeRetired;
+    private boolean _excludeTest;
+    private boolean _excludeTrain;
     private String _phrase;
     private int _limit;
     private SearchMatch _matching;
