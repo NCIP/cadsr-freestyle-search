@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.14 2007-01-25 20:24:07 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.15 2007-02-13 19:35:17 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -36,7 +36,10 @@ import org.apache.log4j.Logger;
  */
 public class Search
 {
-    private static final String _vers ="3.2.0.1.20061221"; 
+    /**
+     * 
+     */
+    public static final String _vers ="3.2.1.20070213";
     
     /**
      * Return the version marker for the freestylesearch.jar
@@ -245,8 +248,7 @@ public class Search
             
             if (rs0.size() != rs1.size() || rs0.size() != rs2.size())
             {
-                _logger.error("Error retrieving results for method findReturningResultsWithAC [" + rs0.size() + ", " + rs1.size() + ", " + rs2.size() + "]");
-                rs1 = new Vector<SearchResultObject>();
+                throw new SearchException("Error retrieving results for method findReturningResultsWithAC (direct connection) [" + rs0.size() + ", " + rs1.size() + ", " + rs2.size() + "]");
             }
             
             rs0 = null;
@@ -266,8 +268,7 @@ public class Search
 
             if (rs1.size() != rs2.size())
             {
-                _logger.error("Error retrieving results for method findReturningResultsWithAC [" + rs1.size() + ", " + rs2.size() + "]");
-                rs1 = new Vector<SearchResultObject>();
+                throw new SearchException("Error retrieving results for method findReturningResultsWithAC (URL " + _serverURL + ") [" + rs1.size() + ", " + rs2.size() + "]");
             }
             
             idseq = null;
@@ -331,16 +332,14 @@ public class Search
             @SuppressWarnings("unchecked")
             List<AdministeredComponent> acs = coreapi.search(AdministeredComponent.class, acID); 
             if (acs.size() != idseq_.length)
-                _logger.error("Invalid results from caCORE API.");
-            else
+                throw new SearchException("Invalid results from caCORE API.");
+
+            rs.setSize(acs.size());
+            for (int i = 0; i < acs.size(); ++i)
             {
-                rs.setSize(acs.size());
-                for (int i = 0; i < acs.size(); ++i)
-                {
-                    AdministeredComponent record = acs.get(i);
-                    Integer x = rsMap.get(record.getId());
-                    rs.set(x.intValue(), record);
-                }
+                AdministeredComponent record = acs.get(i);
+                Integer x = rsMap.get(record.getId());
+                rs.set(x.intValue(), record);
             }
         }
         catch (ApplicationException ex)
@@ -996,12 +995,9 @@ public class Search
         open(db);
         Timestamp ts = db.getLastSeedTimestamp();
         if (ts == null)
-        {
-            seedTime = "";
-            _logger.error("Can not retrieve the Index Table timestamp - installation incomplete or in error.");
-        }
-        else
-            seedTime = ts.toString() + " (yyyy-mm-dd hh:mm:ss Eastern Time)";
+            throw new SearchException("Can not retrieve the Index Table timestamp - installation incomplete or in error.");
+
+        seedTime = ts.toString() + " (yyyy-mm-dd hh:mm:ss Eastern Time)";
         db.close();
 
         return seedTime;

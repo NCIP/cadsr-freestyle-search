@@ -1,6 +1,6 @@
 /* Copyright ScenPro, Inc, 2005
 
-   $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/qa/load_options.sql,v 1.3 2007-01-25 20:24:06 hebell Exp $
+   $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/qa/load_options.sql,v 1.4 2007-02-13 19:35:16 hebell Exp $
    $Name: not supported by cvs2svn $
 
    Author: Larry Hebel
@@ -48,6 +48,15 @@ insert into sbrext.tool_options_view_ext (tool_name, property, value, descriptio
 insert into sbrext.tool_options_view_ext (tool_name, property, value, description) values ('FREESTYLE', 'RETIRED.WFS.5', 'RETIRED PHASED OUT', 'Workflow Status considered RETIRED by Search');
 insert into sbrext.tool_options_view_ext (tool_name, property, value, description) values ('FREESTYLE', 'RETIRED.WFS.6', 'RETIRED WITHDRAWN', 'Workflow Status considered RETIRED by Search');
 insert into sbrext.tool_options_view_ext (tool_name, property, value, description) values ('FREESTYLE', 'RETIRED.WFS.7', 'RETIRED DELETED', 'Workflow Status considered RETIRED by Search');
+
+/*
+    Define the index update schedule
+*/
+insert into sbrext.tool_options_view_ext (tool_name, property, value, description) values ('FREESTYLE', 'INDEX.SCHEDULE.START', '03:00', 'The start time (24 hour clock) for the automatic index updates.');
+insert into sbrext.tool_options_view_ext (tool_name, property, value, description) values ('FREESTYLE', 'INDEX.SCHEDULE.END', '19:00', 'The end time (24 hour clock) for the automatic index updates.');
+insert into sbrext.tool_options_view_ext (tool_name, property, value, description) values ('FREESTYLE', 'INDEX.BLOCK.START', '02:00', 'The start time (24 hour clock) when no manual requests can be made.');
+insert into sbrext.tool_options_view_ext (tool_name, property, value, description) values ('FREESTYLE', 'INDEX.BLOCK.END', '09:00', 'The end time (24 hour clock) when no manual requests can be made.');
+insert into sbrext.tool_options_view_ext (tool_name, property, value, description) values ('FREESTYLE', 'INDEX.SCHEDULE.TZ', 'Eastern', 'The timezone for the automatic index updates.');
 
 /*
     Be sure the LOV table is up to date and correct.

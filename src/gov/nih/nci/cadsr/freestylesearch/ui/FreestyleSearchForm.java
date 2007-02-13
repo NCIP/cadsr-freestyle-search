@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FreestyleSearchForm.java,v 1.2 2007-01-25 20:24:07 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FreestyleSearchForm.java,v 1.3 2007-02-13 19:35:17 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.ui;
@@ -16,6 +16,8 @@ import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
+
+import org.jboss.Version;
 
 /**
  * The ActionForm mapping the JSP used by this example user interface.
@@ -301,6 +303,27 @@ public class FreestyleSearchForm extends ActionForm
     {
         return _excludeTest;
     }
+    
+    /**
+     * Set the footer banner
+     * 
+     * @param val_ the footer
+     */
+    public void setFooter(String val_)
+    {
+        _footer = val_;
+        _footer = null;
+    }
+    
+    /**
+     * Get the footer banner
+     * 
+     * @return the footer
+     */
+    public String getFooter()
+    {
+        return _footer;
+    }
 
     /**
      * Validate the content of the Edit Screen.
@@ -317,6 +340,24 @@ public class FreestyleSearchForm extends ActionForm
         ActionErrors errors = new ActionErrors();
         FreestylePlugIn ds = (FreestylePlugIn) request_.getSession().getServletContext().getAttribute(FreestylePlugIn._DATASOURCE);
 
+        if (_footer == null)
+        {
+            String jboss = Version.getInstance().getMajor() + "." + Version.getInstance().getMinor() + "." + Version.getInstance().getRevision();
+            _footer = 
+                "<table class=\"table3\"><colgroup></colgroup><tbody class=\"secttbody\" />\n"
+                    + "<tr><td class=\"ncifmenu\"><span style=\"color: #dddddd\">&nbsp;v&nbsp;"
+                    + Search._vers
+                    + "&nbsp;(" + jboss + "/" + System.getProperty("java.version") + ")"
+                    + "</span></td></tr>\n"
+                    + "<tr>\n<td class=\"nciftrtable\">\n"
+                    + "<a href=\"mailto:ncicb@pop.nci.nih.gov?subject=caDSR%20Sentinel%20Tool\"><span class=\"wdemail\" title=\"Email NCICB Help Desk\">&#42;</span></a>\n"
+                    + "<a target=\"_blank\" href=\"http://www.cancer.gov/\"><img border=\"0\" src=\"footer_nci.gif\" alt=\"National Cancer Institute Logo\" title=\"National Cancer Institute\"></a>\n"
+                    + "<a target=\"_blank\" href=\"http://www.dhhs.gov/\"><img border=\"0\" src=\"footer_hhs.gif\" alt=\"Department of Health and Human Services Logo\" title=\"Department of Health and Human Services\"></a>\n"
+                    + "<a target=\"_blank\" href=\"http://www.nih.gov/\"><img border=\"0\" src=\"footer_nih.gif\" alt=\"National Institutes of Health Logo\" title=\"National Institutes of Health\"></a>\n"
+                    + "<a target=\"_blank\" href=\"http://www.firstgov.gov/\"><img border=\"0\" src=\"footer_firstgov.gif\" alt=\"FirstGov.gov\" title=\"FirstGov.gov\"></a>\n"
+                    + "</td>\n</tr>\n</table>\n";
+        }
+        
         Search var = new Search();
         var.setDataDescription(ds.getDataSource(), ds.getUser(), ds.getPswd());
         String seedTime = null;
@@ -373,4 +414,5 @@ public class FreestyleSearchForm extends ActionForm
     private String _displayOptions;
     private boolean[] _types;
     private String _firstTime;
+    private String _footer;
 }

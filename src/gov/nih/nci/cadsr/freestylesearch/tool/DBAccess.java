@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccess.java,v 1.5 2007-01-25 20:24:07 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccess.java,v 1.6 2007-02-13 19:35:17 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.tool;
@@ -867,6 +867,131 @@ public class DBAccess
         for (int i = 0; i < list.length; ++i)
             list[i] = _desc[i].getTypeName();
         return list;
+    }
+    
+    /**
+     * Get the index blocked end time
+     * 
+     * @return the end time
+     * @exception SearchException
+     */
+    public Timestamp getIndexBlockedEnd() throws SearchException
+    {
+        return getIndexTimes("INDEX.BLOCK.END");
+    }
+    
+    /**
+     * Get the index blocked start time
+     * 
+     * @return the start time
+     * @exception SearchException
+     */
+    public Timestamp getIndexBlockedStart() throws SearchException
+    {
+        return getIndexTimes("INDEX.BLOCK.START");
+    }
+    
+    /**
+     * Get the index scheduled start time
+     * 
+     * @return the start time
+     * @exception SearchException
+     */
+    public Timestamp getIndexScheduledStart() throws SearchException
+    {
+        return getIndexTimes("INDEX.SCHEDULE.START");
+    }
+    
+    /**
+     * Get the index scheduled end time
+     * 
+     * @return the end time
+     * @exception SearchException
+     */
+    public Timestamp getIndexScheduledEnd() throws SearchException
+    {
+        return getIndexTimes("INDEX.SCHEDULE.END");
+    }
+    
+    /**
+     * Get the index time requested
+     * 
+     * @param prop_ the desired time
+     * @return the time
+     * @exception SearchException
+     */
+    private Timestamp getIndexTimes(String prop_) throws SearchException
+    {
+        String select = "select value from sbrext.tool_options_view_ext where tool_name = 'FREESTYLE' and property = '" + prop_ + "' ";
+        Timestamp rc = null;
+        try
+        {
+            _pstmt = _conn.prepareStatement(select);
+            
+            _rs = _pstmt.executeQuery();
+            if (_rs.next())
+            {
+                String ts = new Timestamp(System.currentTimeMillis()).toString();
+                ts = ts.substring(0, ts.indexOf(' '));
+                rc = Timestamp.valueOf(ts + " " + _rs.getString(1) + ":00.0");
+            }
+        }
+        
+        // We had an unexpected problem.
+        catch (SQLException ex)
+        {
+            _errorCode = ex.getErrorCode();
+            _errorMsg = _errorCode + ": " + select + "\n" + ex.toString();
+            _logger.error(_errorMsg);
+            throw new SearchException(ex);
+        }
+
+        finally
+        {
+            // Cleanup and commit changes.
+            cleanupWithCatch();
+        }
+
+        return rc;
+    }
+    
+    /**
+     * Get the index timezone
+     * 
+     * @return the timezone
+     * @exception SearchException
+     */
+    public String getIndexTZ() throws SearchException
+    {
+        String select = "select value from sbrext.tool_options_view_ext where tool_name = 'FREESTYLE' and property = 'INDEX.SCHEDULE.TZ' ";
+        String rc = null;
+        try
+        {
+            _pstmt = _conn.prepareStatement(select);
+            
+            _rs = _pstmt.executeQuery();
+            if (_rs.next())
+            {
+                rc = _rs.getString(1);
+            }
+        }
+        
+        // We had an unexpected problem.
+        catch (SQLException ex)
+        {
+            _errorCode = ex.getErrorCode();
+            _errorMsg = _errorCode + ": " + select + "\n" + ex.toString();
+            _logger.error(_errorMsg);
+            throw new SearchException(ex);
+        }
+
+        finally
+        {
+            // Cleanup and commit changes.
+            cleanupWithCatch();
+        }
+
+        return rc;
     }
     
     /**
