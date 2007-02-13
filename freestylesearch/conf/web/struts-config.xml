@@ -2,10 +2,10 @@
 
 <!DOCTYPE struts-config PUBLIC
           "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN"
-          "http://jakarta.apache.org/struts/dtds/struts-config_1_2.dtd">
+          "http://jakarta.apache.org/struts/dtds/struts-config_1_3.dtd">
 
 <!-- Copyright ScenPro, Inc. 2005
-     $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/web/struts-config.xml,v 1.4 2007-01-25 20:24:06 hebell Exp $
+     $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/web/struts-config.xml,v 1.5 2007-02-13 19:35:16 hebell Exp $
      $Name: not supported by cvs2svn $
 -->
 
@@ -16,6 +16,7 @@
 
     <form-bean name="freestyleForm" type="gov.nih.nci.cadsr.freestylesearch.ui.FreestyleSearchForm"/>
     <form-bean name="remoteForm" type="gov.nih.nci.cadsr.freestylesearch.ui.RemoteForm" />
+    <form-bean name="updateForm" type="gov.nih.nci.cadsr.freestylesearch.ui.UpdateIndicesForm"/>
 
   </form-beans>
   
@@ -27,6 +28,13 @@
             name="freestyleForm"
             scope="request"
             input="/jsp/freestylesearch.jsp">
+    </action>
+
+    <action path="/updateindices"
+            type="gov.nih.nci.cadsr.freestylesearch.ui.UpdateIndices"
+            name="updateForm"
+            scope="request"
+            input="/jsp/updateindices.jsp">
     </action>
 
     <action path="/findReturningDefault"

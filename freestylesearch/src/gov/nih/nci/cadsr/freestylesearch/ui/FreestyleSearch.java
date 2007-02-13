@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FreestyleSearch.java,v 1.2 2007-01-25 20:24:07 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FreestyleSearch.java,v 1.3 2007-02-13 19:35:17 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.ui;
@@ -34,6 +34,7 @@ public class FreestyleSearch extends Action
      */
     public FreestyleSearch()
     {
+        super();
     }
 
     /**

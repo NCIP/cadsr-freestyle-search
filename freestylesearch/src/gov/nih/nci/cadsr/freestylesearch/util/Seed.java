@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Seed.java,v 1.4 2007-01-25 20:24:07 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Seed.java,v 1.5 2007-02-13 19:35:17 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
+import javax.sql.DataSource;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
@@ -86,12 +87,36 @@ public class Seed
         {
             var.parseDatabase(millis);
         }
-        catch (SearchException ex)
+        catch (Exception ex)
         {
             _logger.error(ex.toString());
         }
 
         _logger.info("Seed ended ...");
+    }
+    
+    /**
+     * Set the DataSource holding the connections.
+     * 
+     * @param ds_ the DataSource
+     */
+    public void setDS(DataSource ds_)
+    {
+        _ds = ds_;
+    }
+    
+    /**
+     * Set the database connection credentials
+     * 
+     * @param user_ the user account
+     * @param pswd_ the password
+     */
+    public void setCredentials(String user_, String pswd_)
+    {
+        _userData = user_;
+        _userIndex = user_;
+        _pswdData = pswd_;
+        _pswdIndex = pswd_;
     }
     
     /**
@@ -104,12 +129,18 @@ public class Seed
     {
         // Connect to database.
         DBAccess data = new DBAccess();
-        data.open(_dbData, _userData, _pswdData);
+        if (_ds == null)
+            data.open(_dbData, _userData, _pswdData);
+        else
+            data.open(_ds, _userData, _pswdData);
 
         DBAccessIndex index = new DBAccessIndex();
         try
         {
-            index.open(_dbIndex, _userIndex, _pswdIndex);
+            if (_ds == null)
+                index.open(_dbIndex, _userIndex, _pswdIndex);
+            else
+                index.open(_ds, _userIndex, _pswdIndex);
         }
         catch (SearchException ex)
         {
@@ -169,6 +200,7 @@ public class Seed
     private String _dbData;
     private String _userData;
     private String _pswdData;
+    private DataSource _ds;
     
     private static final Logger _logger = Logger.getLogger(Seed.class.getName());
 }
