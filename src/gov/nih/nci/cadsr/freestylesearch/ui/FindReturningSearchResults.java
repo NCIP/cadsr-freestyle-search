@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FindReturningSearchResults.java,v 1.2 2007-01-25 20:24:07 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FindReturningSearchResults.java,v 1.3 2007-05-14 15:25:47 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.ui;
@@ -69,27 +69,33 @@ public class FindReturningSearchResults extends Action
         catch (SearchException ex)
         {
             response_.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
+            PrintWriter out = null;
             try
             {
-                PrintWriter out = response_.getWriter();
+                out = response_.getWriter();
                 out.println(ex.toString());
-                out.close();
             }
             catch (java.io.IOException ex2)
             {
                 _logger.error(ex2.toString());
             }
+            finally
+            {
+                if (out != null)
+                    out.close();
+            }
             return null;
         }
 
+        PrintWriter out = null;
         try
         {
             // Give a response the caller can understand.
+            out = response_.getWriter();
             int vers = form.getVersionInt();
             if (vers == 1 || vers == 2)
             {
                 response_.setStatus(HttpURLConnection.HTTP_OK);
-                PrintWriter out = response_.getWriter();
                 for (SearchResults line : results)
                 {
                     out.println(SearchRequest.TYPE + line.getType());
@@ -103,7 +109,6 @@ public class FindReturningSearchResults extends Action
                     out.println(SearchRequest.WFS + line.getWorkflowStatus());
                     out.println(SearchRequest.RECEND);
                 }
-                out.close();
             }
             else
             {
@@ -112,7 +117,13 @@ public class FindReturningSearchResults extends Action
         }
         catch (java.io.IOException ex)
         {
+            response_.setStatus(HttpURLConnection.HTTP_NOT_IMPLEMENTED);
             _logger.error(ex.toString());
+        }
+        finally
+        {
+            if (out != null)
+                out.close();
         }
         
         return null;

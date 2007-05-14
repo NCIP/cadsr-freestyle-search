@@ -1,92 +1,131 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 
-<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.xml,v 1.13 2007-01-25 20:24:07 hebell Exp $
+<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.xml,v 1.14 2007-05-14 15:25:47 hebell Exp $
        $Name: not supported by cvs2svn $
  -->
 
 <properties>
-    
-        <!-- The index database access values
-        <entry key="data.DSurl">cbiodb20.nci.nih.gov:1521:CBSTG</entry>
-        <entry key="index.DSurl">cbiodb2-d.nci.nih.gov:1521:CBDEV</entry>
-        <entry key="index.DSusername">freestylesearch</entry>
-        <entry key="index.DSpassword">search0608</entry>
-        <entry key="index.DSschema">sbrext</entry>
-        <entry key="index.DSurl">cbiodb30.nci.nih.gov:1521:CBTEST</entry>
-        -->
-        <entry key="index.DSurl">cbiodb2-d.nci.nih.gov:1521:CBDEV</entry>
-        <entry key="index.DSusername">guest</entry>
-        <entry key="index.DSpassword">guest</entry>
-        <entry key="index.DSschema">sbrext</entry>
-    
-        <!-- The caDSR referenced by the index database access values
-        
-        cbiodb10.nci.nih.gov:1521:CBPROD
-        <entry key="data.DSurl">cbiodb20.nci.nih.gov:1521:CBSTG</entry>
-        <entry key="data.DSurl">cbiodb2-d.nci.nih.gov:1521:CBDEV</entry>
-        <entry key="data.DSusername">freestylesearch</entry>
-        <entry key="data.DSpassword">search0608</entry>
-        <entry key="data.DSurl">cbiodb30.nci.nih.gov:1521:CBTEST</entry>
-        -->
-        <entry key="data.DSurl">cbiodb2-d.nci.nih.gov:1521:CBDEV</entry>
-        <entry key="data.DSusername">guest</entry>
-        <entry key="data.DSpassword">guest</entry>
-        
-        <!-- The Freestyle URL for remote testing. When this property is provided the
-                data.* and index.* properties above are ignored.
-        -->
-        <entry key="remote.url">http://freestyle-dev.nci.nih.gov</entry>
-        
-        <!-- The caCORE API URL should it need to be different than that stored in the data.DSurl
-        -->
-        <entry key="core.url">http://cabio-qa.nci.nih.gov/cacore32/http/remoteService</entry>
 
-        <!-- Define the types of data returns:
+    <!-- Reference information is located at the bottom of the file. Search for the work HELP to
+        jump to it.
+    -->
+    
+    <!-- Define the defaults for all profiles. This avoids redundant entries. During processing
+            the defaults create a base template, an individual profile then overwrites the template
+            values and processing begins. The next profile overwrites a new refreshed template
+            before processing. This makes the "default" profile the foundation for all tests. Use
+            "default" in the profile list to execute the default settings with no changes.
+    -->
+    <entry key="default.index.DSurl">cbiodb2-d.nci.nih.gov:1521:CBDEV</entry>
+    <entry key="default.index.DSusername">guest</entry>
+    <entry key="default.index.DSpassword">guest</entry>
+    <entry key="default.index.DSschema">sbrext</entry>
+    <entry key="default.data.DSurl">cbiodb2-d.nci.nih.gov:1521:CBDEV</entry>
+    <entry key="default.data.DSusername">guest</entry>
+    <entry key="default.data.DSpassword">guest</entry>
+    <entry key="default.freestyle.url">http://freestyle-dev.nci.nih.gov</entry>
+    <entry key="default.core.url">http://cabio-dev.nci.nih.gov/cacore32/http/remoteService</entry>
+    <entry key="default.access">remote</entry>
+    <entry key="default.returns">0</entry>
+    <entry key="default.matchType">2</entry>
+    <entry key="default.limit">50</entry>
+    <entry key="default.scores">1</entry>
+    <entry key="default.restricts"></entry>
+    <entry key="default.restrictResultsByWorkflowNotRetired">false</entry>
+    <entry key="default.excludeTest">false</entry>
+    <entry key="default.excludeTraining">false</entry>
+    <entry key="default.phrase"></entry>
+
+    <!-- Specify the testing profiles to be executed. Any profile defined in this
+            file and not in the profiles list is ignored.
+    -->
+    <entry key="profiles">dev2</entry>
+
+    <entry key="dev1.returns">1</entry>
+    <entry key="dev1.scores">2</entry>
+    <entry key="dev1.restricts">0</entry>
+    <entry key="dev1.phrase">congestive heart failure</entry>
+
+    <entry key="dev2.phrase">cardiac arrest</entry>
+    <entry key="dev2.scores">2</entry>
+    <entry key="dev2.freestyle.url">http://freestyle-stage.nci.nih.gov</entry>
+    <entry key="dev2.returns">1,2</entry>
+    <entry key="dev2.core.url">http://cabio-stage.nci.nih.gov/cacore32/http/remoteService</entry>
+
+    <!-- ===================================================================
+
+        HELP reference information
+    
+        The index database access values.
+        Any key *.index, *.data defines the direct access properties to the caDSR.
+        
+        The engine access value.
+        Any key *.freestyle.url defines the server URL for remote access to the engine.
+        
+        The API access method.
+        Any key *.access define how the engine should be used, either "local" to use the
+        direct database properties or "remote" to use the freestyle server URL.
+        
+        The caCORE access value.
+        Any key *.core.url defines the server URL to the caCORE API. This is only required
+        and used when the returns method is a "2" or "4" (see below) and the test should
+        NOT use the URL defined in the caDSR tool options.
+
+        The search result returns.
+        Any key *.returns defines the conteint and format of the search results, these are:
             0 = default
             1 = abbreviated (idseq, score, type)
             2 = caCORE API Administered Component Objects
             3 = a Generic AC Result Set
             4 = the combination object of 1 and 2
-        -->
-        <entry key="returns">0</entry>
 
-        <!-- Specify the match test type, 0 = exact, 1 = partial, 2 = best.
-        -->
-        <entry key="matchType">2</entry>
+        The term matching action type.
+        Any key *.matchType defines how the terms in the search phrase is compared within
+        the caDSR content, these are:
+            0 = exact
+            1 = partial
+            2 = best.
+
+        The maximum possible number of returns.
+        Any key *.limit defines the total number of maximum results.
     
-        <!-- Specify the maximum possible number of returns.
-        -->
-        <entry key="limit">50</entry>
-    
-        <!-- Specify the maximum number of scores, e.g. 3 is the top 3 scores which may be 56, 23, 2.
-        -->
-        <entry key="scores">1</entry>
-    
-        <!-- Specify the return types of the results. If all are desired comment out this block.
-               0 = DE, 1 = DEC, 2 = VD, 3 = OC, 4 = PROP, 5 = CON, 6 = CD, 7 = VM
-        -->
-        <entry key="restricts">0</entry>
-        
-        <!-- Restrict the results to non-retired Workflow Status
-        -->
-        <entry key="restrictResultsByWorkflowNotRetired">true</entry>
-        
-        <!-- Remove the Test Context from the search
-        -->
-        <entry key="excludeTest">false</entry>
-        
-        <!-- Remove the Training Context from the search
-        -->
-        <entry key="excludeTraining">false</entry>
-    
-        <!-- Specify the terms for which to search. Start numbering with zero (0) and each set
-               will run a separate search.
-        <entry key="terms.0">agent during reporting period</entry>
-        <entry key="terms.1">failure congestive heart</entry>
-        <entry key="terms.2">heart</entry>
-        <entry key="terms.3">congestive failure heart</entry>
-        <entry key="terms.0">limb pain scale</entry>
-        -->
-        <entry key="terms.0">gene</entry>
+        The maximum number of scores.
+        Any key *.scores defines the number of high scores returned up to the *.limit threshold,
+        e.g. 3 is the top 3 scores which may be 56, 23, 2 and there may be 2 with a score of 56,
+        7 with a score of 23 and 4 with a score of 2 provided the *.limit is set to 13 or greater.
+
+        The AC types of the results.
+        Any key *.restricts defines the specific AC types to return in the results.  If all are desired
+        do not specific a *.restricts in the default or specific profile. Type values are numeric and
+        must be one or more of the following separated by commas.
+            0 = DE
+            1 = DEC
+            2 = VD
+            3 = OC
+            4 = PROP
+            5 = CON
+            6 = CD
+            7 = VM
+
+        The results to non-retired Workflow Status.
+        Any key *.restrictResultsByWorkflowNotRetired defines whether to ignore the AC Workflow
+        Status or eliminate the Retired values.
+            true = limits the results to NOT Retired AC's.
+            false = all AC's are included
+
+        The Test Context.
+        Any key *.excludeTest causes all AC's owned by the Test context to be included or excluded.
+            true = AC's owned by the Test context are excluded from the results.
+            false = AC's owned by the Test context are included in the results if successfully matched.
+
+        The Training Context.
+        Any key *.excludeTraining causes all AC's owned by the Training context to be included or excluded.
+            true = AC's owned by the Training context are excluded from the results.
+            false = AC's owned by the Training context are included in the results if successfully matched.
+
+        The search phrase.
+        Any key *.phrase defines the content to match for the search. This may consist of one or more
+        terms and include any values.
+    -->
 
 </properties>

@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FindReturningDefault.java,v 1.2 2007-01-25 20:24:07 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FindReturningDefault.java,v 1.3 2007-05-14 15:25:47 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.ui;
@@ -68,47 +68,51 @@ public class FindReturningDefault extends Action
         catch(SearchException ex)
         {
             response_.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
+            
+            PrintWriter out = null;
             try
             {
-                PrintWriter out = response_.getWriter();
+                out = response_.getWriter();
                 out.println(ex.toString());
-                out.close();
             }
             catch (java.io.IOException ex2)
             {
                 _logger.error(ex2.toString());
             }
+            finally
+            {
+                if (out != null)
+                    out.close();
+            }
             return null;
         }
 
+        PrintWriter out = null;
         try
         {
             // Give a response the caller can understand.
+            out = response_.getWriter();
             int vers = form.getVersionInt(); 
             switch (vers)
             {
                 case 1:
                 {
                     response_.setStatus(HttpURLConnection.HTTP_OK);
-                    PrintWriter out = response_.getWriter();
                     for (String line : results)
                     {
                         String temp = line.replace("\n", "<br/>");
                         out.println(temp);
                     }
-                    out.close();
                     break;
                 }
                 case 2:
                 {
                     response_.setStatus(HttpURLConnection.HTTP_OK);
-                    PrintWriter out = response_.getWriter();
                     for (String line : results)
                     {
                         String temp = line.replace("\n", "<br/>");
                         out.println(SearchRequest.TEXT + temp);
                     }
-                    out.close();
                     break;
                 }
                 default:
@@ -120,7 +124,13 @@ public class FindReturningDefault extends Action
         }
         catch (java.io.IOException ex)
         {
+            response_.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
             _logger.error(ex.toString());
+        }
+        finally
+        {
+            if (out != null)
+                out.close();
         }
         
         return null;
@@ -141,7 +151,7 @@ public class FindReturningDefault extends Action
         Search var = new Search();
         
         // Set database connectivity.
-        var.setDataDescription(ds.getDataSource(), ds.getUser(), ds.getPswd());
+        var.setDataDescription(ds.getDataSource());
         
         return var;
     }

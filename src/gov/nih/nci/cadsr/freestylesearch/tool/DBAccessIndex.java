@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccessIndex.java,v 1.5 2007-01-25 20:24:07 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccessIndex.java,v 1.6 2007-05-14 15:25:47 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.tool;
@@ -220,17 +220,28 @@ public class DBAccessIndex
                 // Commit if needed.
                 if (_needCommit)
                     _conn.commit();
-                
-                // Close only if we opened it.
-                if (_connFlag)
-                    _conn.close();
-                
-                _conn = null;
             }
         }
         catch (SQLException e)
         {
             _logger.error(e.toString());
+        }
+        finally
+        {
+            // Close only if we opened it.
+            if (_connFlag)
+            {
+                try
+                {
+                    if (_conn != null)
+                        _conn.close();
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            
+            _conn = null;
         }
     }
     
@@ -241,23 +252,42 @@ public class DBAccessIndex
      */
     private void cleanup() throws SearchException
     {
+        SQLException se = null;
         try
         {
             if (_rs != null)
             {
                 _rs.close();
-                _rs = null;
-            }
-            if (_pstmt != null)
-            {
-                _pstmt.close();
-                _pstmt = null;
             }
         }
         catch (SQLException ex)
         {
-            throw new SearchException(ex);
+            se = ex;
         }
+        finally
+        {
+            _rs = null;
+        }
+
+        try
+        {
+            if (_pstmt != null)
+            {
+                _pstmt.close();
+            }
+        }
+        catch (SQLException ex)
+        {
+            if (se == null)
+                se = ex;
+        }
+        finally
+        {
+            _pstmt = null;
+        }
+        
+        if (se != null)
+            throw new SearchException(se);
     }
 
     /**
@@ -666,11 +696,11 @@ public class DBAccessIndex
     {
         String sql;
         sql = "begin sbrext.freestyle_pkg.truncate_gs_tables; end;";
+        CallableStatement stmt = null;
         try
         {
-            CallableStatement stmt = _conn.prepareCall(sql);
+            stmt = _conn.prepareCall(sql);
             stmt.executeUpdate();
-            stmt.close();
 
             _logger.info("Index Tables truncated.");
         }
@@ -680,6 +710,19 @@ public class DBAccessIndex
             _errorMsg = _errorCode + ": " + sql + "\n" + ex.toString();
             _logger.error(_errorMsg);
             throw new SearchException(ex);
+        }
+        finally
+        {
+            if (stmt != null)
+            {
+                try
+                {
+                    stmt.close();
+                }
+                catch (Exception ex)
+                {
+                }
+            }
         }
     }
     

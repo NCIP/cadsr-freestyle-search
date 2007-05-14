@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FreestyleSearchForm.java,v 1.3 2007-02-13 19:35:17 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FreestyleSearchForm.java,v 1.4 2007-05-14 15:25:47 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.ui;
@@ -354,12 +354,12 @@ public class FreestyleSearchForm extends ActionForm
                     + "<a target=\"_blank\" href=\"http://www.cancer.gov/\"><img border=\"0\" src=\"footer_nci.gif\" alt=\"National Cancer Institute Logo\" title=\"National Cancer Institute\"></a>\n"
                     + "<a target=\"_blank\" href=\"http://www.dhhs.gov/\"><img border=\"0\" src=\"footer_hhs.gif\" alt=\"Department of Health and Human Services Logo\" title=\"Department of Health and Human Services\"></a>\n"
                     + "<a target=\"_blank\" href=\"http://www.nih.gov/\"><img border=\"0\" src=\"footer_nih.gif\" alt=\"National Institutes of Health Logo\" title=\"National Institutes of Health\"></a>\n"
-                    + "<a target=\"_blank\" href=\"http://www.firstgov.gov/\"><img border=\"0\" src=\"footer_firstgov.gif\" alt=\"FirstGov.gov\" title=\"FirstGov.gov\"></a>\n"
+                    + "<a target=\"_blank\" href=\"http://www.usa.gov/\"><img border=\"0\" src=\"footer_usagov.gif\" alt=\"USA.gov\" title=\"USA.gov\"></a>\n"
                     + "</td>\n</tr>\n</table>\n";
         }
         
         Search var = new Search();
-        var.setDataDescription(ds.getDataSource(), ds.getUser(), ds.getPswd());
+        var.setDataDescription(ds.getDataSource());
         String seedTime = null;
         try
         {

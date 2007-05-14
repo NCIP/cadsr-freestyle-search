@@ -1,10 +1,11 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FreestylePlugIn.java,v 1.2 2007-01-25 20:24:07 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FreestylePlugIn.java,v 1.3 2007-05-14 15:25:47 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.ui;
 
+import gov.nih.nci.cadsr.freestylesearch.util.Search;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.servlet.ServletException;
@@ -38,39 +39,21 @@ public class FreestylePlugIn implements PlugIn
     /**
      * The plug-in method called when the Struts application is started.
      */
-    public void init(ActionServlet arg0, ModuleConfig arg1) throws ServletException
+    public void init(ActionServlet servlet_, ModuleConfig module_) throws ServletException
     {
         // Add an audit trail to the log. This will also be important to verify when the
         // Systems team deploys on Stage and Production and when the server is
         // restarted.
         _logger.info(" ");
-        _logger.info("Freestyle started ..................................................................");
+        _logger.info("Freestyle " + Search._vers + " started ..................................................................");
 
         // Get the init parameters for accessing the database.
-        String stDataSource = arg0.getInitParameter("jbossDataSource");
-        _user = arg0.getInitParameter(_DSUSER);
-        _pswd = arg0.getInitParameter(_DSPSWD);
-        _schema = arg0.getInitParameter(_DSSCHEMA);
- 
-        // Create database pool
-        Context envContext = null;
-        try 
-        {
-            envContext = new InitialContext();
-            _ds = (DataSource)envContext.lookup("java:/" + stDataSource);
-            if (_ds != null)
-            {
-                // Only set the context attribute if we can successfully retrieve the datasource
-                // from JBoss.
-                arg0.getServletContext().setAttribute(_DATASOURCE, this);
-                _logger.info("Using JBoss datasource configuration.");
-            }
-        }
-        catch (Exception ex) 
-        {
-            String stErr = "Error retrieving datasource from JBoss [" + ex.getMessage() + "].";
-            _logger.error(stErr, ex);
-        }
+        _dataSource = servlet_.getInitParameter("jbossDataSource");
+        _user = servlet_.getInitParameter(_DSUSER);
+        _pswd = servlet_.getInitParameter(_DSPSWD);
+        _schema = servlet_.getInitParameter(_DSSCHEMA);
+        servlet_.getServletContext().setAttribute(_DATASOURCE, this);
+        _logger.info("Using JBoss datasource configuration. " + _dataSource);
     }
 
     /**
@@ -80,6 +63,24 @@ public class FreestylePlugIn implements PlugIn
      */
     public DataSource getDataSource()
     {
+        // Get pool from Application Manager
+        Context envContext = null;
+        try 
+        {
+            envContext = new InitialContext();
+            _ds = (DataSource)envContext.lookup("java:/" + _dataSource);
+            if (_ds == null)
+            {
+                _logger.error("Context lookup failed for DataSource. " + _dataSource);
+            }
+        }
+        catch (Exception ex) 
+        {
+            String stErr = "Error retrieving datasource [" + _dataSource + "] from JBoss [" + ex.getMessage() + "].";
+            _logger.error(stErr, ex);
+            _ds = null;
+        }
+
         return _ds;
     }
     
@@ -122,6 +123,7 @@ public class FreestylePlugIn implements PlugIn
     private static final String _DSPSWD = "DSpassword";
     private static final String _DSSCHEMA = "DSschema";
     
+    private String _dataSource;
     private DataSource _ds;
     private String _user;
     private String _pswd;
