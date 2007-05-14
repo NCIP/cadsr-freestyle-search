@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Seed.java,v 1.5 2007-02-13 19:35:17 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Seed.java,v 1.6 2007-05-14 15:25:47 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -47,11 +47,11 @@ public class Seed
         Seed var = new Seed();
 
         Properties prop = new Properties();
+        FileInputStream ins = null;
         try
         {
-            FileInputStream ins = new FileInputStream(args_[1]);
+            ins = new FileInputStream(args_[1]);
             prop.loadFromXML(ins);
-            ins.close();
         }
         catch (FileNotFoundException e)
         {
@@ -67,6 +67,19 @@ public class Seed
         {
             e.printStackTrace();
             return;
+        }
+        finally
+        {
+            if (ins != null)
+            {
+                try
+                {
+                    ins.close();
+                }
+                catch (Exception ex)
+                {
+                }
+            }
         }
         
         var._dbIndex = prop.getProperty("index.DSurl");
@@ -129,31 +142,35 @@ public class Seed
     {
         // Connect to database.
         DBAccess data = new DBAccess();
-        if (_ds == null)
-            data.open(_dbData, _userData, _pswdData);
-        else
-            data.open(_ds, _userData, _pswdData);
-
         DBAccessIndex index = new DBAccessIndex();
+
         try
         {
             if (_ds == null)
+            {
+                data.open(_dbData, _userData, _pswdData);
                 index.open(_dbIndex, _userIndex, _pswdIndex);
+            }
             else
+            {
+                data.open(_ds, _userData, _pswdData);
                 index.open(_ds, _userIndex, _pswdIndex);
+            }
+
+            getLastSeedTimestamp(data, millis_);
+    
+            _logger.info("Retrieving changes made since " + _start.toString());
+            data.parseDatabase(_start, index);
         }
         catch (SearchException ex)
         {
-            data.close();
-            return;
+            throw ex;
         }
-
-        getLastSeedTimestamp(data, millis_);
-
-        _logger.info("Retrieving changes made since " + _start.toString());
-        data.parseDatabase(_start, index);
-        index.close();
-        data.close();
+        finally
+        {
+            index.close();
+            data.close();
+        }
     }
     
     /**

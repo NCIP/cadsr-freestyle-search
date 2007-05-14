@@ -7,7 +7,7 @@
 <!--                                                                       -->
 <!-- ===================================================================== -->
 
-<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/common/log4j_seed.xml,v 1.2 2007-05-14 15:25:46 hebell Exp $ -->
+<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/common/log4j_test.xml,v 1.1 2007-05-14 15:25:46 hebell Exp $ -->
 <!-- $Name: not supported by cvs2svn $ -->
 
 <!--
@@ -35,16 +35,16 @@
     <!-- ============================ -->
     <!-- Setup the freestyle  Appender -->
     <!-- ============================ -->
-    <appender name="FREESTYLESEED_FILE" class="org.apache.log4j.RollingFileAppender">
+        <appender name="FREESTYLETEST_FILE" class="org.apache.log4j.RollingFileAppender">
         <errorHandler class="org.apache.log4j.helpers.OnlyOnceErrorHandler" />
-        <param name="File" value="/local/content/cadsrsentinel/reports/freestyleseed_log.txt" />
+        <param name="File" value="tmp/freestyletest_log.txt" />
         <param name="Append" value="true" />
         <param name="MaxFileSize" value="200KB" />
         <param name="MaxBackupIndex" value="3" />
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d %-5p [%c : %L] %m%n" />
+        <param name="ConversionPattern" value="%d %-5p [%c : %L] %m%n" />
         </layout>
-    </appender>
+        </appender>
 
     <!-- ================ -->
     <!-- Limit categories -->
@@ -64,8 +64,9 @@
     <!-- Setup the sentinel category debug-->
     <!-- ============================ -->
     <category name="gov.nih.nci.cadsr.freestylesearch" additivity="false">
-        <priority value="INFO" />
-        <appender-ref ref="FREESTYLESEED_FILE" />
+        <priority value="DEBUG" />
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FREESTYLETEST_FILE" />
     </category>
 
     <!-- ======================= -->
@@ -75,7 +76,7 @@
     <root>
         <priority value="INFO" />
         <appender-ref ref="CONSOLE" />
-        <appender-ref ref="FREESTYLESEED_FILE" />
+        <appender-ref ref="FREESTYLETEST_FILE" />
     </root>
 
 </log4j:configuration>

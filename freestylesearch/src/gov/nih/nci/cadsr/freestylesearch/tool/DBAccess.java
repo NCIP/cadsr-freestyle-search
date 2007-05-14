@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccess.java,v 1.6 2007-02-13 19:35:17 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccess.java,v 1.7 2007-05-14 15:25:47 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.tool;
@@ -203,17 +203,28 @@ public class DBAccess
                 // Commit if needed.
                 if (_needCommit)
                     _conn.commit();
-                
-                // Close only if we opened it.
-                if (_connFlag)
-                    _conn.close();
-                
-                _conn = null;
             }
         }
         catch (SQLException ex)
         {
             _logger.error(ex.toString());
+        }
+        finally
+        {
+            // Close only if we opened it.
+            if (_connFlag)
+            {
+                try
+                {
+                    if (_conn != null)
+                        _conn.close();
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            
+            _conn = null;
         }
     }
     
@@ -224,23 +235,42 @@ public class DBAccess
      */
     public void cleanup() throws SearchException
     {
+        SQLException se = null;
         try
         {
             if (_rs != null)
             {
                 _rs.close();
-                _rs = null;
-            }
-            if (_pstmt != null)
-            {
-                _pstmt.close();
-                _pstmt = null;
             }
         }
         catch (SQLException ex)
         {
-            throw new SearchException(ex);
+            se = ex;
         }
+        finally
+        {
+            _rs = null;
+        }
+
+        try
+        {
+            if (_pstmt != null)
+            {
+                _pstmt.close();
+            }
+        }
+        catch (SQLException ex)
+        {
+            if (se == null)
+                se = ex;
+        }
+        finally
+        {
+            _pstmt = null;
+        }
+        
+        if (se != null)
+            throw new SearchException(se);
     }
 
     /**
@@ -1059,7 +1089,13 @@ public class DBAccess
             {
                 String insert = "insert into sbrext.tool_options_view_ext(tool_name, property, value, ua_name) values ('FREESTYLE', 'SEED.LASTUPDATE', '"
                         + tss + "', '" + schema + "')";
-                _pstmt.close();
+                try
+                {
+                    _pstmt.close();
+                }
+                catch (Exception ex)
+                {
+                }
                 _pstmt = _conn.prepareStatement(insert);
                 _pstmt.execute();
             }
