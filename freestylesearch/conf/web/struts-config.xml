@@ -5,7 +5,7 @@
           "http://jakarta.apache.org/struts/dtds/struts-config_1_3.dtd">
 
 <!-- Copyright ScenPro, Inc. 2005
-     $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/web/struts-config.xml,v 1.5 2007-02-13 19:35:16 hebell Exp $
+     $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/web/struts-config.xml,v 1.6 2007-05-14 22:22:20 hebell Exp $
      $Name: not supported by cvs2svn $
 -->
 
@@ -17,6 +17,7 @@
     <form-bean name="freestyleForm" type="gov.nih.nci.cadsr.freestylesearch.ui.FreestyleSearchForm"/>
     <form-bean name="remoteForm" type="gov.nih.nci.cadsr.freestylesearch.ui.RemoteForm" />
     <form-bean name="updateForm" type="gov.nih.nci.cadsr.freestylesearch.ui.UpdateIndicesForm"/>
+    <form-bean name="heartbeatForm" type="gov.nih.nci.cadsr.freestylesearch.ui.HeartbeatForm"/>
 
   </form-beans>
   
@@ -61,6 +62,13 @@
     <action path="/findReturningResultSet"
             type="gov.nih.nci.cadsr.freestylesearch.ui.FindReturningResultSet"
             name="remoteForm"
+            scope="request"
+            input="/jsp/freestylesearch.jsp">
+    </action>
+
+    <action path="/heartbeat"
+            type="gov.nih.nci.cadsr.freestylesearch.ui.Heartbeat"
+            name="heartbeatForm"
             scope="request"
             input="/jsp/freestylesearch.jsp">
     </action>
