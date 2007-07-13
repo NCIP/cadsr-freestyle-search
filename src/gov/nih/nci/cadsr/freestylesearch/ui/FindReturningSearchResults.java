@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FindReturningSearchResults.java,v 1.3 2007-05-14 15:25:47 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FindReturningSearchResults.java,v 1.4 2007-07-13 16:25:06 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.ui;
@@ -107,6 +107,27 @@ public class FindReturningSearchResults extends Action
                     out.println(SearchRequest.CNAME + line.getContextName());
                     out.println(SearchRequest.REG + line.getRegistrationStatus());
                     out.println(SearchRequest.WFS + line.getWorkflowStatus());
+                    out.println(SearchRequest.RECEND);
+                }
+            }
+            else if (vers == 3)
+            {
+                response_.setStatus(HttpURLConnection.HTTP_OK);
+                for (SearchResults line : results)
+                {
+                    out.println(SearchRequest.TYPE + line.getType());
+                    out.println(SearchRequest.LNAME + line.getLongName().replace("\n", "<br/>"));
+                    out.println(SearchRequest.PNAME + line.getPreferredName().replace("\n", "<br/>"));
+                    out.println(SearchRequest.ID + line.getPublicID());
+                    out.println(SearchRequest.VERS + line.getVersion());
+                    out.println(SearchRequest.PDEF + line.getPreferredDefinition().replace("\n", "<br/>"));
+                    out.println(SearchRequest.CNAME + line.getContextName());
+                    out.println(SearchRequest.REG + line.getRegistrationStatus());
+                    out.println(SearchRequest.WFS + line.getWorkflowStatus());
+                    out.println(SearchRequest.OCID + line.getObjectClassID());
+                    out.println(SearchRequest.OCVER + line.getObjectClassVersion());
+                    out.println(SearchRequest.PROPID + line.getPropertyID());
+                    out.println(SearchRequest.PROPVER + line.getPropertyVersion());
                     out.println(SearchRequest.RECEND);
                 }
             }
