@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.16 2007-05-14 15:25:47 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.17 2007-07-13 21:03:11 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -39,7 +39,7 @@ public class Search
     /**
      * The published Freestyle Search Engine API version stamp.
      */
-    public static final String _vers ="3.2.0.2.20070419";
+    public static final String _vers ="3.2.0.2.20070713";
 
     /*
      * Index table connection credentials
