@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/SearchResults.java,v 1.4 2007-01-25 20:24:07 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/SearchResults.java,v 1.5 2007-07-13 16:25:06 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -18,25 +18,64 @@ public class SearchResults
      * @param type_ the AC type
      * @param lname_ the long name
      * @param pname_ the preferred name
-     * @param id_ the public id
-     * @param vers_ the version
+     * @param acID_ the public id
+     * @param acVers_ the version
      * @param pdef_ the preferred definition
      * @param cname_ the context name
      * @param reg_ the registration status
      * @param wfs_ the workflow status
      *
      */
-    public SearchResults(SearchAC type_, String lname_, String pname_, int id_, String vers_, String pdef_, String cname_, String reg_, String wfs_)
+    public SearchResults(SearchAC type_, String lname_, String pname_, int acID_, String acVers_, String pdef_, String cname_, String reg_, String wfs_)
     {
         _type = type_;
         _longName = lname_;
         _preferredName = pname_;
-        _publicID = id_;
-        _version = vers_;
+        _acID = acID_;
+        _acVersion = acVers_;
         _preferredDefinition = pdef_;
         _contextName = cname_;
         _registrationStatus = reg_;
         _workflowStatus = wfs_;
+        _ocID = -1;
+        _ocVersion = null;
+        _propID = -1;
+        _propVersion = null;
+    }
+
+    /**
+     * Constructor
+     * 
+     * @param type_ the AC type
+     * @param lname_ the long name
+     * @param pname_ the preferred name
+     * @param acID_ the public id
+     * @param acVers_ the version
+     * @param pdef_ the preferred definition
+     * @param cname_ the context name
+     * @param reg_ the registration status
+     * @param wfs_ the workflow status
+     * @param ocID_ the object class public id
+     * @param ocVers_ the object class version
+     * @param propID_ the property public id
+     * @param propVers_ the property version
+     *
+     */
+    public SearchResults(SearchAC type_, String lname_, String pname_, int acID_, String acVers_, String pdef_, String cname_, String reg_, String wfs_, int ocID_, String ocVers_, int propID_, String propVers_)
+    {
+        _type = type_;
+        _longName = lname_;
+        _preferredName = pname_;
+        _acID = acID_;
+        _acVersion = acVers_;
+        _preferredDefinition = pdef_;
+        _contextName = cname_;
+        _registrationStatus = reg_;
+        _workflowStatus = wfs_;
+        _ocID = ocID_;
+        _ocVersion = ocVers_;
+        _propID = propID_;
+        _propVersion = propVers_;
     }
 
     /**
@@ -76,7 +115,7 @@ public class SearchResults
      */
     public int getPublicID()
     {
-        return _publicID;
+        return _acID;
     }
     
     /**
@@ -86,7 +125,7 @@ public class SearchResults
      */
     public String getVersion()
     {
-        return _version;
+        return _acVersion;
     }
     
     /**
@@ -128,14 +167,58 @@ public class SearchResults
     {
         return _workflowStatus;
     }
+    
+    /**
+     * The Object Class Public ID. This is only valid if the getType() == SearchAC.DE.
+     * 
+     * @return the Object Class Public ID
+     */
+    public int getObjectClassID()
+    {
+        return _ocID;
+    }
+    
+    /**
+     * The Object Class Version. This is only valid if the getType() == SearchAC.DE.
+     * 
+     * @return the Object Class Version
+     */
+    public String getObjectClassVersion()
+    {
+        return _ocVersion;
+    }
+    
+    /**
+     * The Property Public ID. This is only valid if the getType() == SearchAC.DE.
+     * 
+     * @return the Property Public ID
+     */
+    public int getPropertyID()
+    {
+        return _propID;
+    }
+    
+    /**
+     * The Property Version. This is only valid if the getType() == SearchAC.DE.
+     * 
+     * @return the Property Version
+     */
+    public String getPropertyVersion()
+    {
+        return _propVersion;
+    }
 
     private SearchAC _type;
     private String _longName;
     private String _preferredName;
-    private int _publicID;
-    private String _version;
+    private int _acID;
+    private String _acVersion;
     private String _preferredDefinition;
     private String _contextName;
     private String _registrationStatus;
     private String _workflowStatus;
+    private int _ocID;
+    private String _ocVersion;
+    private int _propID;
+    private String _propVersion;
 }

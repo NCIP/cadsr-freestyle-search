@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.java,v 1.12 2007-05-14 15:25:47 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.java,v 1.13 2007-07-13 16:25:06 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.test;
@@ -791,7 +791,12 @@ public class SearchTest
                                         + obj.getVersion() + "] ["
                                         + obj.getPreferredDefinition() + "] ["
                                         + obj.getContextName() + "] ["
-                                        + obj.getRegistrationStatus() + "]");
+                                        + obj.getRegistrationStatus() + "] ["
+                                        + obj.getWorkflowStatus() + "] ["
+                                        + obj.getObjectClassID() + "] ["
+                                        + obj.getObjectClassVersion() + "] ["
+                                        + obj.getPropertyID() + "] ["
+                                        + obj.getPropertyVersion() + "]");
                     }
                     _logger.info(cnt + " matches found");
                 }

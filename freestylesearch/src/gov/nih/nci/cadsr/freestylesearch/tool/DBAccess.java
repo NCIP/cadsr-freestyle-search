@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccess.java,v 1.7 2007-05-14 15:25:47 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccess.java,v 1.8 2007-07-13 16:25:06 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.tool;
@@ -489,9 +489,12 @@ public class DBAccess
         data = data.substring(uall.length());
 
         String select = "";
-        select = "select hits.ac_table, ac.long_name, ac.preferred_name, ac.public_id, ac.version, ac.preferred_definition, c.name, nvl(rs.registration_status, ' '), ac.asl_name "
-            + "from (" + data + ") hits, sbr.admin_components_view ac, sbr.contexts_view c, sbr.ac_registrations_view rs "
-            + "where ac.ac_idseq = hits.ac_idseq and c.conte_idseq = ac.conte_idseq and rs.ac_idseq(+) = ac.ac_idseq "
+        select = "select hits.ac_table, ac.long_name, ac.preferred_name, ac.public_id, ac.version, ac.preferred_definition, c.name, nvl(rs.registration_status, ' '), ac.asl_name, "
+            + "oc.oc_id, oc.version, prop.prop_id, prop.version "
+            + "from (" + data + ") hits, sbr.admin_components_view ac, sbr.contexts_view c, sbr.ac_registrations_view rs, "
+            + "sbr.data_elements_view de, sbr.data_element_concepts_view dec, sbrext.object_classes_view_ext oc, sbrext.properties_view_ext prop "
+            + "where ac.ac_idseq = hits.ac_idseq and c.conte_idseq = ac.conte_idseq and rs.ac_idseq(+) = ac.ac_idseq and "
+            + "de.de_idseq(+) = ac.ac_idseq and dec.dec_idseq(+) = de.dec_idseq and oc.oc_idseq(+) = dec.oc_idseq and prop.prop_idseq(+) = dec.prop_idseq "
             + "order by hits.ac_order asc";
         
         try
@@ -512,7 +515,11 @@ public class DBAccess
                                 _rs.getString(6),
                                 _rs.getString(7),
                                 _rs.getString(8).trim(),
-                                _rs.getString(9));
+                                _rs.getString(9),
+                                _rs.getInt(10),
+                                _rs.getString(11),
+                                _rs.getInt(12),
+                                _rs.getString(13));
                 results.add(display);
             }
         }

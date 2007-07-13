@@ -1,6 +1,6 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 
-<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.xml,v 1.14 2007-05-14 15:25:47 hebell Exp $
+<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.xml,v 1.15 2007-07-13 16:25:06 hebell Exp $
        $Name: not supported by cvs2svn $
  -->
 
@@ -39,12 +39,13 @@
     <!-- Specify the testing profiles to be executed. Any profile defined in this
             file and not in the profiles list is ignored.
     -->
-    <entry key="profiles">dev2</entry>
+    <entry key="profiles">dev1</entry>
 
-    <entry key="dev1.returns">1</entry>
-    <entry key="dev1.scores">2</entry>
-    <entry key="dev1.restricts">0</entry>
+    <entry key="dev1.returns">3</entry>
+    <entry key="dev1.scores">4</entry>
+    <entry key="dev1.restricts"></entry>
     <entry key="dev1.phrase">congestive heart failure</entry>
+    <entry key="dev1.access">local</entry>
 
     <entry key="dev2.phrase">cardiac arrest</entry>
     <entry key="dev2.scores">2</entry>

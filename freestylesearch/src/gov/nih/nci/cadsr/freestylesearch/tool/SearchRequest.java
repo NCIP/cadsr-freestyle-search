@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/SearchRequest.java,v 1.1 2007-01-25 20:24:07 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/SearchRequest.java,v 1.2 2007-07-13 16:25:06 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.tool;
@@ -224,7 +224,7 @@ public class SearchRequest
      */
     public Vector<SearchResults> findReturningSearchResults(Search sobj_, String phrase_) throws SearchException
     {
-        String url = formURL("findReturningSearchResults", 2, sobj_, phrase_);
+        String url = formURL("findReturningSearchResults", 3, sobj_, phrase_);
 
         Vector<SearchResults> rs = new Vector<SearchResults>();
         int rc = HttpURLConnection.HTTP_OK;
@@ -252,12 +252,16 @@ public class SearchRequest
                 SearchAC rType = null;
                 String rLname = null;
                 String rPname = null;
-                int rId = 0;
-                String rVers = null;
+                int rAcid = 0;
+                String rAcvers = null;
                 String rPdef = null;
                 String rCname = null;
                 String rReg = null;
                 String rWfs = null;
+                int rOcid = -1;
+                String rOcver = null;
+                int rPropid = -1;
+                String rPropver = null;
 
                 while (true)
                 {
@@ -267,17 +271,21 @@ public class SearchRequest
                     
                     if (line.equals(RECEND))
                     {
-                        SearchResults rec = new SearchResults(rType, rLname, rPname, rId, rVers, rPdef, rCname, rReg, rWfs);
+                        SearchResults rec = new SearchResults(rType, rLname, rPname, rAcid, rAcvers, rPdef, rCname, rReg, rWfs, rOcid, rOcver, rPropid, rPropver);
                         rs.add(rec);
                         rType = null;
                         rLname = null;
                         rPname = null;
-                        rId = 0;
-                        rVers = null;
+                        rAcid = 0;
+                        rAcvers = null;
                         rPdef = null;
                         rCname = null;
                         rReg = null;
                         rWfs = null;
+                        rOcid = -1;
+                        rOcver = null;
+                        rPropid = -1;
+                        rPropver = null;
                     }
                     else if (line.startsWith(TYPE))
                         rType = SearchAC.valueOf(line.substring(TYPE.length()));
@@ -286,9 +294,9 @@ public class SearchRequest
                     else if (line.startsWith(PNAME))
                         rPname = line.substring(PNAME.length()).replace("<br/>", "\n");
                     else if (line.startsWith(ID))
-                        rId = Integer.valueOf(line.substring(ID.length()));
+                        rAcid = Integer.valueOf(line.substring(ID.length()));
                     else if (line.startsWith(VERS))
-                        rVers = line.substring(VERS.length());
+                        rAcvers = line.substring(VERS.length());
                     else if (line.startsWith(PDEF))
                         rPdef = line.substring(PDEF.length()).replace("<br/>", "\n");
                     else if (line.startsWith(CNAME))
@@ -297,6 +305,14 @@ public class SearchRequest
                         rReg = line.substring(REG.length());
                     else if (line.startsWith(WFS))
                         rWfs = line.substring(WFS.length());
+                    else if (line.startsWith(OCID))
+                        rOcid = Integer.valueOf(line.substring(OCID.length()));
+                    else if (line.startsWith(OCVER))
+                        rOcver = line.substring(OCVER.length());
+                    else if (line.startsWith(PROPID))
+                        rPropid = Integer.valueOf(line.substring(PROPID.length()));
+                    else if (line.startsWith(PROPVER))
+                        rPropver = line.substring(PROPVER.length());
                 }
             }
             else if (rc == HttpURLConnection.HTTP_INTERNAL_ERROR)
@@ -479,6 +495,22 @@ public class SearchRequest
     /**
      */
     public static final String WFS = "wfs ";
+    
+    /**
+     */
+    public static final String OCID = "ocid ";
+    
+    /**
+     */
+    public static final String OCVER = "ocver ";
+    
+    /**
+     */
+    public static final String PROPID = "propid ";
+    
+    /**
+     */
+    public static final String PROPVER = "propver ";
     
     /**
      */
