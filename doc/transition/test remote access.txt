@@ -1,0 +1,13 @@
+
+Copy the desired URL listed below into the browser address bar and verify the results. It is easiest to read the response via "View Source" as the
+browser normally changes new lines to white space when wrapping.
+
+   $Header: /share/content/gforge/freestylesearch/freestylesearch/doc/transition/test remote access.txt,v 1.1 2007-12-11 22:26:02 hebell Exp $
+   $Name: not supported by cvs2svn $
+
+
+http://freestyle-dev.nci.nih.gov/freestyle/do/findReturningIdseq?version=1&phrase=heart%20failure&ewfsr=false&limit=50&highest=3&match=BEST&rall=true
+http://freestyle-dev.nci.nih.gov/freestyle/do/findReturningIdseq?version=2&phrase=heart%20failure&ewfsr=false&limit=50&highest=3&match=BEST&rall=true
+http://freestyle-dev.nci.nih.gov/freestyle/do/findReturningDefault?version=1&phrase=heart%20failure&ewfsr=false&limit=50&highest=3&match=BEST&rall=true
+http://freestyle-dev.nci.nih.gov/freestyle/do/findReturningResultSet?version=1&phrase=heart%20failure&ewfsr=false&limit=50&highest=3&match=BEST&rall=true
+http://freestyle-dev.nci.nih.gov/freestyle/do/findReturningSearchResults?version=1&phrase=heart%20failure&ewfsr=false&limit=50&highest=3&match=BEST&rall=true
