@@ -1,0 +1,22 @@
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/template.seed.xml,v 1.1 2007-12-11 22:09:42 hebell Exp $
+       $Name: not supported by cvs2svn $
+ -->
+
+<properties>
+    
+        <!-- The index database access values
+        -->
+        <entry key="index.DSurl">@CADSR.DS.URL@</entry>
+        <entry key="index.DSusername">@CADSR.DS.USER@</entry>
+        <entry key="index.DSpassword">@CADSR.DS.PSWD@</entry>
+        <entry key="index.DSschema">sbrext</entry>
+    
+        <!-- The caDSR referenced by the index database access values
+        -->
+        <entry key="data.DSurl">@CADSR.DS.URL@</entry>
+        <entry key="data.DSusername">@CADSR.DS.USER@</entry>
+        <entry key="data.DSpassword">@CADSR.DS.PSWD@</entry>
+
+</properties>

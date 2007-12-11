@@ -1,0 +1,12 @@
+<!--        
+       $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/template.freestyle-log4j-category.xml,v 1.1 2007-12-11 22:09:42 hebell Exp $
+       $Name: not supported by cvs2svn $
+-->
+
+<!-- ============================ -->
+<!-- Setup the freestyle category debug-->
+<!-- ============================ -->
+<category name="gov.nih.nci.cadsr.freestylesearch" additivity="false">
+  <priority value="INFO"/>
+  <appender-ref ref="FREESTYLESEARCH_FILE"/>
+</category>
