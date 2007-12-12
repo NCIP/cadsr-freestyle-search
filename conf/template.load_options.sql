@@ -1,6 +1,6 @@
 /* Copyright ScenPro, Inc, 2005
 
-   $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/template.load_options.sql,v 1.1 2007-12-11 22:09:42 hebell Exp $
+   $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/template.load_options.sql,v 1.2 2007-12-12 22:45:22 hebell Exp $
    $Name: not supported by cvs2svn $
 
    Author: Larry Hebel
@@ -12,6 +12,8 @@
    the Freestyle Search Engine Installation Guide (file:
    distrib/doc/Installation Guide.doc).
 */
+
+whenever sqlerror exit sql.sqlcode rollback;
 
 /*
     Don't normally need to delete and reset the table from scratch.
