@@ -5,7 +5,7 @@
           "http://jakarta.apache.org/struts/dtds/struts-config_1_3.dtd">
 
 <!-- Copyright ScenPro, Inc. 2005
-     $Header: /share/content/gforge/freestylesearch/freestylesearch/WebRoot/WEB-INF/struts-config.xml,v 1.1 2007-12-11 22:45:35 hebell Exp $
+     $Header: /share/content/gforge/freestylesearch/freestylesearch/WebRoot/WEB-INF/struts-config.xml,v 1.2 2007-12-12 23:11:11 hebell Exp $
      $Name: not supported by cvs2svn $
 -->
 
@@ -77,7 +77,7 @@
   
   <message-resources
     null="false"
-    parameter="gov.nih.nci.cadsr.freestylesearch.tool.Freestyle"/>
+    parameter="gov.nih.nci.cadsr.freestylesearch.Freestyle"/>
     
   <plug-in className="gov.nih.nci.cadsr.freestylesearch.ui.FreestylePlugIn" />
 
