@@ -1,5 +1,5 @@
 <!-- Copyright ScenPro, Inc. 2005
-    $Header: /share/content/gforge/freestylesearch/freestylesearch/build.xml,v 1.6 2007-12-12 16:08:23 hebell Exp $
+    $Header: /share/content/gforge/freestylesearch/freestylesearch/build.xml,v 1.7 2007-12-12 23:11:11 hebell Exp $
     $Name: not supported by cvs2svn $
 -->
 <project name="caDSR Freestyle Search" default="init" basedir=".">
@@ -135,8 +135,7 @@
     <target name="-assemble" depends="-compile,-prop-check" description="Assembles the deployment parts into the artifacts folders.">
         <echo>Assembling artifacts ...</echo>
         <delete>
-            <fileset file="${prop.dir}/DSRAlert.properties" />
-            <fileset file="${prop.dir}/test/DSRAlertTest.properties" />
+            <fileset file="${prop.dir}/Freestyle.properties" />
             <fileset file="${web.dir}/web.xml" />
         </delete>
         <copy todir="${artifacts.dir}">
