@@ -1,5 +1,5 @@
 <!-- Copyright ScenPro, Inc. 2005
-     $Header: /share/content/gforge/freestylesearch/freestylesearch/WebRoot/jsp/updateindices.jsp,v 1.1 2007-12-11 22:45:35 hebell Exp $
+     $Header: /share/content/gforge/freestylesearch/freestylesearch/WebRoot/jsp/updateindices.jsp,v 1.2 2007-12-12 22:58:08 hebell Exp $
      $Name: not supported by cvs2svn $
 -->
 <%@ taglib uri="/tags/struts-bean" prefix="bean"%>
@@ -13,7 +13,7 @@
         <html:base />
         <meta http-equiv="Content-Language" content="en-us">
         <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=WINDOWS-1252">
-        <LINK href="css/freestyle.css" rel="stylesheet" type="text/css">
+        <LINK href="/freestyle/css/freestyle.css" rel="stylesheet" type="text/css">
         <script type="text/javascript">
             function loaded()
             {
@@ -28,8 +28,8 @@
     <body onload="loaded();">
         <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#A90101">
             <tr bgcolor="#A90101">
-                <td valign="center" align="left"><a href="http://www.cancer.gov" target="_blank" alt="NCI Logo"> <img src="images/brandtype.gif" border="0"></a></td>
-                <td valign="center" align="right"><a href="http://www.cancer.gov" target="_blank" alt="NCI Logo"> <img src="images/tagline_nologo.gif" border="0"></a></td>
+                <td valign="center" align="left"><a href="http://www.cancer.gov" target="_blank" alt="NCI Logo"> <img src="/freestyle/images/brandtype.gif" border="0"></a></td>
+                <td valign="center" align="right"><a href="http://www.cancer.gov" target="_blank" alt="NCI Logo"> <img src="/freestyle/images/tagline_nologo.gif" border="0"></a></td>
             </tr>
         </table>
         <table class="secttable">
@@ -38,7 +38,7 @@
             </colgroup>
             <tbody class="secttbody" />
                 <tr>
-                    <td><a target="_blank" href="http://ncicb.nci.nih.gov/NCICB/infrastructure/cacore_overview/cadsr"><img style="border: 0px solid black" title="NCICB caDSR" src="images/freestyle_banner.gif"></a></td>
+                    <td><a target="_blank" href="http://ncicb.nci.nih.gov/NCICB/infrastructure/cacore_overview/cadsr"><img style="border: 0px solid black" title="NCICB caDSR" src="/freestyle/images/freestyle_banner.gif"></a></td>
                 </tr>
                 <tr>
                     <td align="center"><p class="ttl18"><bean:message key="update.title" /></p></td>

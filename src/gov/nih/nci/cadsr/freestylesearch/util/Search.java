@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.17 2007-07-13 21:03:11 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.18 2007-12-12 22:58:08 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -18,6 +18,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.PropertyResourceBundle;
+import java.util.ResourceBundle;
 import java.util.Vector;
 import javax.sql.DataSource;
 import org.apache.log4j.Logger;
@@ -39,7 +41,7 @@ public class Search
     /**
      * The published Freestyle Search Engine API version stamp.
      */
-    public static final String _vers ="3.2.0.2.20070713";
+    public static final String _vers ="Appl.version";
 
     /*
      * Index table connection credentials
@@ -113,7 +115,7 @@ public class Search
             // This is an API so give the developer/user a log note about the release/version
             // of the software being used.
             _versLog = false;
-            _logger.info("Freestyle Search Engine JAR (freestylesearch.jar)  version " + _vers);
+            _logger.info("Freestyle Search Engine JAR (freestylesearch.jar)  version " + getVersion());
         }
     }
     
@@ -124,7 +126,9 @@ public class Search
      */
     public static String getVersion()
     {
-        return _vers;
+        ResourceBundle props = PropertyResourceBundle.getBundle("gov.nih.nci.cadsr.freestylesearch.Freestyle");
+        String temp = (props != null) ? props.getString(_vers) : "Error loading Property file.";
+        return temp;
     }
 
     /**
