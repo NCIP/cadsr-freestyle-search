@@ -1,6 +1,6 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 
-<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.xml,v 1.15 2007-07-13 16:25:06 hebell Exp $
+<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.xml,v 1.16 2007-12-12 22:58:08 hebell Exp $
        $Name: not supported by cvs2svn $
  -->
 
@@ -16,11 +16,13 @@
             before processing. This makes the "default" profile the foundation for all tests. Use
             "default" in the profile list to execute the default settings with no changes.
     -->
-    <entry key="default.index.DSurl">cbiodb2-d.nci.nih.gov:1521:CBDEV</entry>
+<!--     <entry key="default.index.DSurl">cbiodb2-d.nci.nih.gov:1521:CBDEV</entry> -->
+    <entry key="default.index.DSurl">cbiodb540.nci.nih.gov:1521:DSRDEV</entry>
     <entry key="default.index.DSusername">guest</entry>
     <entry key="default.index.DSpassword">guest</entry>
     <entry key="default.index.DSschema">sbrext</entry>
-    <entry key="default.data.DSurl">cbiodb2-d.nci.nih.gov:1521:CBDEV</entry>
+<!--     <entry key="default.data.DSurl">cbiodb2-d.nci.nih.gov:1521:CBDEV</entry> -->
+    <entry key="default.data.DSurl">cbiodb540.nci.nih.gov:1521:DSRDEV</entry>
     <entry key="default.data.DSusername">guest</entry>
     <entry key="default.data.DSpassword">guest</entry>
     <entry key="default.freestyle.url">http://freestyle-dev.nci.nih.gov</entry>
@@ -41,7 +43,7 @@
     -->
     <entry key="profiles">dev1</entry>
 
-    <entry key="dev1.returns">3</entry>
+    <entry key="dev1.returns">1,2,3</entry>
     <entry key="dev1.scores">4</entry>
     <entry key="dev1.restricts"></entry>
     <entry key="dev1.phrase">congestive heart failure</entry>
@@ -49,9 +51,9 @@
 
     <entry key="dev2.phrase">cardiac arrest</entry>
     <entry key="dev2.scores">2</entry>
-    <entry key="dev2.freestyle.url">http://freestyle-stage.nci.nih.gov</entry>
+    <entry key="dev2.freestyle.url">http://freestyle-qa.nci.nih.gov</entry>
     <entry key="dev2.returns">1,2</entry>
-    <entry key="dev2.core.url">http://cabio-stage.nci.nih.gov/cacore32/http/remoteService</entry>
+    <entry key="dev2.core.url">http://cbvapp-q1003.nci.nih.gov:19080/evsapi</entry>
 
     <!-- ===================================================================
 

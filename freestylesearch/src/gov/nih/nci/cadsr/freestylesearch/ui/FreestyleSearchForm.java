@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FreestyleSearchForm.java,v 1.4 2007-05-14 15:25:47 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FreestyleSearchForm.java,v 1.5 2007-12-12 22:58:08 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.ui;
@@ -12,10 +12,12 @@ import gov.nih.nci.cadsr.freestylesearch.util.SearchMatch;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.struts.Globals;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
+import org.apache.struts.util.MessageResources;
 
 import org.jboss.Version;
 
@@ -342,19 +344,21 @@ public class FreestyleSearchForm extends ActionForm
 
         if (_footer == null)
         {
+            MessageResources msgs = (MessageResources) request_.getSession().getServletContext().getAttribute(Globals.MESSAGES_KEY);
+            String temp = msgs.getMessage(Search._vers);
             String jboss = Version.getInstance().getMajor() + "." + Version.getInstance().getMinor() + "." + Version.getInstance().getRevision();
             _footer = 
                 "<table class=\"table3\"><colgroup></colgroup><tbody class=\"secttbody\" />\n"
                     + "<tr><td class=\"ncifmenu\"><span style=\"color: #dddddd\">&nbsp;v&nbsp;"
-                    + Search._vers
+                    + temp
                     + "&nbsp;(" + jboss + "/" + System.getProperty("java.version") + ")"
                     + "</span></td></tr>\n"
                     + "<tr>\n<td class=\"nciftrtable\">\n"
                     + "<a href=\"mailto:ncicb@pop.nci.nih.gov?subject=caDSR%20Sentinel%20Tool\"><span class=\"wdemail\" title=\"Email NCICB Help Desk\">&#42;</span></a>\n"
-                    + "<a target=\"_blank\" href=\"http://www.cancer.gov/\"><img border=\"0\" src=\"footer_nci.gif\" alt=\"National Cancer Institute Logo\" title=\"National Cancer Institute\"></a>\n"
-                    + "<a target=\"_blank\" href=\"http://www.dhhs.gov/\"><img border=\"0\" src=\"footer_hhs.gif\" alt=\"Department of Health and Human Services Logo\" title=\"Department of Health and Human Services\"></a>\n"
-                    + "<a target=\"_blank\" href=\"http://www.nih.gov/\"><img border=\"0\" src=\"footer_nih.gif\" alt=\"National Institutes of Health Logo\" title=\"National Institutes of Health\"></a>\n"
-                    + "<a target=\"_blank\" href=\"http://www.usa.gov/\"><img border=\"0\" src=\"footer_usagov.gif\" alt=\"USA.gov\" title=\"USA.gov\"></a>\n"
+                    + "<a target=\"_blank\" href=\"http://www.cancer.gov/\"><img border=\"0\" src=\"/freestyle/images/footer_nci.gif\" alt=\"National Cancer Institute Logo\" title=\"National Cancer Institute\"></a>\n"
+                    + "<a target=\"_blank\" href=\"http://www.dhhs.gov/\"><img border=\"0\" src=\"/freestyle/images/footer_hhs.gif\" alt=\"Department of Health and Human Services Logo\" title=\"Department of Health and Human Services\"></a>\n"
+                    + "<a target=\"_blank\" href=\"http://www.nih.gov/\"><img border=\"0\" src=\"/freestyle/images/footer_nih.gif\" alt=\"National Institutes of Health Logo\" title=\"National Institutes of Health\"></a>\n"
+                    + "<a target=\"_blank\" href=\"http://www.usa.gov/\"><img border=\"0\" src=\"/freestyle/images/footer_usagov.gif\" alt=\"USA.gov\" title=\"USA.gov\"></a>\n"
                     + "</td>\n</tr>\n</table>\n";
         }
         

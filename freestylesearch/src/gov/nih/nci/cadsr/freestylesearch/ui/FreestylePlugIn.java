@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FreestylePlugIn.java,v 1.3 2007-05-14 15:25:47 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FreestylePlugIn.java,v 1.4 2007-12-12 22:58:08 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.ui;
@@ -11,9 +11,11 @@ import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.sql.DataSource;
 import org.apache.log4j.Logger;
+import org.apache.struts.Globals;
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.action.PlugIn;
 import org.apache.struts.config.ModuleConfig;
+import org.apache.struts.util.MessageResources;
 
 /**
  * This plug-in class provides a Struts application access to the init-param values
@@ -44,8 +46,10 @@ public class FreestylePlugIn implements PlugIn
         // Add an audit trail to the log. This will also be important to verify when the
         // Systems team deploys on Stage and Production and when the server is
         // restarted.
+        MessageResources msgs = (MessageResources) servlet_.getServletContext().getAttribute(Globals.MESSAGES_KEY);
+        String temp = msgs.getMessage(Search._vers);
         _logger.info(" ");
-        _logger.info("Freestyle " + Search._vers + " started ..................................................................");
+        _logger.info("Freestyle " + temp + " started ..................................................................");
 
         // Get the init parameters for accessing the database.
         _dataSource = servlet_.getInitParameter("jbossDataSource");
