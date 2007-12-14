@@ -1,5 +1,5 @@
 <!-- Copyright ScenPro, Inc. 2005
-    $Header: /share/content/gforge/freestylesearch/freestylesearch/build.xml,v 1.7 2007-12-12 23:11:11 hebell Exp $
+    $Header: /share/content/gforge/freestylesearch/freestylesearch/build.xml,v 1.8 2007-12-14 21:21:52 hebell Exp $
     $Name: not supported by cvs2svn $
 -->
 <project name="caDSR Freestyle Search" default="init" basedir=".">
@@ -88,6 +88,7 @@
     <property name="prop.dir" location="${classes.dir}/gov/nih/nci/cadsr/freestylesearch" />
     <property name="src.dir" location="${basedir}/src" />
     <property name="lib.dir" location="${basedir}/lib" />
+    <property name="scpPath.dir" location="${SCP.PATH}/freestyle" />
     <condition property="check.test">
         <equals arg1="${TEST}" arg2="true" trim="true" />
     </condition>
@@ -360,21 +361,23 @@
     </target>
 
     <target name="-deploy-binaries-remote" depends="-prop-check" if="remote.deploy" description="Deploys the executable product binaries to a remote machine.">
-        <echo>Deploying binaries to remote file system "${SCP.USER}@${SCP.HOST}:${SCP.PATH}"</echo>
+        <echo>mkdir ${scpPath.dir}</echo>
+        <sshexec username="${SCP.USER}" host="${SCP.HOST}" port="${SCP.PORT}" passphrase="${SCP.PASSPHRASE}" keyfile="${SCP.KEYFILE}" trust="true" verbose="true" command="mkdir ${scpPath.dir}" />
 
-        <scp todir="${SCP.USER}@${SCP.HOST}:${SCP.PATH}" port="${SCP.PORT}" passphrase="${SCP.PASSPHRASE}" keyfile="${SCP.KEYFILE}" trust="true" verbose="true">
+        <echo>Deploying binaries to remote file system "${SCP.USER}@${SCP.HOST}:${scpPath.dir}"</echo>
+        <scp todir="${SCP.USER}@${SCP.HOST}:${scpPath.dir}" port="${SCP.PORT}" passphrase="${SCP.PASSPHRASE}" keyfile="${SCP.KEYFILE}" trust="true" verbose="true">
             <fileset dir="${artifacts.dir}" includes="**/*" />
         </scp>
 
-        <echo>cp ${SCP.PATH}/bin/* ${TOOL.BIN.DIR}/.</echo>
-        <sshexec username="${SCP.USER}" host="${SCP.HOST}" port="${SCP.PORT}" passphrase="${SCP.PASSPHRASE}" keyfile="${SCP.KEYFILE}" trust="true" verbose="true" command="cp ${SCP.PATH}/bin/* ${TOOL.BIN.DIR}/." />
+        <echo>cp ${scpPath.dir}/bin/* ${TOOL.BIN.DIR}/.</echo>
+        <sshexec username="${SCP.USER}" host="${SCP.HOST}" port="${SCP.PORT}" passphrase="${SCP.PASSPHRASE}" keyfile="${SCP.KEYFILE}" trust="true" verbose="true" command="cp ${scpPath.dir}/bin/* ${TOOL.BIN.DIR}/." />
         <echo>chmod +rx ${TOOL.BIN.DIR}/autorun.sh</echo>
         <sshexec username="${SCP.USER}" host="${SCP.HOST}" port="${SCP.PORT}" passphrase="${SCP.PASSPHRASE}" keyfile="${SCP.KEYFILE}" trust="true" verbose="true" command="chmod +rx ${TOOL.BIN.DIR}/autorun.sh" />
 
-        <echo>cp ${SCP.PATH}/jboss/*-oracle-ds.xml ${JBOSS.DEPLOY.DIR}/.</echo>
-        <sshexec username="${SCP.USER}" host="${SCP.HOST}" port="${SCP.PORT}" passphrase="${SCP.PASSPHRASE}" keyfile="${SCP.KEYFILE}" trust="true" verbose="true" command="cp ${SCP.PATH}/jboss/*-oracle-ds.xml ${JBOSS.DEPLOY.DIR}/." />
-        <echo>cp ${SCP.PATH}/jboss/freestyle-log4j-*.xml ${JBOSS.CONF.DIR}/log4j/.</echo>
-        <sshexec username="${SCP.USER}" host="${SCP.HOST}" port="${SCP.PORT}" passphrase="${SCP.PASSPHRASE}" keyfile="${SCP.KEYFILE}" trust="true" verbose="true" command="cp ${SCP.PATH}/jboss/freestyle-log4j-*.xml ${JBOSS.CONF.DIR}/log4j/." />
+        <echo>cp ${scpPath.dir}/jboss/*-oracle-ds.xml ${JBOSS.DEPLOY.DIR}/.</echo>
+        <sshexec username="${SCP.USER}" host="${SCP.HOST}" port="${SCP.PORT}" passphrase="${SCP.PASSPHRASE}" keyfile="${SCP.KEYFILE}" trust="true" verbose="true" command="cp ${scpPath.dir}/jboss/*-oracle-ds.xml ${JBOSS.DEPLOY.DIR}/." />
+        <echo>cp ${scpPath.dir}/jboss/freestyle-log4j-*.xml ${JBOSS.CONF.DIR}/log4j/.</echo>
+        <sshexec username="${SCP.USER}" host="${SCP.HOST}" port="${SCP.PORT}" passphrase="${SCP.PASSPHRASE}" keyfile="${SCP.KEYFILE}" trust="true" verbose="true" command="cp ${scpPath.dir}/jboss/freestyle-log4j-*.xml ${JBOSS.CONF.DIR}/log4j/." />
         <echo>cat ${JBOSS.CONF.DIR}/log4j/log4j-header.xml ${JBOSS.CONF.DIR}/log4j/*-log4j-appender.xml ${JBOSS.CONF.DIR}/log4j/*-log4j-category.xml ${JBOSS.CONF.DIR}/log4j/log4j-footer.xml &gt; ${JBOSS.CONF.DIR}/log4j/log4j.xml</echo>
         <sshexec username="${SCP.USER}" host="${SCP.HOST}" port="${SCP.PORT}" passphrase="${SCP.PASSPHRASE}" keyfile="${SCP.KEYFILE}" trust="true" verbose="true" command="cat ${JBOSS.CONF.DIR}/log4j/log4j-header.xml ${JBOSS.CONF.DIR}/log4j/*-log4j-appender.xml ${JBOSS.CONF.DIR}/log4j/*-log4j-category.xml ${JBOSS.CONF.DIR}/log4j/log4j-footer.xml > ${JBOSS.CONF.DIR}/log4j/log4j.xml" />
         <echo>mv ${JBOSS.CONF.DIR}/log4j/log4j.xml ${JBOSS.CONF.DIR}/log4j.xml</echo>
@@ -382,8 +385,8 @@
 
         <sleep seconds="15" />
 
-        <echo>cp ${SCP.PATH}/jboss/freestyle.war ${JBOSS.DEPLOY.DIR}/freestyle.waz</echo>
-        <sshexec username="${SCP.USER}" host="${SCP.HOST}" port="${SCP.PORT}" passphrase="${SCP.PASSPHRASE}" keyfile="${SCP.KEYFILE}" trust="true" verbose="true" command="cp ${SCP.PATH}/jboss/freestyle.war ${JBOSS.DEPLOY.DIR}/freestyle.waz" />
+        <echo>cp ${scpPath.dir}/jboss/freestyle.war ${JBOSS.DEPLOY.DIR}/freestyle.waz</echo>
+        <sshexec username="${SCP.USER}" host="${SCP.HOST}" port="${SCP.PORT}" passphrase="${SCP.PASSPHRASE}" keyfile="${SCP.KEYFILE}" trust="true" verbose="true" command="cp ${scpPath.dir}/jboss/freestyle.war ${JBOSS.DEPLOY.DIR}/freestyle.waz" />
         <echo>mv ${JBOSS.DEPLOY.DIR}/freestyle.waz ${JBOSS.DEPLOY.DIR}/freestyle.war</echo>
         <sshexec username="${SCP.USER}" host="${SCP.HOST}" port="${SCP.PORT}" passphrase="${SCP.PASSPHRASE}" keyfile="${SCP.KEYFILE}" trust="true" verbose="true" command="mv ${JBOSS.DEPLOY.DIR}/freestyle.waz ${JBOSS.DEPLOY.DIR}/freestyle.war" />
 
