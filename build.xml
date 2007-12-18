@@ -1,5 +1,5 @@
 <!-- Copyright ScenPro, Inc. 2005
-    $Header: /share/content/gforge/freestylesearch/freestylesearch/build.xml,v 1.9 2007-12-17 15:30:41 hebell Exp $
+    $Header: /share/content/gforge/freestylesearch/freestylesearch/build.xml,v 1.10 2007-12-18 16:17:38 hebell Exp $
     $Name: not supported by cvs2svn $
 -->
 <project name="caDSR Freestyle Search" default="init" basedir=".">
@@ -37,7 +37,7 @@
         TIER = ${TIER}
         TIER.UPPER = ${TIER.UPPER}
         TIER.NAME = ${TIER.NAME}
-        TOOL.BIN.DIR = ${TOOL.BIN.DIR}
+        TOOL.ROOT.DIR = ${TOOL.ROOT.DIR}
         WEBLOG.DIR = ${WEBLOG.DIR}
     </echo>
     <condition property="check.props">
@@ -54,7 +54,7 @@
             <isset property="JBOSS.SERVER.DIR" />
             <isset property="JBOSS.CONF.DIR" />
             <isset property="JBOSS.DEPLOY.DIR" />
-            <isset property="TOOL.BIN.DIR" />
+            <isset property="TOOL.ROOT.DIR" />
             <isset property="TEST" />
             <isset property="TEST.VALID.USER" />
             <isset property="TEST.VALID.PSWD" />
@@ -88,6 +88,7 @@
     <property name="prop.dir" location="${classes.dir}/gov/nih/nci/cadsr/freestylesearch" />
     <property name="src.dir" location="${basedir}/src" />
     <property name="lib.dir" location="${basedir}/lib" />
+    <property name="toolBin.dir" location="${TOOL.ROOT.DIR}bin" />
     <property name="scpPath.dir" location="${SCP.PATH}/freestyle" />
     <condition property="check.test">
         <equals arg1="${TEST}" arg2="true" trim="true" />
@@ -308,8 +309,8 @@
 
     <target name="-deploy-auto-local" if="unix.os" unless="remote.deploy" depends="-deploy-binaries-local" description="Sets the file permissions after the binaries are deployed.">
         <echo>Automated local deployment ...</echo>
-        <chmod file="${TOOL.BIN.DIR}/autorun.sh" perm="ugo+rx" />
-        <delete file="${TOOL.BIN.DIR}/autorun.cmd" />
+        <chmod file="${toolBin.dir}/autorun.sh" perm="ugo+rx" />
+        <delete file="${toolBin.dir}/autorun.cmd" />
     </target>
 
     <target name="-deploy-auto-remote" if="remote.deploy" depends="-deploy-binaries-remote" description="Sets the file permissions after the binaries are deployed.">
@@ -326,7 +327,7 @@
 
     <target name="-deploy-binaries-local" depends="-prop-check" unless="remote.deploy" description="Deploys the executable product binaries.">
         <echo>Deploying binaries to local file system ...</echo>
-        <copy todir="${TOOL.BIN.DIR}">
+        <copy todir="${toolBin.dir}">
             <fileset dir="bin" />
         </copy>
         <copy todir="${JBOSS.DEPLOY.DIR}">
@@ -369,10 +370,10 @@
             <fileset dir="${artifacts.dir}" includes="**/*" />
         </scp>
 
-        <echo>cp ${scpPath.dir}/bin/* ${TOOL.BIN.DIR}/.</echo>
-        <sshexec username="${SCP.USER}" host="${SCP.HOST}" port="${SCP.PORT}" passphrase="${SCP.PASSPHRASE}" keyfile="${SCP.KEYFILE}" trust="true" verbose="true" command="cp ${scpPath.dir}/bin/* ${TOOL.BIN.DIR}/." />
-        <echo>chmod +rx ${TOOL.BIN.DIR}/autorun.sh</echo>
-        <sshexec username="${SCP.USER}" host="${SCP.HOST}" port="${SCP.PORT}" passphrase="${SCP.PASSPHRASE}" keyfile="${SCP.KEYFILE}" trust="true" verbose="true" command="chmod +rx ${TOOL.BIN.DIR}/autorun.sh" />
+        <echo>cp ${scpPath.dir}/bin/* ${toolBin.dir}/.</echo>
+        <sshexec username="${SCP.USER}" host="${SCP.HOST}" port="${SCP.PORT}" passphrase="${SCP.PASSPHRASE}" keyfile="${SCP.KEYFILE}" trust="true" verbose="true" command="cp ${scpPath.dir}/bin/* ${toolBin.dir}/." />
+        <echo>chmod +rx ${toolBin.dir}/autorun.sh</echo>
+        <sshexec username="${SCP.USER}" host="${SCP.HOST}" port="${SCP.PORT}" passphrase="${SCP.PASSPHRASE}" keyfile="${SCP.KEYFILE}" trust="true" verbose="true" command="chmod +rx ${toolBin.dir}/autorun.sh" />
 
         <echo>cp ${scpPath.dir}/jboss/*-oracle-ds.xml ${JBOSS.DEPLOY.DIR}/.</echo>
         <sshexec username="${SCP.USER}" host="${SCP.HOST}" port="${SCP.PORT}" passphrase="${SCP.PASSPHRASE}" keyfile="${SCP.KEYFILE}" trust="true" verbose="true" command="cp ${scpPath.dir}/jboss/*-oracle-ds.xml ${JBOSS.DEPLOY.DIR}/." />
