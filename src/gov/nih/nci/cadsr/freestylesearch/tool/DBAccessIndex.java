@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccessIndex.java,v 1.8 2008-01-15 17:49:28 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccessIndex.java,v 1.9 2008-01-15 21:46:37 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.tool;
@@ -420,7 +420,7 @@ public class DBAccessIndex
             + "(select ac_idseq, ac_table, weight from "
             + _indexTable + " where token in ("
             + terms_
-            + ") union select xac.ac_idseq, xtl.ac_table, 5 from sbr.admin_components_view xac, sbrext.gs_tables_lov xtl where lower(xac.long_name) = '"
+            + ") union all select xac.ac_idseq, xtl.ac_table, 5 from sbr.admin_components_view xac, sbrext.gs_tables_lov xtl where lower(xac.long_name) = '"
             + orig_
             + "' and xtl.actl_name = xac.actl_name) xcm";
 
