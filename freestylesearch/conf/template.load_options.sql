@@ -1,6 +1,6 @@
 /* Copyright ScenPro, Inc, 2005
 
-   $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/template.load_options.sql,v 1.3 2007-12-17 18:19:48 hebell Exp $
+   $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/template.load_options.sql,v 1.4 2008-01-15 16:57:22 hebell Exp $
    $Name: not supported by cvs2svn $
 
    Author: Larry Hebel
@@ -75,18 +75,18 @@ when not matched then insert (tool_name, property, value, ua_name, description) 
 */
 merge into sbrext.gs_tables_lov s
 using (
-          select 0 as ac_table, 'Data Element' as name, 'de' as abbrev from dual
-union select 1 as ac_table, 'Data Element Concept' as name, 'dec' as abbrev from dual
-union select 2 as ac_table, 'Value Domain' as name, 'vd' as abbrev from dual
-union select 3 as ac_table, 'Object Class' as name, 'oc' as abbrev from dual
-union select 4 as ac_table, 'Property' as name, 'prop' as abbrev from dual
-union select 5 as ac_table, 'Concept' as name, 'con' as abbrev from dual
-union select 6 as ac_table, 'Conceptual Domain' as name, 'cd' as abbrev from dual
-union select 7 as ac_table, 'Value Meaning' as name, 'vm' as abbrev from dual
+          select 0 as ac_table, 'Data Element' as name, 'de' as abbrev, 'DATAELEMENT' as actl_name from dual
+union select 1 as ac_table, 'Data Element Concept' as name, 'dec' as abbrev, 'DE_CONCEPT' as actl_name from dual
+union select 2 as ac_table, 'Value Domain' as name, 'vd' as abbrev, 'VALUEDOMAIN' as actl_name from dual
+union select 3 as ac_table, 'Object Class' as name, 'oc' as abbrev, 'OBJECTCLASS' as actl_name from dual
+union select 4 as ac_table, 'Property' as name, 'prop' as abbrev, 'PROPERTY' as actl_name from dual
+union select 5 as ac_table, 'Concept' as name, 'con' as abbrev, 'CONCEPT' as actl_name from dual
+union select 6 as ac_table, 'Conceptual Domain' as name, 'cd' as abbrev, 'CONCEPTUALDOMAIN' as actl_name from dual
+union select 7 as ac_table, 'Value Meaning' as name, 'vm' as abbrev, 'VALUEMEANING' as actl_name from dual
 ) t
 on (s.ac_table = t.ac_table)
-when matched then update set s.name = t.name, s.abbrev = t.abbrev
-when not matched then insert (ac_table, name, abbrev) values (t.ac_table, t.name, t.abbrev);
+when matched then update set s.name = t.name, s.abbrev = t.abbrev, s.actl_name = t.actl_name
+when not matched then insert (ac_table, name, abbrev, actl_name) values (t.ac_table, t.name, t.abbrev, t.actl_name);
 
 /*
    Commit Settings.

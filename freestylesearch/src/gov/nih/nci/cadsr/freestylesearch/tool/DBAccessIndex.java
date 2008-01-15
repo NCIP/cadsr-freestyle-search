@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccessIndex.java,v 1.6 2007-05-14 15:25:47 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccessIndex.java,v 1.7 2008-01-15 16:57:22 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.tool;
@@ -415,12 +415,19 @@ public class DBAccessIndex
      */
     private String buildSelectTerms(String terms_, String types_)
     {
-        String select = " select ac_idseq, ac_table, sum(weight) as cnt from " + _indexTable + " where ";
+        String phrase = terms_.replace("','", " ");
+        String select = " select xcm.ac_idseq, xcm.ac_table, sum(xcm.weight) as cnt from "
+            + "(select ac_idseq, ac_table, weight from "
+            + _indexTable + " where token in ("
+            + terms_
+            + ") union select xac.ac_idseq, xtl.ac_table, 50 from sbr.admin_components_view xac, sbrext.gs_tables_lov xtl where lower(xac.long_name) = "
+            + phrase
+            + " and xtl.actl_name = xac.actl_name) xcm";
 
         if (types_ != null)
-            select += "ac_table in (" + types_ + ") and ";
+            select += " where xcm.ac_table in (" + types_ + ")";
 
-        select += "token in (" + terms_ + ") group by ac_idseq, ac_table";
+        select += " group by xcm.ac_idseq, xcm.ac_table";
 
         return select;
     }
