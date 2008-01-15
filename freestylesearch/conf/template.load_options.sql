@@ -1,6 +1,6 @@
 /* Copyright ScenPro, Inc, 2005
 
-   $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/template.load_options.sql,v 1.4 2008-01-15 16:57:22 hebell Exp $
+   $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/template.load_options.sql,v 1.5 2008-01-15 17:49:27 hebell Exp $
    $Name: not supported by cvs2svn $
 
    Author: Larry Hebel

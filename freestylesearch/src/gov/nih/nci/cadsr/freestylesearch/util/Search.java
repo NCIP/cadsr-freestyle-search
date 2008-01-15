@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.18 2007-12-12 22:58:08 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.19 2008-01-15 17:49:28 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -799,12 +799,12 @@ public class Search
         if (_restrictAll)
         {
             // No restrictions on the AC types so search for everything.
-            var = dbIndex_.searchExact(null, phrase);
+            var = dbIndex_.searchExact(null, phrase, phrase_);
         }
         else
         {
             // Some AC types are not included in this search.
-            var = dbIndex_.searchExact(_restrict, phrase);
+            var = dbIndex_.searchExact(_restrict, phrase, phrase_);
         }
         return var;
     }
@@ -854,7 +854,7 @@ public class Search
         if (_restrictAll)
         {
             // If no results are found from an exact search then automatically perform a partial.
-            var = dbIndex_.searchExact(null, phrase);
+            var = dbIndex_.searchExact(null, phrase, phrase_);
             if (var.size() == 0)
                 var = dbIndex_.searchPartial(null, phrase_);
         }
@@ -863,7 +863,7 @@ public class Search
         else
         {
             // If no results are found from an exact search then automatically perform a partial.
-            var = dbIndex_.searchExact(_restrict, phrase);
+            var = dbIndex_.searchExact(_restrict, phrase, phrase_);
             if (var.size() == 0)
                 var = dbIndex_.searchPartial(_restrict, phrase_);
         }

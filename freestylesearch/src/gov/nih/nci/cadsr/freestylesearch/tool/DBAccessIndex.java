@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccessIndex.java,v 1.7 2008-01-15 16:57:22 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccessIndex.java,v 1.8 2008-01-15 17:49:28 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.tool;
@@ -411,18 +411,18 @@ public class DBAccessIndex
      * 
      * @param terms_ the comma separated terms, appropriately enclosed in appostophies
      * @param types_ (optional) the comma separated type codes or null
+     * @param orig_ the lower case original search phrase
      * @return the SQL select for the term index
      */
-    private String buildSelectTerms(String terms_, String types_)
+    private String buildSelectTerms(String terms_, String types_, String orig_)
     {
-        String phrase = terms_.replace("','", " ");
         String select = " select xcm.ac_idseq, xcm.ac_table, sum(xcm.weight) as cnt from "
             + "(select ac_idseq, ac_table, weight from "
             + _indexTable + " where token in ("
             + terms_
-            + ") union select xac.ac_idseq, xtl.ac_table, 50 from sbr.admin_components_view xac, sbrext.gs_tables_lov xtl where lower(xac.long_name) = "
-            + phrase
-            + " and xtl.actl_name = xac.actl_name) xcm";
+            + ") union select xac.ac_idseq, xtl.ac_table, 5 from sbr.admin_components_view xac, sbrext.gs_tables_lov xtl where lower(xac.long_name) = '"
+            + orig_
+            + "' and xtl.actl_name = xac.actl_name) xcm";
 
         if (types_ != null)
             select += " where xcm.ac_table in (" + types_ + ")";
@@ -491,10 +491,11 @@ public class DBAccessIndex
      * 
      * @param restrict_ the list of types to restrict the search results
      * @param phrase_ the terms of interest
+     * @param orig_ the original phrase
      * @return the results list.
      * @exception SearchException
      */
-    public Vector<ResultsAC> searchExact(int[] restrict_, String phrase_) throws SearchException
+    public Vector<ResultsAC> searchExact(int[] restrict_, String phrase_, String orig_) throws SearchException
     {
         Vector<ResultsAC> var = new Vector<ResultsAC>();
 
@@ -514,6 +515,7 @@ public class DBAccessIndex
         }
 
         String phrase = phrase_.replaceAll("[\\s]+", " ");
+        String orig = orig_.replaceAll("[\\s]+", " ");
         String[] terms = phrase.split(" ");
         String inTokens = "'" + phrase.replaceAll(" ", "','") + "'";
         
@@ -522,12 +524,12 @@ public class DBAccessIndex
         String select;
         if (terms.length > 1)
             select = "select hits.ac_idseq, hits.ac_table, sum(hits.cnt) as score from " 
-                + "(" + buildSelectTerms(inTokens, inClause)
+                + "(" + buildSelectTerms(inTokens, inClause, orig)
                 + " union all " + buildSelectComposite(inTokens, inClause, terms)
                 + ") hits";
         else
             select = "select hits.ac_idseq, hits.ac_table, sum(hits.cnt) as score from " 
-                + "(" + buildSelectTerms(inTokens, inClause)
+                + "(" + buildSelectTerms(inTokens, inClause, orig)
                 + ") hits";
         
         select += ", " + _compositeTable + " cp where";
