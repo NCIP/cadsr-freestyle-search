@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccessIndex.java,v 1.10 2008-01-15 22:06:58 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccessIndex.java,v 1.11 2008-01-16 18:50:36 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.tool;
@@ -465,7 +465,7 @@ public class DBAccessIndex
         for (int i = 1; i < pairs_.length; ++i)
         {
             select += 
-                " union all select ac_idseq, ac_table, sum(10) as cnt"
+                " union all select ac_idseq, ac_table, 10 as cnt"
                 + " from " + _compositeTable
                 + " where " + subSelect
                 + " composite like '% " + pairs_[i - 1] + " " + pairs_[i] + " %' group by ac_idseq, ac_table";
@@ -474,13 +474,13 @@ public class DBAccessIndex
         }
 
         select += 
-            " union all select ac_idseq, ac_table, sum(10) as cnt"
+            " union all select ac_idseq, ac_table, 10 as cnt"
             + " from " + _compositeTable
             + " where " + subSelect
             + " composite like '%" + strongest + " %' group by ac_idseq, ac_table";
 
         select += 
-            " union all select ac_idseq, ac_table, sum(5) as cnt"
+            " union all select ac_idseq, ac_table, 5 as cnt"
             + " from " + _compositeTable
             + " where " + subSelect
             + " composite like '" + weakest + "%' group by ac_idseq, ac_table";
@@ -523,31 +523,39 @@ public class DBAccessIndex
         
         // Build the select. Note Oracle has a limit of 1000 items in an "IN" clause
         // however we don't expect anyone to every use that many search terms.
-        String select;
+        String sqlSelect = "select hits.ac_idseq, hits.ac_table, sum(hits.cnt) as score";
+        String sqlFrom = " from";
+        String sqlWhere = " where";
         if (terms.length > 1)
-            select = "select hits.ac_idseq, hits.ac_table, sum(hits.cnt) as score from " 
-                + "(" + buildSelectTerms(inTokens, inClause, orig)
+        {
+            sqlFrom += " (" + buildSelectTerms(inTokens, inClause, orig)
                 + " union all " + buildSelectComposite(inTokens, inClause, terms)
                 + ") hits";
+        }
         else
-            select = "select hits.ac_idseq, hits.ac_table, sum(hits.cnt) as score from " 
-                + "(" + buildSelectTerms(inTokens, inClause, orig)
+        {
+            sqlFrom += " (" + buildSelectTerms(inTokens, inClause, orig)
                 + ") hits";
-        
-        select += ", " + _compositeTable + " cp where";
+        }
         
         if (_excludeWFSretired)
         {
-            select += " hits.ac_idseq not in (select tt.ac_idseq from " + _indexTable + " tt, sbrext.tool_options_view_ext opt where tt.ac_idseq = hits.ac_idseq and tt.ac_col = 'rawWorkflowStatus' and opt.value = tt.token and opt.tool_name = 'FREESTYLE' and opt.property like 'RETIRED.WFS.%') and";
+            sqlFrom += ", (select ac_idseq from " + _indexTable + " where ac_col = 'rawWorkflowStatus' and token not IN ("
+                + "select opt.value from sbrext.tool_options_view_ext opt where opt.tool_name = 'FREESTYLE' and opt.property LIKE 'RETIRED.WFS.%' and opt.value = token)) wfs";
+            sqlWhere += " hits.ac_idseq = wfs.ac_idseq and";
         }
         
         if (_excludeContextNames != null)
         {
-            select += " hits.ac_idseq not in (select tt.ac_idseq from " + _indexTable + " tt where tt.ac_idseq = hits.ac_idseq and tt.ac_col = '" + DBAccess.COLOWNEDBYCONTEXT + "' and tt.token in (" + _excludeContextNames + ")) and";
+            sqlFrom += ", (select ac_idseq from " + _indexTable + " where ac_col = 'conte_name_ownedby' and token not IN ('test', 'training')) ctx";
+            sqlWhere += " hits.ac_idseq = ctx.ac_idseq and";
         }
         
-        select += " cp.ac_idseq = hits.ac_idseq and cp.reg_order > 0 group by hits.ac_idseq, hits.ac_table, cp.reg_order, cp.wfs_order  order by score desc, hits.ac_table asc, cp.reg_order asc, cp.wfs_order asc";
+        sqlFrom += ", " + _compositeTable + " cp";
+        
+        sqlWhere += " cp.ac_idseq = hits.ac_idseq and cp.reg_order > 0 group by hits.ac_idseq, hits.ac_table, cp.reg_order, cp.wfs_order  order by score desc, hits.ac_table asc, cp.reg_order asc, cp.wfs_order asc";
 
+        String select = sqlSelect + sqlFrom + sqlWhere;
         try
         {
             // Look for matches.
