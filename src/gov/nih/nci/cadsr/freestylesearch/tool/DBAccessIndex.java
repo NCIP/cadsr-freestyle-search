@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccessIndex.java,v 1.11 2008-01-16 18:50:36 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccessIndex.java,v 1.12 2008-01-16 20:59:33 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.tool;
@@ -540,14 +540,14 @@ public class DBAccessIndex
         
         if (_excludeWFSretired)
         {
-            sqlFrom += ", (select ac_idseq from " + _indexTable + " where ac_col = 'rawWorkflowStatus' and token not IN ("
+            sqlFrom += ", (select ac_idseq from " + _indexTable + " where ac_col = '" + DBAccess.COLRAWWFS + "' and token not IN ("
                 + "select opt.value from sbrext.tool_options_view_ext opt where opt.tool_name = 'FREESTYLE' and opt.property LIKE 'RETIRED.WFS.%' and opt.value = token)) wfs";
             sqlWhere += " hits.ac_idseq = wfs.ac_idseq and";
         }
         
         if (_excludeContextNames != null)
         {
-            sqlFrom += ", (select ac_idseq from " + _indexTable + " where ac_col = 'conte_name_ownedby' and token not IN ('test', 'training')) ctx";
+            sqlFrom += ", (select ac_idseq from " + _indexTable + " where ac_col = '" + DBAccess.COLOWNEDBYCONTEXT + "' and token not IN (" + _excludeContextNames + ")) ctx";
             sqlWhere += " hits.ac_idseq = ctx.ac_idseq and";
         }
         

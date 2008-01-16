@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccess.java,v 1.8 2007-07-13 16:25:06 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccess.java,v 1.9 2008-01-16 20:59:33 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.tool;
@@ -827,7 +827,7 @@ public class DBAccess
                         
                         if (cols[i].equals("asl_name"))
                         {
-                            dbWrite_.insertTerm(type, idseq, "rawWorkflowStatus", temp);
+                            dbWrite_.insertTerm(type, idseq, DBAccess.COLRAWWFS, temp);
                         }
     
                     // Write every token to the search index table.
@@ -1181,6 +1181,11 @@ public class DBAccess
      * This is the reserved ac_col value for an Owned By Context Name.
      */
     public static final String COLOWNEDBYCONTEXT = "conte_name_ownedby";
+    
+    /**
+     * The reserved column name for the full raw Workflow Status.
+     */
+    public static final String COLRAWWFS = "rawWorkflowStatus";
     
     private boolean _needCommit;
     private int _errorCode;
