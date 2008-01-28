@@ -1,11 +1,12 @@
 <!-- Copyright ScenPro, Inc. 2005
-     $Header: /share/content/gforge/freestylesearch/freestylesearch/WebRoot/jsp/freestylesearch.jsp,v 1.3 2007-12-17 18:19:03 hebell Exp $
+     $Header: /share/content/gforge/freestylesearch/freestylesearch/WebRoot/jsp/freestylesearch.jsp,v 1.4 2008-01-28 23:00:13 hebell Exp $
      $Name: not supported by cvs2svn $
 -->
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
 <%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ page import="java.util.Vector" %>
 <%@ page import="gov.nih.nci.cadsr.freestylesearch.ui.FreestyleSearch" %>
+<%@ page import="gov.nih.nci.cadsr.freestylesearch.util.SearchResults" %>
 
 <html>
     <head>
@@ -135,6 +136,9 @@
         <html:errors />
 <%
     Vector results = (Vector) pageContext.getRequest().getAttribute(FreestyleSearch._results);
+    String detailsLink = (String) pageContext.getRequest().getAttribute(FreestyleSearch._detailsLink);
+    String pattern = "$NAME$\n\t$TYPE$\n\tPublic ID: $PID$\n\tVersion: $VERS$\n\tContext: $CONT$\n\tWorkflow Status: $WFS$\n\tRegistration Status: $REG$" // \n\tScore: $SCORE$"
+        + "\n\t<a href=\"" + detailsLink + "\" target=\"_blank\">Details</a>";
     if (results != null)
     {
         %><p style="margin-left: 0.2in"><b><%=results.size()%>
@@ -142,9 +146,17 @@
         <dl style="margin-left: 0.2in"><%
         for (int i = 0; i < results.size();)
         {
-            String text = (String)results.get(i++);
+            SearchResults rec = (SearchResults)results.get(i++);
+            String text = pattern.replace("$NAME$", rec.getLongName());
+            text = text.replace("$TYPE$", rec.getType().getName());
+            text = text.replace("$PID$", String.valueOf(rec.getPublicID()));
+            text = text.replace("$VERS$", rec.getVersion());
+            text = text.replace("$CONT$", rec.getContextName());
+            text = text.replace("$WFS$", rec.getWorkflowStatus());
+            text = text.replace("$REG$", rec.getRegistrationStatus());
+            // text = text.replace("$SCORE$", rec.getScore());
             text = "<b>" + i + ")</b> " + text.replaceFirst("\n\t", "<dd>");
-            text = text.replace("\n\tScore: ", "\n\t<span style=\"color: #aaaaaa\">Score: ") + "</span>";
+            // text = text.replace("\n\tScore: ", "\n\t<span style=\"color: #aaaaaa\">Score: ") + "</span>";
             text = text.replace("\n\t", "<br/>");
             %><dt><%=text%>
             <%
