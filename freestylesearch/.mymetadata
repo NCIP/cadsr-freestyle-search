@@ -5,7 +5,7 @@
   id="myeclipse.1141399310370"
   context-root="/freestyle"
   j2ee-spec="1.4"
-  archive="freestyle.war">
+  archive="freestylesearch.war">
   <attributes>
     <attribute name="webrootdir" value="WebRoot" />
   </attributes>

@@ -1,6 +1,6 @@
 /* Copyright ScenPro, Inc, 2005
 
-   $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/template.load_options.sql,v 1.5 2008-01-15 17:49:27 hebell Exp $
+   $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/template.load_options.sql,v 1.6 2008-01-28 23:00:13 hebell Exp $
    $Name: not supported by cvs2svn $
 
    Author: Larry Hebel
@@ -34,6 +34,15 @@ delete from sbrext.tool_options_view_ext where tool_name = 'FREESTYLE';
     This script intentionally sets s.value = s.value, do NOT change it to t.value!!! That is why this part can not be
     combined with other parts in this same file.
 */
+
+merge into sbrext.tool_options_view_ext s
+using (
+          select 'CADSRAPI' as tool_name, 'URL' as property, 'http://cabio@TIER@.nci.nih.gov/cacore32/' as value, 'The caDSR API URL.' as description from dual
+          union select 'CADSRAPI' as tool_name, 'ACQUERY' as property, '/GetHTML?query=gov.nih.nci.cadsr.domain.AdministeredComponent'||Chr(38)||'gov.nih.nci.cadsr.domain.AdministeredComponent[@version=$VERS$][@publicID=$PID$]' as value, 'The Administered Component Query.' as description from dual
+) t
+on (s.tool_name = t.tool_name and s.property = t.property)
+when matched then update set s.value = s.value
+when not matched then insert (tool_name, property, value, description) values (t.tool_name, t.property, t.value, t.description);
 
 merge into sbrext.tool_options_view_ext s
 using (
