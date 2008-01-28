@@ -64,6 +64,8 @@
     --  Make an exact match on the Administered Item long name
         score higher than other matchs (GF 11611)
 
+    --  Provide a details link for each result item. (GF 11961)
+
 
 ----------------------------------------------------------------
     3.0 Bugs Fixed Since Last Release
