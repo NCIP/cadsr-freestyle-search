@@ -1,5 +1,5 @@
 <!-- Copyright ScenPro, Inc. 2005
-    $Header: /share/content/gforge/freestylesearch/freestylesearch/build.xml,v 1.11 2008-01-15 16:57:22 hebell Exp $
+    $Header: /share/content/gforge/freestylesearch/freestylesearch/build.xml,v 1.12 2008-01-31 22:25:33 hebell Exp $
     $Name: not supported by cvs2svn $
 -->
 <project name="caDSR Freestyle Search" default="init" basedir=".">
@@ -21,6 +21,7 @@
         JBOSS.SERVER.DIR = ${JBOSS.SERVER.DIR}
         JBOSS.CONF.DIR = ${JBOSS.CONF.DIR}
         JBOSS.DEPLOY.DIR = ${JBOSS.DEPLOY.DIR}
+        JBOSS.LOG.DIR = ${JBOSS.LOG.DIR}
         JDEBUG = ${JDEBUG}
         SCP.USER = ${SCP.USER}
         SCP.HOST = ${SCP.HOST}
@@ -37,8 +38,8 @@
         TIER = ${TIER}
         TIER.UPPER = ${TIER.UPPER}
         TIER.NAME = ${TIER.NAME}
+        TOOL.LOG.DIR = ${TOOL.LOG.DIR}
         TOOL.ROOT.DIR = ${TOOL.ROOT.DIR}
-        WEBLOG.DIR = ${WEBLOG.DIR}
     </echo>
     <condition property="check.props">
         <and>
@@ -54,13 +55,14 @@
             <isset property="JBOSS.SERVER.DIR" />
             <isset property="JBOSS.CONF.DIR" />
             <isset property="JBOSS.DEPLOY.DIR" />
+            <isset property="JBOSS.LOG.DIR" />
             <isset property="TOOL.ROOT.DIR" />
+            <isset property="TOOL.LOG.DIR" />
             <isset property="TEST" />
             <isset property="TEST.VALID.USER" />
             <isset property="TEST.VALID.PSWD" />
             <isset property="TEST.BAD.USER" />
             <isset property="TEST.BAD.PSWD" />
-            <isset property="WEBLOG.DIR" />
             <isset property="SCP.USER" />
             <isset property="SCP.HOST" />
             <isset property="SCP.PATH" />
@@ -104,7 +106,8 @@
     <filter token="TIER" value="${TIER}" />
     <filter token="TIER.UPPER" value="${TIER.UPPER}" />
     <filter token="TIER.NAME" value="${TIER.NAME}" />
-    <filter token="WEBLOG.DIR" value="${WEBLOG.DIR}" />
+    <filter token="TOOL.LOG.DIR" value="${TOOL.LOG.DIR}" />
+    <filter token="JBOSS.LOG.DIR" value="${JBOSS.LOG.DIR}" />
 
     <path id="libpath">
         <fileset dir="${lib.dir}" includes="**/*.jar" />
