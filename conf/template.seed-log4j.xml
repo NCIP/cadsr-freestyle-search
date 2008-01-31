@@ -7,7 +7,7 @@
 <!--                                                                       -->
 <!-- ===================================================================== -->
 
-<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/template.seed-log4j.xml,v 1.1 2007-12-11 22:09:42 hebell Exp $ -->
+<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/template.seed-log4j.xml,v 1.2 2008-01-31 22:25:33 hebell Exp $ -->
 <!-- $Name: not supported by cvs2svn $ -->
 
 <!--
@@ -37,7 +37,7 @@
     <!-- ============================ -->
     <appender name="FREESTYLESEED_FILE" class="org.apache.log4j.RollingFileAppender">
         <errorHandler class="org.apache.log4j.helpers.OnlyOnceErrorHandler" />
-        <param name="File" value="@WEBLOG.DIR@/freestyleseed_log.txt" />
+        <param name="File" value="@TOOL.LOG.DIR@/freestyleseed_log.txt" />
         <param name="Append" value="true" />
         <param name="MaxFileSize" value="200KB" />
         <param name="MaxBackupIndex" value="3" />
