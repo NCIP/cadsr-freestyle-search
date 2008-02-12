@@ -1,5 +1,5 @@
 <!-- Copyright ScenPro, Inc. 2005
-     $Header: /share/content/gforge/freestylesearch/freestylesearch/WebRoot/jsp/freestylesearch.jsp,v 1.4 2008-01-28 23:00:13 hebell Exp $
+     $Header: /share/content/gforge/freestylesearch/freestylesearch/WebRoot/jsp/freestylesearch.jsp,v 1.5 2008-02-12 17:41:27 hebell Exp $
      $Name: not supported by cvs2svn $
 -->
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
@@ -137,13 +137,22 @@
 <%
     Vector results = (Vector) pageContext.getRequest().getAttribute(FreestyleSearch._results);
     String detailsLink = (String) pageContext.getRequest().getAttribute(FreestyleSearch._detailsLink);
-    String pattern = "$NAME$\n\t$TYPE$\n\tPublic ID: $PID$\n\tVersion: $VERS$\n\tContext: $CONT$\n\tWorkflow Status: $WFS$\n\tRegistration Status: $REG$" // \n\tScore: $SCORE$"
-        + "\n\t<a href=\"" + detailsLink + "\" target=\"_blank\">Details</a>";
+    String pattern = "<tr>"
+        + "<td><a href=\"" + detailsLink + "\" target=\"_blank\">Details</a></td>"
+        + "<td>$NAME$</td>"
+        + "<td>$TYPE$</td>"
+        + "<td>$PID$</td>"
+        + "<td>$VERS$</td>"
+        + "<td>$CONT$</td>"
+        + "<td>$WFS$</td>"
+        + "<td>$REG$</td>"
+        + "</tr>";
     if (results != null)
     {
         %><p style="margin-left: 0.2in"><b><%=results.size()%>
         Results</b></p>
-        <dl style="margin-left: 0.2in"><%
+        <table><tr><th>Link</th><th>Name</th><th>Type</th><th>Public ID</th><th>Version</th><th>Context</th><th>Workflow Status</th><th>Registration Status</th></tr>
+        <%
         for (int i = 0; i < results.size();)
         {
             SearchResults rec = (SearchResults)results.get(i++);
@@ -155,13 +164,13 @@
             text = text.replace("$WFS$", rec.getWorkflowStatus());
             text = text.replace("$REG$", rec.getRegistrationStatus());
             // text = text.replace("$SCORE$", rec.getScore());
-            text = "<b>" + i + ")</b> " + text.replaceFirst("\n\t", "<dd>");
+            // text = "<b>" + i + ")</b> " + text.replaceFirst("\n\t", "<dd>");
             // text = text.replace("\n\tScore: ", "\n\t<span style=\"color: #aaaaaa\">Score: ") + "</span>";
-            text = text.replace("\n\t", "<br/>");
-            %><dt><%=text%>
+            // text = text.replace("\n\t", "<br/>");
+            %><%=text%>
             <%
         }
-        %></dl><%
+        %></table><%
     }
 %>
     <bean:write name="freestyleForm" property="footer" filter="false" />
