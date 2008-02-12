@@ -1,5 +1,5 @@
 <!-- Copyright ScenPro, Inc. 2005
-     $Header: /share/content/gforge/freestylesearch/freestylesearch/WebRoot/jsp/freestylesearch.jsp,v 1.5 2008-02-12 17:41:27 hebell Exp $
+     $Header: /share/content/gforge/freestylesearch/freestylesearch/WebRoot/jsp/freestylesearch.jsp,v 1.6 2008-02-12 18:41:35 hebell Exp $
      $Name: not supported by cvs2svn $
 -->
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
@@ -15,6 +15,9 @@
         <meta http-equiv="Content-Language" content="en-us">
         <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=WINDOWS-1252">
         <LINK href="/freestyle/css/freestyle.css" rel="stylesheet" type="text/css">
+        <style>
+            TD { vertical-align: top }
+        </style>
         <script type="text/javascript">
             <!--
             function doSearch()
@@ -137,7 +140,7 @@
 <%
     Vector results = (Vector) pageContext.getRequest().getAttribute(FreestyleSearch._results);
     String detailsLink = (String) pageContext.getRequest().getAttribute(FreestyleSearch._detailsLink);
-    String pattern = "<tr>"
+    String pattern = "<tr$STRIPE$>"
         + "<td><a href=\"" + detailsLink + "\" target=\"_blank\">Details</a></td>"
         + "<td>$NAME$</td>"
         + "<td>$TYPE$</td>"
@@ -151,7 +154,18 @@
     {
         %><p style="margin-left: 0.2in"><b><%=results.size()%>
         Results</b></p>
-        <table><tr><th>Link</th><th>Name</th><th>Type</th><th>Public ID</th><th>Version</th><th>Context</th><th>Workflow Status</th><th>Registration Status</th></tr>
+        <table>
+        <colgroup>
+        <col style="padding: 0.05in 0.05in 0.05in 0.05in"/>
+        <col style="padding: 0.05in 0.05in 0.05in 0.05in"/>
+        <col style="padding: 0.05in 0.05in 0.05in 0.05in"/>
+        <col style="padding: 0.05in 0.05in 0.05in 0.05in"/>
+        <col style="padding: 0.05in 0.05in 0.05in 0.05in"/>
+        <col style="padding: 0.05in 0.05in 0.05in 0.05in"/>
+        <col style="padding: 0.05in 0.05in 0.05in 0.05in"/>
+        <col style="padding: 0.05in 0.05in 0.05in 0.05in"/>
+        </colgroup>
+        <tr><th>Link</th><th>Name</th><th>Type</th><th>Public ID</th><th>Version</th><th>Context</th><th>Workflow Status</th><th>Registration Status</th></tr>
         <%
         for (int i = 0; i < results.size();)
         {
@@ -163,6 +177,7 @@
             text = text.replace("$CONT$", rec.getContextName());
             text = text.replace("$WFS$", rec.getWorkflowStatus());
             text = text.replace("$REG$", rec.getRegistrationStatus());
+            text = text.replace("$STRIPE", ((i % 2) == 0) ? " style=\"background-color: #cccccc\"" : "");
             // text = text.replace("$SCORE$", rec.getScore());
             // text = "<b>" + i + ")</b> " + text.replaceFirst("\n\t", "<dd>");
             // text = text.replace("\n\tScore: ", "\n\t<span style=\"color: #aaaaaa\">Score: ") + "</span>";
