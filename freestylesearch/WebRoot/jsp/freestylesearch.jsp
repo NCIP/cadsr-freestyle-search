@@ -1,5 +1,5 @@
 <!-- Copyright ScenPro, Inc. 2005
-     $Header: /share/content/gforge/freestylesearch/freestylesearch/WebRoot/jsp/freestylesearch.jsp,v 1.6 2008-02-12 18:41:35 hebell Exp $
+     $Header: /share/content/gforge/freestylesearch/freestylesearch/WebRoot/jsp/freestylesearch.jsp,v 1.7 2008-02-12 19:09:05 hebell Exp $
      $Name: not supported by cvs2svn $
 -->
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
@@ -177,7 +177,7 @@
             text = text.replace("$CONT$", rec.getContextName());
             text = text.replace("$WFS$", rec.getWorkflowStatus());
             text = text.replace("$REG$", rec.getRegistrationStatus());
-            text = text.replace("$STRIPE", ((i % 2) == 0) ? " style=\"background-color: #cccccc\"" : "");
+            text = text.replace("$STRIPE$", ((i % 2) == 1) ? " style=\"background-color: #cccccc\"" : "");
             // text = text.replace("$SCORE$", rec.getScore());
             // text = "<b>" + i + ")</b> " + text.replaceFirst("\n\t", "<dd>");
             // text = text.replace("\n\tScore: ", "\n\t<span style=\"color: #aaaaaa\">Score: ") + "</span>";
