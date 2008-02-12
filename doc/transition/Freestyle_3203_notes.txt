@@ -66,6 +66,8 @@
 
     --  Provide a details link for each result item. (GF 11961)
 
+    --  Display results in a table (GF 7721)
+
 
 ----------------------------------------------------------------
     3.0 Bugs Fixed Since Last Release
