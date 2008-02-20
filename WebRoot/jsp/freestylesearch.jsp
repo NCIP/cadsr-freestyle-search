@@ -1,5 +1,5 @@
 <!-- Copyright ScenPro, Inc. 2005
-     $Header: /share/content/gforge/freestylesearch/freestylesearch/WebRoot/jsp/freestylesearch.jsp,v 1.7 2008-02-12 19:09:05 hebell Exp $
+     $Header: /share/content/gforge/freestylesearch/freestylesearch/WebRoot/jsp/freestylesearch.jsp,v 1.8 2008-02-20 21:06:07 hebell Exp $
      $Name: not supported by cvs2svn $
 -->
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
@@ -165,7 +165,7 @@
         <col style="padding: 0.05in 0.05in 0.05in 0.05in"/>
         <col style="padding: 0.05in 0.05in 0.05in 0.05in"/>
         </colgroup>
-        <tr><th>Link</th><th>Name</th><th>Type</th><th>Public ID</th><th>Version</th><th>Context</th><th>Workflow Status</th><th>Registration Status</th></tr>
+        <tr><th>Link</th><th>Long Name</th><th>Type</th><th>Public ID</th><th>Version</th><th>Context</th><th>Workflow Status</th><th>Registration Status</th></tr>
         <%
         for (int i = 0; i < results.size();)
         {
