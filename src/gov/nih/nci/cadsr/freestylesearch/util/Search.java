@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.19 2008-01-15 17:49:28 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.20 2008-04-16 21:15:31 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -11,6 +11,7 @@ import gov.nih.nci.cadsr.freestylesearch.tool.DBAccessIndex;
 import gov.nih.nci.cadsr.freestylesearch.tool.GenericAC;
 import gov.nih.nci.cadsr.freestylesearch.tool.ResultsAC;
 import gov.nih.nci.cadsr.freestylesearch.tool.SearchRequest;
+import gov.nih.nci.system.client.*;
 import gov.nih.nci.system.applicationservice.ApplicationException;
 import gov.nih.nci.system.applicationservice.ApplicationService;
 import java.sql.Connection;
@@ -284,12 +285,19 @@ public class Search
      */
     private ApplicationService getCoreUrl() throws SearchException
     {
-        if (_coreApiUrl != null)
-            return ApplicationService.getRemoteInstance(_coreApiUrl);
-
-        String url = getDsrCoreUrl();
-        
-        return ApplicationService.getRemoteInstance(url);
+        try
+        {
+            if (_coreApiUrl != null)
+                return ApplicationServiceProvider.getApplicationServiceFromUrl(_coreApiUrl);
+    
+            // String url = getDsrCoreUrl();
+            
+            return ApplicationServiceProvider.getApplicationServiceFromUrl(_coreApiUrl);
+        }
+        catch (Exception ex)
+        {
+            throw new SearchException(ex);
+        }
     }
 
     /**
@@ -467,8 +475,7 @@ public class Search
         // Call the caCORE API to get the AC details.
         try
         {
-            @SuppressWarnings("unchecked")
-            List<AdministeredComponent> acs = coreapi.search(AdministeredComponent.class, acID); 
+            List<Object> acs = coreapi.search(AdministeredComponent.class, acID); 
             if (acs.size() != idseq_.length)
                 throw new SearchException("Invalid results from caCORE API.");
 
@@ -476,7 +483,7 @@ public class Search
             rs.setSize(acs.size());
             for (int i = 0; i < acs.size(); ++i)
             {
-                AdministeredComponent record = acs.get(i);
+                AdministeredComponent record = (AdministeredComponent) acs.get(i);
                 Integer x = rsMap.get(record.getId());
                 rs.set(x.intValue(), record);
             }
