@@ -1,6 +1,6 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 
-<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.xml,v 1.16 2007-12-12 22:58:08 hebell Exp $
+<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.xml,v 1.17 2008-04-16 21:15:31 hebell Exp $
        $Name: not supported by cvs2svn $
  -->
 
@@ -26,7 +26,7 @@
     <entry key="default.data.DSusername">guest</entry>
     <entry key="default.data.DSpassword">guest</entry>
     <entry key="default.freestyle.url">http://freestyle-dev.nci.nih.gov</entry>
-    <entry key="default.core.url">http://cabio-dev.nci.nih.gov/cacore32/http/remoteService</entry>
+    <entry key="default.core.url">http://cbvapp-d1008.nci.nih.gov:19080/caDSR</entry>
     <entry key="default.access">remote</entry>
     <entry key="default.returns">0</entry>
     <entry key="default.matchType">2</entry>
@@ -53,7 +53,7 @@
     <entry key="dev2.scores">2</entry>
     <entry key="dev2.freestyle.url">http://freestyle-qa.nci.nih.gov</entry>
     <entry key="dev2.returns">1,2</entry>
-    <entry key="dev2.core.url">http://cbvapp-q1003.nci.nih.gov:19080/evsapi</entry>
+    <entry key="dev2.core.url">http://cbvapp-d1008.nci.nih.gov:19080/caDSR/http/applicationService</entry>
 
     <!-- ===================================================================
 
