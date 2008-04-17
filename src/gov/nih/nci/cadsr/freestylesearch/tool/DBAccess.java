@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccess.java,v 1.9 2008-01-16 20:59:33 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccess.java,v 1.10 2008-04-17 18:54:39 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.tool;
@@ -1134,7 +1134,7 @@ public class DBAccess
      */
     public String getCoreUrl() throws SearchException
     {
-        String select = "select value from sbrext.tool_options_view_ext where tool_name = 'EVS' and property = 'URL'";
+        String select = "select value from sbrext.tool_options_view_ext where tool_name = 'CADSRAPI' and property = 'URL'";
         String url = null;
         try
         {

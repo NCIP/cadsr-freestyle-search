@@ -1,6 +1,6 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 
-<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.xml,v 1.17 2008-04-16 21:15:31 hebell Exp $
+<!-- $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.xml,v 1.18 2008-04-17 18:54:39 hebell Exp $
        $Name: not supported by cvs2svn $
  -->
 
@@ -47,7 +47,7 @@
     <entry key="dev1.scores">4</entry>
     <entry key="dev1.restricts"></entry>
     <entry key="dev1.phrase">congestive heart failure</entry>
-    <entry key="dev1.access">local</entry>
+    <entry key="dev1.access">remote</entry>
 
     <entry key="dev2.phrase">cardiac arrest</entry>
     <entry key="dev2.scores">2</entry>
