@@ -1,5 +1,5 @@
 <!-- Copyright ScenPro, Inc. 2005
-    $Header: /share/content/gforge/freestylesearch/freestylesearch/build.xml,v 1.14 2008-04-16 21:15:31 hebell Exp $
+    $Header: /share/content/gforge/freestylesearch/freestylesearch/build.xml,v 1.15 2008-04-17 21:41:14 hebell Exp $
     $Name: not supported by cvs2svn $
 -->
 <project name="caDSR Freestyle Search" default="init" basedir=".">
@@ -135,6 +135,9 @@
             <compilerarg line="-Xlint:unchecked" />
             <classpath refid="libpath" />
         </javac>
+        <copy todir="${classes.dir}">
+            <fileset dir="sdkapi" includes="**/*" />
+        </copy>
     </target>
 
     <target name="-assemble" depends="-compile,-prop-check" description="Assembles the deployment parts into the artifacts folders.">
