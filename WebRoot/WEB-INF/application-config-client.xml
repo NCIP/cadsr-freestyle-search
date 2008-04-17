@@ -28,7 +28,7 @@
 				</property>
 			</bean>
 		</property>
-		<property name="interceptorNames" value="interceptor"/>
+		<property name="interceptorNames" value="CaDsrInterceptor"/>
 		<property name="interfaces" value="gov.nih.nci.system.applicationservice.ApplicationService"/>
 	</bean>	
 	
@@ -60,7 +60,7 @@
 							&lt;/property&gt;
 						&lt;/bean&gt;
 					&lt;/property&gt;
-					&lt;property name=&quot;interceptorNames&quot; value=&quot;interceptor&quot;/&gt;
+					&lt;property name=&quot;interceptorNames&quot; value=&quot;CaDsrInterceptor&quot;/&gt;
 					&lt;property name=&quot;interfaces&quot; value=&quot;gov.nih.nci.system.applicationservice.ApplicationService&quot;/&gt;
 				&lt;/bean&gt;
 				&lt;bean id=&quot;CaDsrAuthenticationProvider&quot; class=&quot;org.acegisecurity.providers.rcp.RemoteAuthenticationProvider&quot;&gt;
