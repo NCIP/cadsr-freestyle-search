@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.20 2008-04-16 21:15:31 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.21 2008-04-17 20:38:59 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -288,11 +288,11 @@ public class Search
         try
         {
             if (_coreApiUrl != null)
-                return ApplicationServiceProvider.getApplicationServiceFromUrl(_coreApiUrl);
+                return ApplicationServiceProvider.getApplicationServiceFromUrl(_coreApiUrl, "CaDsrServiceInfo");
     
             // String url = getDsrCoreUrl();
             
-            return ApplicationServiceProvider.getApplicationServiceFromUrl(_coreApiUrl);
+            return ApplicationServiceProvider.getApplicationServiceFromUrl(_coreApiUrl, "CaDsrServiceInfo");
         }
         catch (Exception ex)
         {
