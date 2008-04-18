@@ -45,12 +45,12 @@
 	<bean id="CaDsrApplicationServiceConfig" class="java.lang.String">
 		<constructor-arg>
 			<value>
-				&lt;bean id=&quot;CaDsrInterceptor&quot; class=&quot;gov.nih.nci.system.client.proxy.ApplicationServiceProxy&quot;&gt;
+				&lt;bean id=&quot;interceptor&quot; class=&quot;gov.nih.nci.system.client.proxy.ApplicationServiceProxy&quot;&gt;
 					&lt;property name=&quot;proxyFactory&quot;&gt;
 						&lt;bean class=&quot;gov.nih.nci.system.client.proxy.ProxyHelperImpl&quot;/&gt;
 					&lt;/property&gt;
 				&lt;/bean&gt;
-				&lt;bean id=&quot;CaDsrApplicationService&quot; class=&quot;org.springframework.aop.framework.ProxyFactoryBean&quot;&gt;
+				&lt;bean id=&quot;applicationService&quot; class=&quot;org.springframework.aop.framework.ProxyFactoryBean&quot;&gt;
 					&lt;property name=&quot;target&quot;&gt;
 						&lt;bean class=&quot;org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean&quot;&gt;
 							&lt;property name=&quot;serviceUrl&quot; value=&quot;URL_KEY/http/applicationService&quot;/&gt;
@@ -60,10 +60,10 @@
 							&lt;/property&gt;
 						&lt;/bean&gt;
 					&lt;/property&gt;
-					&lt;property name=&quot;interceptorNames&quot; value=&quot;CaDsrInterceptor&quot;/&gt;
+					&lt;property name=&quot;interceptorNames&quot; value=&quot;interceptor&quot;/&gt;
 					&lt;property name=&quot;interfaces&quot; value=&quot;gov.nih.nci.system.applicationservice.ApplicationService&quot;/&gt;
 				&lt;/bean&gt;
-				&lt;bean id=&quot;CaDsrAuthenticationProvider&quot; class=&quot;org.acegisecurity.providers.rcp.RemoteAuthenticationProvider&quot;&gt;
+				&lt;bean id=&quot;authenticationProvider&quot; class=&quot;org.acegisecurity.providers.rcp.RemoteAuthenticationProvider&quot;&gt;
 					&lt;property name=&quot;remoteAuthenticationManager&quot;&gt;
 							&lt;bean class=&quot;org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean&quot;&gt;
 								&lt;property name=&quot;serviceUrl&quot; value=&quot;URL_KEY/http/remoteAuthenticationManager&quot;/&gt;

@@ -1,6 +1,6 @@
 /* Copyright ScenPro, Inc, 2005
 
-   $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/template.load_options.sql,v 1.6 2008-01-28 23:00:13 hebell Exp $
+   $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/template.load_options.sql,v 1.7 2008-04-18 19:29:54 hebell Exp $
    $Name: not supported by cvs2svn $
 
    Author: Larry Hebel
@@ -37,7 +37,7 @@ delete from sbrext.tool_options_view_ext where tool_name = 'FREESTYLE';
 
 merge into sbrext.tool_options_view_ext s
 using (
-          select 'CADSRAPI' as tool_name, 'URL' as property, 'http://cabio@TIER@.nci.nih.gov/cacore32/' as value, 'The caDSR API URL.' as description from dual
+          select 'CADSRAPI' as tool_name, 'URL' as property, 'http://cadsrapi@TIER@.nci.nih.gov/cadsrapi40' as value, 'The caDSR API URL.' as description from dual
           union select 'CADSRAPI' as tool_name, 'ACQUERY' as property, '/GetHTML?query=gov.nih.nci.cadsr.domain.AdministeredComponent'||Chr(38)||'gov.nih.nci.cadsr.domain.AdministeredComponent[@version=$VERS$][@publicID=$PID$]' as value, 'The Administered Component Query.' as description from dual
 ) t
 on (s.tool_name = t.tool_name and s.property = t.property)

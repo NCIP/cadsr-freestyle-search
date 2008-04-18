@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.21 2008-04-17 20:38:59 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.22 2008-04-18 19:29:54 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -65,7 +65,7 @@ public class Search
     /*
      * The caCORE API URL
      */
-    private String _coreApiUrl;
+    private String _caDsrApiUrl;
     
     /*
      * The Freestyle Search Server URL
@@ -283,16 +283,16 @@ public class Search
      * @return the ApplicationService
      * @exception SearchException
      */
-    private ApplicationService getCoreUrl() throws SearchException
+    private ApplicationService getCaDsrService() throws SearchException
     {
         try
         {
-            if (_coreApiUrl != null)
-                return ApplicationServiceProvider.getApplicationServiceFromUrl(_coreApiUrl, "CaDsrServiceInfo");
+            if (_caDsrApiUrl != null)
+                return ApplicationServiceProvider.getApplicationServiceFromUrl(_caDsrApiUrl, "CaDsrServiceInfo");
     
             // String url = getDsrCoreUrl();
             
-            return ApplicationServiceProvider.getApplicationServiceFromUrl(_coreApiUrl, "CaDsrServiceInfo");
+            return ApplicationServiceProvider.getApplicationServiceFromUrl(_caDsrApiUrl, "CaDsrServiceInfo");
         }
         catch (Exception ex)
         {
@@ -450,7 +450,7 @@ public class Search
     private Vector<AdministeredComponent> findReturningAdministeredComponent(String[] idseq_) throws SearchException
     {
         // Get the caCORE API URL.
-        ApplicationService coreapi = getCoreUrl();
+        ApplicationService cadsrApi = getCaDsrService();
 
         // The results from the caCORE are not sorted and the order is not maintained or consistent with
         // the original search vector. This makes it necessary to "sort" the results from the caCORE API
@@ -475,7 +475,7 @@ public class Search
         // Call the caCORE API to get the AC details.
         try
         {
-            List<Object> acs = coreapi.search(AdministeredComponent.class, acID); 
+            List<Object> acs = cadsrApi.search(AdministeredComponent.class, acID); 
             if (acs.size() != idseq_.length)
                 throw new SearchException("Invalid results from caCORE API.");
 
@@ -1297,7 +1297,7 @@ public class Search
      */
     public void setCoreApiUrl(String url_)
     {
-        _coreApiUrl = url_;
+        _caDsrApiUrl = url_;
     }
     
     /**
