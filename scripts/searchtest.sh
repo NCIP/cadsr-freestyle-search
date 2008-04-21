@@ -1,11 +1,11 @@
 #!/bin/bash
 
 echo "Executing Auto Run for Freestyle Search Engine"
-echo "\$Header: /share/content/gforge/freestylesearch/freestylesearch/scripts/searchtest.sh,v 1.1 2007-12-11 22:42:17 hebell Exp $"
+echo "\$Header: /share/content/gforge/freestylesearch/freestylesearch/scripts/searchtest.sh,v 1.2 2008-04-21 21:56:56 hebell Exp $"
 echo "\$Name: not supported by cvs2svn $"
 
 DATE=`date +%Y%m%d`
-JAVA_HOME=/usr/jdk1.5.0_06
+JAVA_HOME=/usr/jdk1.5.0_10
 BASE_DIR=/local/content/freestyle/bin
 
 export JAVA_HOME BASE_DIR
@@ -21,4 +21,4 @@ export JAVA_PARMS ORACLE_HOME TNS_ADMIN PATH LD_LIBRARY_PATH
 echo "Executing job as `id`"
 echo "Executing on `date`"
 
-$JAVA_HOME/bin/java -client $JAVA_PARMS -classpath $BASE_DIR/cacore32-client.jar:$BASE_DIR/hibernate3.jar:$BASE_DIR/spring.jar:$BASE_DIR/log4j-1.2.13.jar:$BASE_DIR/ojdbc14.jar:$BASE_DIR/freestylesearch.jar gov.nih.nci.cadsr.freestylesearch.test.SearchTest $BASE_DIR/log4j_test.xml $BASE_DIR/SearchTest.xml
+$JAVA_HOME/bin/java -client $JAVA_PARMS -classpath $BASE_DIR:$BASE_DIR/caDSR-beans.jar:$BASE_DIR/asm.jar:$BASE_DIR/cglib-2.1.3.jar:$BASE_DIR/commons-logging-1.1.jar:$BASE_DIR/acegi-security-1.0.4.jar:$BASE_DIR/sdk-client-framework.jar:$BASE_DIR/hibernate3.jar:$BASE_DIR/spring.jar:$BASE_DIR/log4j-1.2.14.jar:$BASE_DIR/ojdbc14.jar:$BASE_DIR/freestylesearch.jar gov.nih.nci.cadsr.freestylesearch.test.SearchTest $BASE_DIR/log4jTest.xml $BASE_DIR/SearchTest.xml
