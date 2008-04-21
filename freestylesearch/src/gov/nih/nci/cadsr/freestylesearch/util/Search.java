@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.22 2008-04-18 19:29:54 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Search.java,v 1.23 2008-04-21 21:56:56 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -63,9 +63,14 @@ public class Search
     private Connection _dataConn;
 
     /*
-     * The caCORE API URL
+     * The caDSR API URL
      */
     private String _caDsrApiUrl;
+    
+    /*
+     * The caDSR API ServiceInfo bean id
+     */
+    private String _caDsrApiBeanId;
     
     /*
      * The Freestyle Search Server URL
@@ -288,11 +293,11 @@ public class Search
         try
         {
             if (_caDsrApiUrl != null)
-                return ApplicationServiceProvider.getApplicationServiceFromUrl(_caDsrApiUrl, "CaDsrServiceInfo");
+                return ApplicationServiceProvider.getApplicationServiceFromUrl(_caDsrApiUrl, _caDsrApiBeanId);
     
             // String url = getDsrCoreUrl();
             
-            return ApplicationServiceProvider.getApplicationServiceFromUrl(_caDsrApiUrl, "CaDsrServiceInfo");
+            return ApplicationServiceProvider.getApplicationServiceFromUrl(_caDsrApiUrl, _caDsrApiBeanId);
         }
         catch (Exception ex)
         {
@@ -374,7 +379,7 @@ public class Search
             // Get the basic AC details from the Freestyle API Server. This also returns the caCORE API to use.
             SearchRequest sr = new SearchRequest(_serverURL);
             rs1 = sr.findReturningResultSet(this, phrase_);
-            setCoreApiUrl(sr.getCaCoreUrl());
+            setCaDsrApiUrl(sr.getCaCoreUrl(), null);
 
             // Build the request list for the caCORE API and retrieve the AC details.
             String[] idseq = new String[rs1.size()];
@@ -524,7 +529,7 @@ public class Search
         {
             SearchRequest sr = new SearchRequest(_serverURL);
             Vector<String> idseq = sr.findReturningIdseq(this, phrase_);
-            setCoreApiUrl(sr.getCaCoreUrl());
+            setCaDsrApiUrl(sr.getCaCoreUrl(), null);
             rs = findReturningAdministeredComponent2(idseq);
         }
 
@@ -1289,15 +1294,28 @@ public class Search
     }
     
     /**
-     * Set the caCORE API URL should the AdministeredComponent related methods be used. This is
+     * Set the caDSR API URL should the AdministeredComponent related methods be used. This is
      * ONLY required if the value stored in the caDSR is not desired. Normally this method is not
      * used unless testing a new pre-release of the client.jar or on the development environments.
      * 
-     * @param url_ The caCORE URL
+     * @param url_ The caDSR API URL
+     * @param bean_ The API ServiceInfo bean name as entered in the application-config-client.xml file. Use null for the default "CaDsrServiceInfo".
+     */
+    public void setCaDsrApiUrl(String url_, String bean_)
+    {
+        _caDsrApiUrl = url_;
+        _caDsrApiBeanId = (bean_ == null) ? "CaDsrServiceInfo" : bean_;
+    }
+
+    /**
+     * This is a convenience method for setCaDsrApiUrl().
+     * @see gov.nih.nci.cadsr.freestylesearch.util.Search#setCaDsrApiUrl(String, String)
+     * 
+     * @param url_ the caDSR API URL
      */
     public void setCoreApiUrl(String url_)
     {
-        _caDsrApiUrl = url_;
+        setCaDsrApiUrl(url_, null);
     }
     
     /**

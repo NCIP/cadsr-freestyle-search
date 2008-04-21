@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.java,v 1.13 2007-07-13 16:25:06 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.java,v 1.14 2008-04-21 21:56:56 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.test;
@@ -686,7 +686,7 @@ public class SearchTest
             else
             {
                 if (prof.getCoreUrl() != null)
-                    var.setCoreApiUrl(prof.getCoreUrl());
+                    var.setCaDsrApiUrl(prof.getCoreUrl(), null);
                 var.setIndexDescription(prof.getIndexDSurl(), prof.getIndexDSusername(), prof.getIndexDSpassword());
                 var.setDataDescription(prof.getDataDSurl(), prof.getDataDSusername(), prof.getDataDSpassword());
             }

@@ -1,5 +1,5 @@
 <!-- Copyright ScenPro, Inc. 2005
-    $Header: /share/content/gforge/freestylesearch/freestylesearch/build.xml,v 1.15 2008-04-17 21:41:14 hebell Exp $
+    $Header: /share/content/gforge/freestylesearch/freestylesearch/build.xml,v 1.16 2008-04-21 21:56:55 hebell Exp $
     $Name: not supported by cvs2svn $
 -->
 <project name="caDSR Freestyle Search" default="init" basedir=".">
@@ -171,6 +171,8 @@
         <copy todir="${artifacts.dir}/bin" filtering="true">
             <fileset file="scripts/autorun.sh" />
             <fileset file="scripts/autorun.cmd" />
+            <fileset file="scripts/searchtest.sh" />
+            <fileset file="scripts/searchtest.cmd" />
         </copy>
         <copy tofile="${artifacts.dir}/bin/seed.xml" filtering="true">
             <fileset file="conf/template.seed.xml" />
@@ -178,15 +180,22 @@
         <copy tofile="${artifacts.dir}/bin/log4j.xml" filtering="true">
             <fileset file="conf/template.seed-log4j.xml" />
         </copy>
+        <copy tofile="${artifacts.dir}/bin/log4jTest.xml" filtering="true">
+            <fileset file="conf/template.test-log4j.xml" />
+        </copy>
         <copy todir="${artifacts.dir}/bin">
+            <fileset file="${wlib.dir}/acegi-security-1.0.4.jar" />
             <fileset file="${lib.dir}/asm.jar" />
-            <fileset file="${wlib.dir}/cacore32-client.jar" />
+            <fileset file="${wlib.dir}/caDSR-beans.jar" />
             <fileset file="${wlib.dir}/cglib-2.1.3.jar" />
             <fileset file="${wlib.dir}/commons-logging-1.1.jar" />
             <fileset file="${wlib.dir}/hibernate3.jar" />
-            <fileset file="${lib.dir}/log4j-1.2.13.jar" />
+            <fileset file="${lib.dir}/log4j-1.2.14.jar" />
             <fileset file="${lib.dir}/ojdbc14.jar" />
+            <fileset file="${wlib.dir}/sdk-client-framework.jar" />
             <fileset file="${wlib.dir}/spring.jar" />
+            <fileset file="src/gov/nih/nci/cadsr/freestylesearch/test/SearchTest.xml" />
+            <fileset dir="sdkapi" includes="**/*" />
         </copy>
         <fixcrlf srcdir="${artifacts.dir}" eol="lf" includes="**/*.sh, **/*.xml, **/*.properties" />
     </target>
