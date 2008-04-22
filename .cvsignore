@@ -3,3 +3,4 @@ tmp
 DEV.build.properties
 deployment-artifacts
 .settings
+dev.properties
