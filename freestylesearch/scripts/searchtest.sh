@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Executing Auto Run for Freestyle Search Engine"
-echo "\$Header: /share/content/gforge/freestylesearch/freestylesearch/scripts/searchtest.sh,v 1.2 2008-04-21 21:56:56 hebell Exp $"
+echo "\$Header: /share/content/gforge/freestylesearch/freestylesearch/scripts/searchtest.sh,v 1.3 2008-04-22 20:28:39 hebell Exp $"
 echo "\$Name: not supported by cvs2svn $"
 
 DATE=`date +%Y%m%d`
