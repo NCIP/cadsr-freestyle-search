@@ -1,5 +1,5 @@
 <!-- Copyright ScenPro, Inc. 2005
-    $Header: /share/content/gforge/freestylesearch/freestylesearch/build.xml,v 1.16 2008-04-21 21:56:55 hebell Exp $
+    $Header: /share/content/gforge/freestylesearch/freestylesearch/build.xml,v 1.17 2008-04-22 15:29:49 hebell Exp $
     $Name: not supported by cvs2svn $
 -->
 <project name="caDSR Freestyle Search" default="init" basedir=".">
@@ -391,6 +391,8 @@
         <sshexec username="${SCP.USER}" host="${SCP.HOST}" port="${SCP.PORT}" passphrase="${SCP.PASSPHRASE}" keyfile="${SCP.KEYFILE}" trust="true" verbose="true" command="cp ${scpPath.dir}/bin/* ${toolBin.dir}/." />
         <echo>chmod +rx ${toolBin.dir}/autorun.sh</echo>
         <sshexec username="${SCP.USER}" host="${SCP.HOST}" port="${SCP.PORT}" passphrase="${SCP.PASSPHRASE}" keyfile="${SCP.KEYFILE}" trust="true" verbose="true" command="chmod +rx ${toolBin.dir}/autorun.sh" />
+        <echo>chmod +rx ${toolBin.dir}/searchtest.sh</echo>
+        <sshexec username="${SCP.USER}" host="${SCP.HOST}" port="${SCP.PORT}" passphrase="${SCP.PASSPHRASE}" keyfile="${SCP.KEYFILE}" trust="true" verbose="true" command="chmod +rx ${toolBin.dir}/searchtest.sh" />
 
         <echo>cp ${scpPath.dir}/jboss/*-oracle-ds.xml ${JBOSS.DEPLOY.DIR}/.</echo>
         <sshexec username="${SCP.USER}" host="${SCP.HOST}" port="${SCP.PORT}" passphrase="${SCP.PASSPHRASE}" keyfile="${SCP.KEYFILE}" trust="true" verbose="true" command="cp ${scpPath.dir}/jboss/*-oracle-ds.xml ${JBOSS.DEPLOY.DIR}/." />
