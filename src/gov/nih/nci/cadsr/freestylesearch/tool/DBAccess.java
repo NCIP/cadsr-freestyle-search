@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccess.java,v 1.10 2008-04-17 18:54:39 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccess.java,v 1.11 2008-05-01 20:49:59 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.tool;
@@ -341,6 +341,11 @@ public class DBAccess
             _logger.error(_errorMsg);
             throw new SearchException(ex);
         }
+        
+        finally
+        {
+            cleanupWithCatch();
+        }
 
         return _rs;
     }
@@ -386,6 +391,12 @@ public class DBAccess
             _logger.error(_errorMsg);
             throw new SearchException(ex);
         }
+        
+        finally
+        {
+            cleanupWithCatch();
+        }
+
 
         return _rs;
     }
@@ -1096,13 +1107,9 @@ public class DBAccess
             {
                 String insert = "insert into sbrext.tool_options_view_ext(tool_name, property, value, ua_name) values ('FREESTYLE', 'SEED.LASTUPDATE', '"
                         + tss + "', '" + schema + "')";
-                try
-                {
-                    _pstmt.close();
-                }
-                catch (Exception ex)
-                {
-                }
+
+                try { _pstmt.close(); } catch (Exception ex) { }
+
                 _pstmt = _conn.prepareStatement(insert);
                 _pstmt.execute();
             }

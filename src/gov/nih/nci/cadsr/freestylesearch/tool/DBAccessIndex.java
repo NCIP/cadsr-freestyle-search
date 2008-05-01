@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccessIndex.java,v 1.12 2008-01-16 20:59:33 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccessIndex.java,v 1.13 2008-05-01 20:49:59 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.tool;
@@ -356,6 +356,11 @@ public class DBAccessIndex
             }
             _errorCode = 0;
         }
+        
+        finally
+        {
+            cleanupWithCatch();
+        }
     }
 
     /**
@@ -402,8 +407,11 @@ public class DBAccessIndex
             }
             _errorCode = 0;
         }
-
-        cleanupWithCatch();
+        
+        finally
+        {
+            cleanupWithCatch();
+        }
     }
 
     /**
@@ -734,13 +742,7 @@ public class DBAccessIndex
         {
             if (stmt != null)
             {
-                try
-                {
-                    stmt.close();
-                }
-                catch (Exception ex)
-                {
-                }
+                try { stmt.close(); } catch (Exception ex) { }
             }
         }
     }

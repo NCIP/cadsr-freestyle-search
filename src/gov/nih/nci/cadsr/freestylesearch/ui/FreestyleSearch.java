@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FreestyleSearch.java,v 1.5 2008-01-28 23:00:13 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FreestyleSearch.java,v 1.6 2008-05-01 20:49:59 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.ui;
@@ -67,14 +67,14 @@ public class FreestyleSearch extends Action
             if (rs.next())
                 url = rs.getString(1);
             rs.close();
+            rs = null;
             pstmt.close();
+            pstmt = null;
 
             pstmt = conn.prepareStatement("select value from sbrext.tool_options_view_ext where tool_name = 'CADSRAPI' and property = 'ACQUERY'");
             rs = pstmt.executeQuery();
             if (rs.next())
                 url += rs.getString(1);
-            rs.close();
-            pstmt.close();
         }
         catch (SQLException ex)
         {
