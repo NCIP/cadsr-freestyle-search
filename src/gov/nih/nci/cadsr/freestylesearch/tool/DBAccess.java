@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccess.java,v 1.11 2008-05-01 20:49:59 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/tool/DBAccess.java,v 1.12 2008-05-02 18:49:07 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.tool;
@@ -342,11 +342,6 @@ public class DBAccess
             throw new SearchException(ex);
         }
         
-        finally
-        {
-            cleanupWithCatch();
-        }
-
         return _rs;
     }
     
@@ -391,12 +386,6 @@ public class DBAccess
             _logger.error(_errorMsg);
             throw new SearchException(ex);
         }
-        
-        finally
-        {
-            cleanupWithCatch();
-        }
-
 
         return _rs;
     }
@@ -611,8 +600,8 @@ public class DBAccess
                 {
                     throw new SearchException(ex);
                 }
-                cleanup();
             }
+            cleanup();
 
             // Read the alternate table.
             total = updateCount(ac, alt, start_, false);
@@ -643,8 +632,8 @@ public class DBAccess
                 {
                     throw new SearchException(ex);
                 }
-                cleanup();
             }
+            cleanup();
         }
     }
 
