@@ -1,5 +1,5 @@
 <!-- Copyright ScenPro, Inc. 2005
-    $Header: /share/content/gforge/freestylesearch/freestylesearch/build.xml,v 1.20 2008-04-30 17:54:29 hebell Exp $
+    $Header: /share/content/gforge/freestylesearch/freestylesearch/build.xml,v 1.21 2008-05-16 18:34:48 hebell Exp $
     $Name: not supported by cvs2svn $
 -->
 <project name="caDSR Freestyle Search" default="init" basedir=".">
@@ -7,6 +7,11 @@
         Build and deploy the caDSR Freestyle Search Tool and API
     </description>
     <!-- set global properties for this build -->
+    <tstamp/>
+    
+    <property name="appl.release" value="4.0.0.0" />
+    <property name="appl.version" value="${appl.release}.${DSTAMP}${TSTAMP}"/>
+
     <property name="PROP.FILE" location="build.properties" />
     <property file="${PROP.FILE}" />
     <echo>
@@ -108,6 +113,7 @@
     <filter token="TIER.NAME" value="${TIER.NAME}" />
     <filter token="TOOL.LOG.DIR" value="${TOOL.LOG.DIR}" />
     <filter token="JBOSS.LOG.DIR" value="${JBOSS.LOG.DIR}" />
+    <filter token="appl.version" value="${appl.version}" />
 
     <path id="libpath">
         <fileset dir="${lib.dir}" includes="**/*.jar" />
@@ -225,6 +231,18 @@
                 <include name="gov/nih/nci/cadsr/freestylesearch/*.properties" />
                 <include name="gov/nih/nci/cadsr/freestylesearch/**/*.class" />
             </fileset>
+            <manifest>
+                <attribute name="Built-By" value="Anthill"/>
+                <attribute name="Main-Class" value="gov/nih/nci/cadsr/freestylesearch/util/Seed"/>
+                <section name="gov/nih/nci/cadsr/freestylesearch/">
+                    <attribute name="Specification-Title" value="caDSR Freestyle Search" />
+                    <attribute name="Specification-Version" value="${appl.release}" />
+                    <attribute name="Specification-Vendor" value="ScenPro, Inc." />
+                    <attribute name="Implementation-Title" value="caDSR Freestyle Search" />
+                    <attribute name="Implementation-Version" value="${appl.version}" />
+                    <attribute name="Implementation-Vendor" value="ScenPro, Inc." />
+                </section>
+            </manifest>
         </jar>
         <copy todir="${artifacts.dir}/gforge" file="${artifacts.dir}/bin/freestylesearch.jar"/>
         <delete file="${classes.dir}/cvsdeploy.txt" />
@@ -240,6 +258,17 @@
         <delete file="${artifacts.dir}/jboss/freestyle.war" />
         <cvs command="status -v" output="${jsp.dir}/cvsdeploy.txt" />
         <war destfile="${artifacts.dir}/jboss/freestyle.war" basedir="${root.dir}" update="true" webxml="${web.dir}/web.xml">
+            <manifest>
+                <attribute name="Built-By" value="Anthill"/>
+                <section name="gov/nih/nci/cadsr/freestylesearch/">
+                    <attribute name="Specification-Title" value="caDSR Freestyle Search Tool" />
+                    <attribute name="Specification-Version" value="${appl.release}" />
+                    <attribute name="Specification-Vendor" value="ScenPro, Inc." />
+                    <attribute name="Implementation-Title" value="caDSR Freestyle Search Tool" />
+                    <attribute name="Implementation-Version" value="${appl.version}" />
+                    <attribute name="Implementation-Vendor" value="ScenPro, Inc." />
+                </section>
+            </manifest>
         </war>
         <delete file="${jsp.dir}/cvsdeploy.txt" />
     </target>
