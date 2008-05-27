@@ -1,5 +1,5 @@
 <!-- Copyright ScenPro, Inc. 2005
-     $Header: /share/content/gforge/freestylesearch/freestylesearch/WebRoot/jsp/freestylesearch.jsp,v 1.9 2008-04-16 21:15:31 hebell Exp $
+     $Header: /share/content/gforge/freestylesearch/freestylesearch/WebRoot/jsp/freestylesearch.jsp,v 1.10 2008-05-27 16:10:44 hebell Exp $
      $Name: not supported by cvs2svn $
 -->
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
@@ -7,6 +7,7 @@
 <%@ page import="java.util.Vector" %>
 <%@ page import="gov.nih.nci.cadsr.freestylesearch.ui.FreestyleSearch" %>
 <%@ page import="gov.nih.nci.cadsr.freestylesearch.util.SearchResults" %>
+<%@ page import="org.apache.commons.lang.StringUtils" %>
 
 <html>
     <head>
@@ -178,6 +179,7 @@
             text = text.replace("$WFS$", rec.getWorkflowStatus());
             text = text.replace("$REG$", rec.getRegistrationStatus());
             text = text.replace("$STRIPE$", ((i % 2) == 1) ? " style=\"background-color: #cccccc\"" : "");
+            text = StringUtils.escape(text);
             // text = text.replace("$SCORE$", rec.getScore());
             // text = "<b>" + i + ")</b> " + text.replaceFirst("\n\t", "<dd>");
             // text = text.replace("\n\tScore: ", "\n\t<span style=\"color: #aaaaaa\">Score: ") + "</span>";
