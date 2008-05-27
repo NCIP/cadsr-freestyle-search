@@ -1,5 +1,5 @@
 <!-- Copyright ScenPro, Inc. 2005
-     $Header: /share/content/gforge/freestylesearch/freestylesearch/WebRoot/jsp/freestylesearch.jsp,v 1.10 2008-05-27 16:10:44 hebell Exp $
+     $Header: /share/content/gforge/freestylesearch/freestylesearch/WebRoot/jsp/freestylesearch.jsp,v 1.11 2008-05-27 16:30:31 hebell Exp $
      $Name: not supported by cvs2svn $
 -->
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
@@ -7,7 +7,7 @@
 <%@ page import="java.util.Vector" %>
 <%@ page import="gov.nih.nci.cadsr.freestylesearch.ui.FreestyleSearch" %>
 <%@ page import="gov.nih.nci.cadsr.freestylesearch.util.SearchResults" %>
-<%@ page import="org.apache.commons.lang.StringUtils" %>
+<%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
 
 <html>
     <head>
@@ -171,15 +171,14 @@
         for (int i = 0; i < results.size();)
         {
             SearchResults rec = (SearchResults)results.get(i++);
-            String text = pattern.replace("$NAME$", rec.getLongName());
-            text = text.replace("$TYPE$", rec.getType().getName());
-            text = text.replace("$PID$", String.valueOf(rec.getPublicID()));
-            text = text.replace("$VERS$", rec.getVersion());
-            text = text.replace("$CONT$", rec.getContextName());
-            text = text.replace("$WFS$", rec.getWorkflowStatus());
-            text = text.replace("$REG$", rec.getRegistrationStatus());
+            String text = pattern.replace("$NAME$", StringEscapeUtils.escapeHtml(rec.getLongName()));
+            text = text.replace("$TYPE$", StringEscapeUtils.escapeHtml(rec.getType().getName()));
+            text = text.replace("$PID$", StringEscapeUtils.escapeHtml(String.valueOf(rec.getPublicID())));
+            text = text.replace("$VERS$", StringEscapeUtils.escapeHtml(rec.getVersion()));
+            text = text.replace("$CONT$", StringEscapeUtils.escapeHtml(rec.getContextName()));
+            text = text.replace("$WFS$", StringEscapeUtils.escapeHtml(rec.getWorkflowStatus()));
+            text = text.replace("$REG$", StringEscapeUtils.escapeHtml(rec.getRegistrationStatus()));
             text = text.replace("$STRIPE$", ((i % 2) == 1) ? " style=\"background-color: #cccccc\"" : "");
-            text = StringUtils.escape(text);
             // text = text.replace("$SCORE$", rec.getScore());
             // text = "<b>" + i + ")</b> " + text.replaceFirst("\n\t", "<dd>");
             // text = text.replace("\n\tScore: ", "\n\t<span style=\"color: #aaaaaa\">Score: ") + "</span>";
