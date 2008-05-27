@@ -1,9 +1,9 @@
 <!-- Copyright ScenPro, Inc. 2005
-     $Header: /share/content/gforge/freestylesearch/freestylesearch/WebRoot/jsp/updateindices.jsp,v 1.3 2007-12-17 18:19:18 hebell Exp $
+     $Header: /share/content/gforge/freestylesearch/freestylesearch/WebRoot/jsp/updateindices.jsp,v 1.4 2008-05-27 21:25:46 hebell Exp $
      $Name: not supported by cvs2svn $
 -->
-<%@ taglib uri="/tags/struts-bean" prefix="bean"%>
-<%@ taglib uri="/tags/struts-html" prefix="html"%>
+<%@ taglib uri="/tags/struts-bean" prefix="bean" %>
+<%@ taglib uri="/tags/struts-html" prefix="html" %>
 <%@ page import="java.util.Vector"%>
 <%@ page import="gov.nih.nci.cadsr.freestylesearch.ui.UpdateIndicesForm"%>
 
