@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Seed.java,v 1.8 2007-12-17 18:20:30 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/Seed.java,v 1.9 2008-05-28 19:01:20 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.util;
@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.Enumeration;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
 import javax.sql.DataSource;
@@ -105,6 +106,12 @@ public class Seed
         catch (Exception ex)
         {
             _logger.error(ex.toString());
+            Enumeration loop = prop.propertyNames();
+            while (loop.hasMoreElements())
+            {
+                String key = (String) loop.nextElement();
+                _logger.error("Property " + key + " = " + prop.getProperty(key));
+            }
         }
 
         _logger.info("Seed ended ...");
