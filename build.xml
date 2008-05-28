@@ -1,5 +1,5 @@
 <!-- Copyright ScenPro, Inc. 2005
-    $Header: /share/content/gforge/freestylesearch/freestylesearch/build.xml,v 1.21 2008-05-16 18:34:48 hebell Exp $
+    $Header: /share/content/gforge/freestylesearch/freestylesearch/build.xml,v 1.22 2008-05-28 21:46:27 hebell Exp $
     $Name: not supported by cvs2svn $
 -->
 <project name="caDSR Freestyle Search" default="init" basedir=".">
@@ -330,7 +330,7 @@
         <mkdir dir="${doc.dir}" />
         <mkdir dir="${artifacts.dir}" />
         <mkdir dir="${artifacts.dir}/gforge" />
-        <javadoc destdir="${doc.dir}" Private="false" author="true" version="true" use="true" windowtitle="caDSR Freestyle Search API">
+        <javadoc destdir="${doc.dir}" Private="false" author="true" version="true" use="true" windowtitle="caDSR Freestyle Search API" Overview="src/overview.html">
             <classpath refid="libpath" />
             <packageset dir="${src.dir}" defaultexcludes="yes">
                 <include name="gov/nih/nci/cadsr/freestylesearch/**" />
