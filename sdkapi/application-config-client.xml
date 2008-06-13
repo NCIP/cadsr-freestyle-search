@@ -71,8 +71,8 @@
 							&lt;/bean&gt;
 					&lt;/property&gt;
 				&lt;/bean&gt;
-                &lt;alias alias=&quot;CaDsrApplicationService&quot; name=&quot;applicationService&quot;/&gt;
-                &lt;alias alias=&quot;CaDsrAuthenticationProvider&quot; name=&quot;authenticationProvider&quot;/&gt;
+                &lt;alias alias="CaDsrApplicationService" name="applicationService"/&gt;
+                &lt;alias alias="CaDsrAuthenticationProvider" name="authenticationProvider"/&gt;
 			</value>
 		</constructor-arg>
 	</bean>

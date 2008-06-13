@@ -4,6 +4,13 @@
   <xs:element name="DerivedDataElement" type="DerivedDataElement" />
   <xs:complexType name="DerivedDataElement">
     <xs:sequence>
+      <xs:element name="dataElement" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="DataElement" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="derivationType" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
@@ -15,13 +22,6 @@
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="DataElementDerivation" minOccurs="0" maxOccurs="unbounded" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="dataElement" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="DataElement" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -40,13 +40,6 @@
     <xs:complexContent>
       <xs:extension base="FormElement">
         <xs:sequence>
-          <xs:element name="valueDomainPermissibleValue" minOccurs="0" maxOccurs="1">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element ref="ValueDomainPermissibleValue" minOccurs="0" maxOccurs="1" />
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
           <xs:element name="conditionComponent" minOccurs="0" maxOccurs="1">
             <xs:complexType>
               <xs:sequence>
@@ -58,6 +51,13 @@
             <xs:complexType>
               <xs:sequence>
                 <xs:element ref="Question" minOccurs="0" maxOccurs="1" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="valueDomainPermissibleValue" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="ValueDomainPermissibleValue" minOccurs="0" maxOccurs="1" />
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -97,6 +97,13 @@
     <xs:complexContent>
       <xs:extension base="AdministeredComponent">
         <xs:sequence>
+          <xs:element name="dataElementConceptCollection" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="DataElementConcept" minOccurs="0" maxOccurs="unbounded" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
           <xs:element name="conceptDerivationRule" minOccurs="0" maxOccurs="1">
             <xs:complexType>
               <xs:sequence>
@@ -108,13 +115,6 @@
             <xs:complexType>
               <xs:sequence>
                 <xs:element ref="ObjectClassRelationship" minOccurs="0" maxOccurs="unbounded" />
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="dataElementConceptCollection" minOccurs="0" maxOccurs="1">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element ref="DataElementConcept" minOccurs="0" maxOccurs="unbounded" />
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -156,17 +156,17 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-          <xs:element name="childClassificationSchemeRelationshipCollection" minOccurs="0" maxOccurs="1">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element ref="ClassificationSchemeRelationship" minOccurs="0" maxOccurs="unbounded" />
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
           <xs:element name="classSchemeClassSchemeItemCollection" minOccurs="0" maxOccurs="1">
             <xs:complexType>
               <xs:sequence>
                 <xs:element ref="ClassSchemeClassSchemeItem" minOccurs="0" maxOccurs="unbounded" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="childClassificationSchemeRelationshipCollection" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="ClassificationSchemeRelationship" minOccurs="0" maxOccurs="unbounded" />
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -261,6 +261,20 @@
   <xs:element name="Registration" type="Registration" />
   <xs:complexType name="Registration">
     <xs:sequence>
+      <xs:element name="submitter" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="AdministeredComponentContact" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="administeredComponent" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="AdministeredComponent" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="referenceDocumentsCollection" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
@@ -276,20 +290,6 @@
         </xs:complexType>
       </xs:element>
       <xs:element name="registrar" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="AdministeredComponentContact" minOccurs="0" maxOccurs="1" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="administeredComponent" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="AdministeredComponent" minOccurs="0" maxOccurs="1" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="submitter" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="AdministeredComponentContact" minOccurs="0" maxOccurs="1" />
@@ -374,6 +374,27 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
+          <xs:element name="dataElement" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="DataElement" minOccurs="0" maxOccurs="1" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="validValueCollection" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="ValidValue" minOccurs="0" maxOccurs="unbounded" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="questionComponentCollection" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="QuestionConditionComponents" minOccurs="0" maxOccurs="unbounded" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
           <xs:element name="questionRepetitionCollection" minOccurs="0" maxOccurs="1">
             <xs:complexType>
               <xs:sequence>
@@ -392,27 +413,6 @@
             <xs:complexType>
               <xs:sequence>
                 <xs:element ref="Module" minOccurs="0" maxOccurs="1" />
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="questionComponentCollection" minOccurs="0" maxOccurs="1">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element ref="QuestionConditionComponents" minOccurs="0" maxOccurs="unbounded" />
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="dataElement" minOccurs="0" maxOccurs="1">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element ref="DataElement" minOccurs="0" maxOccurs="1" />
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="validValueCollection" minOccurs="0" maxOccurs="1">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element ref="ValidValue" minOccurs="0" maxOccurs="unbounded" />
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -457,10 +457,10 @@
     <xs:complexContent>
       <xs:extension base="AdministeredComponent">
         <xs:sequence>
-          <xs:element name="property" minOccurs="0" maxOccurs="1">
+          <xs:element name="conceptualDomain" minOccurs="0" maxOccurs="1">
             <xs:complexType>
               <xs:sequence>
-                <xs:element ref="Property" minOccurs="0" maxOccurs="1" />
+                <xs:element ref="ConceptualDomain" minOccurs="0" maxOccurs="1" />
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -468,6 +468,20 @@
             <xs:complexType>
               <xs:sequence>
                 <xs:element ref="ObjectClass" minOccurs="0" maxOccurs="1" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="childDataElementConceptRelationshipCollection" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="DataElementConceptRelationship" minOccurs="0" maxOccurs="unbounded" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="property" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="Property" minOccurs="0" maxOccurs="1" />
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -479,20 +493,6 @@
             </xs:complexType>
           </xs:element>
           <xs:element name="parentDataElementConceptRelationshipCollection" minOccurs="0" maxOccurs="1">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element ref="DataElementConceptRelationship" minOccurs="0" maxOccurs="unbounded" />
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="conceptualDomain" minOccurs="0" maxOccurs="1">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element ref="ConceptualDomain" minOccurs="0" maxOccurs="1" />
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="childDataElementConceptRelationshipCollection" minOccurs="0" maxOccurs="1">
             <xs:complexType>
               <xs:sequence>
                 <xs:element ref="DataElementConceptRelationship" minOccurs="0" maxOccurs="unbounded" />
@@ -542,24 +542,17 @@
     <xs:complexContent>
       <xs:extension base="AdministeredComponent">
         <xs:sequence>
+          <xs:element name="derivedDataElement" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="DerivedDataElement" minOccurs="0" maxOccurs="1" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
           <xs:element name="dataElementDerivationCollection" minOccurs="0" maxOccurs="1">
             <xs:complexType>
               <xs:sequence>
                 <xs:element ref="DataElementDerivation" minOccurs="0" maxOccurs="unbounded" />
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="dataElementConcept" minOccurs="0" maxOccurs="1">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element ref="DataElementConcept" minOccurs="0" maxOccurs="1" />
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="valueDomain" minOccurs="0" maxOccurs="1">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element ref="ValueDomain" minOccurs="0" maxOccurs="1" />
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -570,17 +563,17 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
+          <xs:element name="valueDomain" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="ValueDomain" minOccurs="0" maxOccurs="1" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
           <xs:element name="parentDataElementRelationshipsCollection" minOccurs="0" maxOccurs="1">
             <xs:complexType>
               <xs:sequence>
                 <xs:element ref="DataElementRelationship" minOccurs="0" maxOccurs="unbounded" />
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="derivedDataElement" minOccurs="0" maxOccurs="1">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element ref="DerivedDataElement" minOccurs="0" maxOccurs="1" />
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -591,6 +584,13 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
+          <xs:element name="dataElementConcept" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="DataElementConcept" minOccurs="0" maxOccurs="1" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -598,35 +598,7 @@
   <xs:element name="ConceptDerivationRule" type="ConceptDerivationRule" />
   <xs:complexType name="ConceptDerivationRule">
     <xs:sequence>
-      <xs:element name="valueMeaningCollection" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="ValueMeaning" minOccurs="0" maxOccurs="unbounded" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="componentConceptCollection" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="ComponentConcept" minOccurs="0" maxOccurs="unbounded" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
       <xs:element name="targetRoleConcept" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="ObjectClassRelationship" minOccurs="0" maxOccurs="unbounded" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="classificationSchemeCollection" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="ClassificationScheme" minOccurs="0" maxOccurs="unbounded" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="objectClassRelationship" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="ObjectClassRelationship" minOccurs="0" maxOccurs="unbounded" />
@@ -640,10 +612,17 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="classificationSchemeItemCollection" minOccurs="0" maxOccurs="1">
+      <xs:element name="representationCollection" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
-            <xs:element ref="ClassificationSchemeItem" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element ref="Representation" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="classificationSchemeCollection" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="ClassificationScheme" minOccurs="0" maxOccurs="unbounded" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -654,24 +633,17 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="conceptualDomainCollection" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="ConceptualDomain" minOccurs="0" maxOccurs="unbounded" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="representationCollection" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="Representation" minOccurs="0" maxOccurs="unbounded" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="sourceRoleConcept" minOccurs="0" maxOccurs="1">
+      <xs:element name="objectClassRelationship" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="ObjectClassRelationship" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="classificationSchemeItemCollection" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="ClassificationSchemeItem" minOccurs="0" maxOccurs="unbounded" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -682,10 +654,38 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+      <xs:element name="componentConceptCollection" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="ComponentConcept" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="valueDomainCollection" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="ValueDomain" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="sourceRoleConcept" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="ObjectClassRelationship" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="conceptualDomainCollection" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="ConceptualDomain" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="valueMeaningCollection" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="ValueMeaning" minOccurs="0" maxOccurs="unbounded" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -714,20 +714,6 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="condtionMessage" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="ConditionMessage" minOccurs="0" maxOccurs="unbounded" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="forcedConditionTriggeredActionCollection" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="TriggerAction" minOccurs="0" maxOccurs="unbounded" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
       <xs:element name="questionCondition" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
@@ -735,7 +721,21 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+      <xs:element name="condtionMessage" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="ConditionMessage" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="triggeredActionCollection" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="TriggerAction" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="forcedConditionTriggeredActionCollection" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="TriggerAction" minOccurs="0" maxOccurs="unbounded" />
@@ -810,17 +810,17 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="classSchemeClassSchemeItem" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="ClassSchemeClassSchemeItem" minOccurs="0" maxOccurs="1" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
       <xs:element name="sourceObjectClass" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="ObjectClassRelationship" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="classSchemeClassSchemeItem" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="ClassSchemeClassSchemeItem" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -834,27 +834,6 @@
   <xs:element name="Organization" type="Organization" />
   <xs:complexType name="Organization">
     <xs:sequence>
-      <xs:element name="addressCollection" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="Address" minOccurs="0" maxOccurs="unbounded" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="person" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="Person" minOccurs="0" maxOccurs="unbounded" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="registrations" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="Registration" minOccurs="0" maxOccurs="unbounded" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
       <xs:element name="administeredComponentContact" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
@@ -866,6 +845,27 @@
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="ContactCommunication" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="registrations" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="Registration" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="addressCollection" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="Address" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="person" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="Person" minOccurs="0" maxOccurs="unbounded" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -883,17 +883,17 @@
     <xs:complexContent>
       <xs:extension base="AdministeredComponent">
         <xs:sequence>
-          <xs:element name="valueDomainPermissibleValueCollection" minOccurs="0" maxOccurs="1">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element ref="ValueDomainPermissibleValue" minOccurs="0" maxOccurs="unbounded" />
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
           <xs:element name="componentConceptCollection" minOccurs="0" maxOccurs="1">
             <xs:complexType>
               <xs:sequence>
                 <xs:element ref="ComponentConcept" minOccurs="0" maxOccurs="unbounded" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="valueDomainPermissibleValueCollection" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="ValueDomainPermissibleValue" minOccurs="0" maxOccurs="unbounded" />
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -906,6 +906,20 @@
   <xs:element name="ReferenceDocument" type="ReferenceDocument" />
   <xs:complexType name="ReferenceDocument">
     <xs:sequence>
+      <xs:element name="attachments" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="ReferenceDocumentAttachment" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="classSchemeClassSchemeItem" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="ClassSchemeClassSchemeItem" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="context" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
@@ -917,13 +931,6 @@
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="Registration" minOccurs="0" maxOccurs="1" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="classSchemeClassSchemeItem" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="ClassSchemeClassSchemeItem" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -945,10 +952,10 @@
   <xs:element name="Person" type="Person" />
   <xs:complexType name="Person">
     <xs:sequence>
-      <xs:element name="organization" minOccurs="0" maxOccurs="1">
+      <xs:element name="addressCollection" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
-            <xs:element ref="Organization" minOccurs="0" maxOccurs="1" />
+            <xs:element ref="Address" minOccurs="0" maxOccurs="unbounded" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -966,10 +973,10 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="addressCollection" minOccurs="0" maxOccurs="1">
+      <xs:element name="organization" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
-            <xs:element ref="Address" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element ref="Organization" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -1005,13 +1012,6 @@
   <xs:element name="DataElementDerivation" type="DataElementDerivation" />
   <xs:complexType name="DataElementDerivation">
     <xs:sequence>
-      <xs:element name="leftOperand" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="Function" minOccurs="0" maxOccurs="1" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
       <xs:element name="dataElement" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
@@ -1023,6 +1023,13 @@
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="DerivedDataElement" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="leftOperand" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="Function" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -1039,6 +1046,20 @@
   <xs:element name="AdministeredComponentContact" type="AdministeredComponentContact" />
   <xs:complexType name="AdministeredComponentContact">
     <xs:sequence>
+      <xs:element name="submissions" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="Registration" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="organization" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="Organization" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="classSchemeClassSchemeItem" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
@@ -1060,20 +1081,6 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="organization" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="Organization" minOccurs="0" maxOccurs="1" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="submissions" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="Registration" minOccurs="0" maxOccurs="1" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
     </xs:sequence>
     <xs:attribute name="contactRole" type="xs:string" />
     <xs:attribute name="createdBy" type="xs:string" />
@@ -1086,14 +1093,14 @@
   <xs:element name="ValueDomainRelationship" type="ValueDomainRelationship" />
   <xs:complexType name="ValueDomainRelationship">
     <xs:sequence>
-      <xs:element name="childValueDomain" minOccurs="0" maxOccurs="1">
+      <xs:element name="parentValueDomain" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="ValueDomain" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="parentValueDomain" minOccurs="0" maxOccurs="1">
+      <xs:element name="childValueDomain" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="ValueDomain" minOccurs="0" maxOccurs="1" />
@@ -1111,14 +1118,14 @@
   <xs:element name="DataElementConceptRelationship" type="DataElementConceptRelationship" />
   <xs:complexType name="DataElementConceptRelationship">
     <xs:sequence>
-      <xs:element name="parentDataElementConcept" minOccurs="0" maxOccurs="1">
+      <xs:element name="childDataElementConcept" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="DataElementConcept" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="childDataElementConcept" minOccurs="0" maxOccurs="1">
+      <xs:element name="parentDataElementConcept" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="DataElementConcept" minOccurs="0" maxOccurs="1" />
@@ -1163,10 +1170,24 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="context" minOccurs="0" maxOccurs="1">
+      <xs:element name="administeredComponentClassSchemeItemCollection" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
-            <xs:element ref="Context" minOccurs="0" maxOccurs="1" />
+            <xs:element ref="AdministeredComponentClassSchemeItem" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="referenceDocumentCollection" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="ReferenceDocument" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="definitionCollection" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="Definition" minOccurs="0" maxOccurs="unbounded" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -1184,24 +1205,10 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="referenceDocumentCollection" minOccurs="0" maxOccurs="1">
+      <xs:element name="context" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
-            <xs:element ref="ReferenceDocument" minOccurs="0" maxOccurs="unbounded" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="administeredComponentClassSchemeItemCollection" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="AdministeredComponentClassSchemeItem" minOccurs="0" maxOccurs="unbounded" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="definitionCollection" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="Definition" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element ref="Context" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -1245,17 +1252,17 @@
   <xs:element name="ContactCommunication" type="ContactCommunication" />
   <xs:complexType name="ContactCommunication">
     <xs:sequence>
-      <xs:element name="person" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="Person" minOccurs="0" maxOccurs="1" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
       <xs:element name="organization" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="Organization" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="person" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="Person" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -1272,7 +1279,21 @@
   <xs:element name="QuestionConditionComponents" type="QuestionConditionComponents" />
   <xs:complexType name="QuestionConditionComponents">
     <xs:sequence>
+      <xs:element name="function" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="Function" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="questionCondition" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="QuestionCondition" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="parentQuestionCondition" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="QuestionCondition" minOccurs="0" maxOccurs="1" />
@@ -1283,20 +1304,6 @@
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="ValidValue" minOccurs="0" maxOccurs="1" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="function" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="Function" minOccurs="0" maxOccurs="1" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="parentQuestionCondition" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="QuestionCondition" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -1317,10 +1324,10 @@
   <xs:element name="ClassSchemeClassSchemeItem" type="ClassSchemeClassSchemeItem" />
   <xs:complexType name="ClassSchemeClassSchemeItem">
     <xs:sequence>
-      <xs:element name="classificationSchemeItem" minOccurs="0" maxOccurs="1">
+      <xs:element name="designationClassSchemeItemCollection" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
-            <xs:element ref="ClassificationSchemeItem" minOccurs="0" maxOccurs="1" />
+            <xs:element ref="DesignationClassSchemeItem" minOccurs="0" maxOccurs="unbounded" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -1328,20 +1335,6 @@
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="AdministeredComponentContact" minOccurs="0" maxOccurs="unbounded" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="childClassSchemeClassSchemeItemCollection" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="ClassSchemeClassSchemeItem" minOccurs="0" maxOccurs="unbounded" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="parentClassSchemeClassSchemeItem" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="ClassSchemeClassSchemeItem" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -1359,6 +1352,20 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+      <xs:element name="definitionClassSchemeItemCollection" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="DefinitionClassSchemeItem" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="classificationSchemeItem" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="ClassificationSchemeItem" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="administeredComponentClassSchemeItemCollection" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
@@ -1366,17 +1373,17 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="designationClassSchemeItemCollection" minOccurs="0" maxOccurs="1">
+      <xs:element name="childClassSchemeClassSchemeItemCollection" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
-            <xs:element ref="DesignationClassSchemeItem" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element ref="ClassSchemeClassSchemeItem" minOccurs="0" maxOccurs="unbounded" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="definitionClassSchemeItemCollection" minOccurs="0" maxOccurs="1">
+      <xs:element name="parentClassSchemeClassSchemeItem" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
-            <xs:element ref="DefinitionClassSchemeItem" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element ref="ClassSchemeClassSchemeItem" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -1391,17 +1398,17 @@
   <xs:element name="Function" type="Function" />
   <xs:complexType name="Function">
     <xs:sequence>
-      <xs:element name="conceptDerivationRule" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="ConceptDerivationRule" minOccurs="0" maxOccurs="1" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
       <xs:element name="conditionComponent" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="QuestionConditionComponents" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="conceptDerivationRule" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="ConceptDerivationRule" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -1419,24 +1426,10 @@
     <xs:complexContent>
       <xs:extension base="AdministeredComponent">
         <xs:sequence>
-          <xs:element name="childValueDomainRelationshipCollection" minOccurs="0" maxOccurs="1">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element ref="ValueDomainRelationship" minOccurs="0" maxOccurs="unbounded" />
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
           <xs:element name="represention" minOccurs="0" maxOccurs="1">
             <xs:complexType>
               <xs:sequence>
                 <xs:element ref="Representation" minOccurs="0" maxOccurs="1" />
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="questionCollection" minOccurs="0" maxOccurs="1">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element ref="Question" minOccurs="0" maxOccurs="unbounded" />
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -1461,7 +1454,21 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
+          <xs:element name="questionCollection" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="Question" minOccurs="0" maxOccurs="unbounded" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
           <xs:element name="parentValueDomainRelationshipCollection" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="ValueDomainRelationship" minOccurs="0" maxOccurs="unbounded" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="childValueDomainRelationshipCollection" minOccurs="0" maxOccurs="1">
             <xs:complexType>
               <xs:sequence>
                 <xs:element ref="ValueDomainRelationship" minOccurs="0" maxOccurs="unbounded" />
@@ -1488,10 +1495,10 @@
   <xs:element name="ComponentConcept" type="ComponentConcept" />
   <xs:complexType name="ComponentConcept">
     <xs:sequence>
-      <xs:element name="derivationRule" minOccurs="0" maxOccurs="1">
+      <xs:element name="componentlevel" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
-            <xs:element ref="ConceptDerivationRule" minOccurs="0" maxOccurs="1" />
+            <xs:element ref="ComponentLevel" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -1502,10 +1509,10 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="componentlevel" minOccurs="0" maxOccurs="1">
+      <xs:element name="derivationRule" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
-            <xs:element ref="ComponentLevel" minOccurs="0" maxOccurs="1" />
+            <xs:element ref="ConceptDerivationRule" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -1551,17 +1558,17 @@
   <xs:element name="PermissibleValue" type="PermissibleValue" />
   <xs:complexType name="PermissibleValue">
     <xs:sequence>
-      <xs:element name="valueDomainPermissibleValueCollection" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="ValueDomainPermissibleValue" minOccurs="0" maxOccurs="unbounded" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
       <xs:element name="valueMeaning" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="ValueMeaning" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="valueDomainPermissibleValueCollection" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="ValueDomainPermissibleValue" minOccurs="0" maxOccurs="unbounded" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -1578,24 +1585,17 @@
   <xs:element name="TriggerAction" type="TriggerAction" />
   <xs:complexType name="TriggerAction">
     <xs:sequence>
-      <xs:element name="targetFormElement" minOccurs="0" maxOccurs="1">
+      <xs:element name="sourceFormElement" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="FormElement" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="questionCondition" minOccurs="0" maxOccurs="1">
+      <xs:element name="targetFormElement" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
-            <xs:element ref="QuestionCondition" minOccurs="0" maxOccurs="1" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="administeredComponentClassSchemeItemCollection" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="AdministeredComponentClassSchemeItem" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element ref="FormElement" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -1606,14 +1606,21 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="sourceFormElement" minOccurs="0" maxOccurs="1">
+      <xs:element name="administeredComponentClassSchemeItemCollection" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
-            <xs:element ref="FormElement" minOccurs="0" maxOccurs="1" />
+            <xs:element ref="AdministeredComponentClassSchemeItem" minOccurs="0" maxOccurs="unbounded" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
       <xs:element name="enforcedCondition" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="QuestionCondition" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="questionCondition" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="QuestionCondition" minOccurs="0" maxOccurs="1" />
@@ -1637,17 +1644,10 @@
     <xs:complexContent>
       <xs:extension base="AdministeredComponent">
         <xs:sequence>
-          <xs:element name="targetObjectClass" minOccurs="0" maxOccurs="1">
+          <xs:element name="targetObjectClassClassification" minOccurs="0" maxOccurs="1">
             <xs:complexType>
               <xs:sequence>
-                <xs:element ref="ObjectClass" minOccurs="0" maxOccurs="1" />
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="sourceObjectClass" minOccurs="0" maxOccurs="1">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element ref="ObjectClass" minOccurs="0" maxOccurs="1" />
+                <xs:element ref="AdministeredComponentClassSchemeItem" minOccurs="0" maxOccurs="1" />
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -1658,10 +1658,10 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-          <xs:element name="targetObjectClassClassification" minOccurs="0" maxOccurs="1">
+          <xs:element name="targetObjectClass" minOccurs="0" maxOccurs="1">
             <xs:complexType>
               <xs:sequence>
-                <xs:element ref="AdministeredComponentClassSchemeItem" minOccurs="0" maxOccurs="1" />
+                <xs:element ref="ObjectClass" minOccurs="0" maxOccurs="1" />
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -1672,10 +1672,10 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-          <xs:element name="conceptDerivationRule" minOccurs="0" maxOccurs="1">
+          <xs:element name="sourceObjectClass" minOccurs="0" maxOccurs="1">
             <xs:complexType>
               <xs:sequence>
-                <xs:element ref="ConceptDerivationRule" minOccurs="0" maxOccurs="1" />
+                <xs:element ref="ObjectClass" minOccurs="0" maxOccurs="1" />
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -1683,6 +1683,13 @@
             <xs:complexType>
               <xs:sequence>
                 <xs:element ref="AdministeredComponentClassSchemeItem" minOccurs="0" maxOccurs="1" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="conceptDerivationRule" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="ConceptDerivationRule" minOccurs="0" maxOccurs="1" />
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -1704,17 +1711,17 @@
   <xs:element name="Address" type="Address" />
   <xs:complexType name="Address">
     <xs:sequence>
-      <xs:element name="organization" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="Organization" minOccurs="0" maxOccurs="1" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
       <xs:element name="person" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="Person" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="organization" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="Organization" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -1736,6 +1743,13 @@
   <xs:element name="Context" type="Context" />
   <xs:complexType name="Context">
     <xs:sequence>
+      <xs:element name="designationCollection" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="Designation" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="referenceDocumentCollection" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
@@ -1754,13 +1768,6 @@
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="Definition" minOccurs="0" maxOccurs="unbounded" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="designationCollection" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="Designation" minOccurs="0" maxOccurs="unbounded" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -1807,20 +1814,6 @@
     <xs:complexContent>
       <xs:extension base="AdministeredComponent">
         <xs:sequence>
-          <xs:element name="classSchemeClassSchemeItemCollection" minOccurs="0" maxOccurs="1">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element ref="ClassSchemeClassSchemeItem" minOccurs="0" maxOccurs="unbounded" />
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="conceptDerivationRule" minOccurs="0" maxOccurs="1">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element ref="ConceptDerivationRule" minOccurs="0" maxOccurs="1" />
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
           <xs:element name="childClassificationSchemeItemRelationshipCollection" minOccurs="0" maxOccurs="1">
             <xs:complexType>
               <xs:sequence>
@@ -1828,10 +1821,24 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
+          <xs:element name="classSchemeClassSchemeItemCollection" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="ClassSchemeClassSchemeItem" minOccurs="0" maxOccurs="unbounded" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
           <xs:element name="parentClassificationSchemeItemRelationshipCollection" minOccurs="0" maxOccurs="1">
             <xs:complexType>
               <xs:sequence>
                 <xs:element ref="ClassificationSchemeItemRelationship" minOccurs="0" maxOccurs="unbounded" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="conceptDerivationRule" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="ConceptDerivationRule" minOccurs="0" maxOccurs="1" />
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -1857,17 +1864,17 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="enumeratedValueDomain" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="EnumeratedValueDomain" minOccurs="0" maxOccurs="1" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
       <xs:element name="concept" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="Concept" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="enumeratedValueDomain" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="EnumeratedValueDomain" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -1880,6 +1887,26 @@
     <xs:attribute name="id" type="xs:string" />
     <xs:attribute name="modifiedBy" type="xs:string" />
     <xs:attribute name="origin" type="xs:string" />
+  </xs:complexType>
+  <xs:element name="ReferenceDocumentAttachment" type="ReferenceDocumentAttachment" />
+  <xs:complexType name="ReferenceDocumentAttachment">
+    <xs:sequence>
+      <xs:element name="referenceDocument" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="ReferenceDocument" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="createdBy" type="xs:string" />
+    <xs:attribute name="dateCreated" type="xs:dateTime" />
+    <xs:attribute name="dateModified" type="xs:string" />
+    <xs:attribute name="id" type="xs:string" />
+    <xs:attribute name="mimeType" type="xs:string" />
+    <xs:attribute name="modifiedBy" type="xs:string" />
+    <xs:attribute name="name" type="xs:string" />
+    <xs:attribute name="size" type="xs:integer" />
   </xs:complexType>
   <xs:element name="EnumeratedValueDomain" type="EnumeratedValueDomain" />
   <xs:complexType name="EnumeratedValueDomain">
@@ -1926,17 +1953,17 @@
     <xs:complexContent>
       <xs:extension base="AdministeredComponent">
         <xs:sequence>
-          <xs:element name="dataElementConceptCollection" minOccurs="0" maxOccurs="1">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element ref="DataElementConcept" minOccurs="0" maxOccurs="unbounded" />
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
           <xs:element name="conceptDerivationRule" minOccurs="0" maxOccurs="1">
             <xs:complexType>
               <xs:sequence>
                 <xs:element ref="ConceptDerivationRule" minOccurs="0" maxOccurs="1" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="dataElementConceptCollection" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="DataElementConcept" minOccurs="0" maxOccurs="unbounded" />
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -1950,17 +1977,17 @@
     <xs:complexContent>
       <xs:extension base="AdministeredComponent">
         <xs:sequence>
+          <xs:element name="dataElementConceptCollection" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="DataElementConcept" minOccurs="0" maxOccurs="unbounded" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
           <xs:element name="valueMeaningCollection" minOccurs="0" maxOccurs="1">
             <xs:complexType>
               <xs:sequence>
                 <xs:element ref="ValueMeaning" minOccurs="0" maxOccurs="unbounded" />
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="conceptDerivationRule" minOccurs="0" maxOccurs="1">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element ref="ConceptDerivationRule" minOccurs="0" maxOccurs="1" />
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -1971,10 +1998,10 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-          <xs:element name="dataElementConceptCollection" minOccurs="0" maxOccurs="1">
+          <xs:element name="conceptDerivationRule" minOccurs="0" maxOccurs="1">
             <xs:complexType>
               <xs:sequence>
-                <xs:element ref="DataElementConcept" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element ref="ConceptDerivationRule" minOccurs="0" maxOccurs="1" />
               </xs:sequence>
             </xs:complexType>
           </xs:element>

@@ -4,13 +4,6 @@
   <xs:element name="UMLAttributeMetadata" type="UMLAttributeMetadata" />
   <xs:complexType name="UMLAttributeMetadata">
     <xs:sequence>
-      <xs:element name="attributeTypeMetadata" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="AttributeTypeMetadata" minOccurs="0" maxOccurs="1" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
       <xs:element name="UMLClassMetadata" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
@@ -18,10 +11,10 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="project" minOccurs="0" maxOccurs="1">
+      <xs:element name="attributeTypeMetadata" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
-            <xs:element ref="Project" minOccurs="0" maxOccurs="1" />
+            <xs:element ref="AttributeTypeMetadata" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -29,6 +22,13 @@
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="SemanticMetadata" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="project" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="Project" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -49,17 +49,17 @@
   <xs:element name="Project" type="Project" />
   <xs:complexType name="Project">
     <xs:sequence>
+      <xs:element name="UMLPackageMetadataCollection" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="UMLPackageMetadata" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="subProjectCollection" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="SubProject" minOccurs="0" maxOccurs="unbounded" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="UMLAssociationMetadataCollection" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="UMLAssociationMetadata" minOccurs="0" maxOccurs="unbounded" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -70,10 +70,10 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="UMLPackageMetadataCollection" minOccurs="0" maxOccurs="1">
+      <xs:element name="classificationScheme" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
-            <xs:element ref="UMLPackageMetadata" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element ref="gov.nih.nci.cadsr.domain:ClassificationScheme" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -84,10 +84,10 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="classificationScheme" minOccurs="0" maxOccurs="1">
+      <xs:element name="UMLAssociationMetadataCollection" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
-            <xs:element ref="gov.nih.nci.cadsr.domain:ClassificationScheme" minOccurs="0" maxOccurs="1" />
+            <xs:element ref="UMLAssociationMetadata" minOccurs="0" maxOccurs="unbounded" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -122,24 +122,17 @@
   <xs:element name="UMLAssociationMetadata" type="UMLAssociationMetadata" />
   <xs:complexType name="UMLAssociationMetadata">
     <xs:sequence>
+      <xs:element name="targetUMLClassMetadata" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="UMLClassMetadata" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="objectClassRelationship" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="gov.nih.nci.cadsr.domain:ObjectClassRelationship" minOccurs="0" maxOccurs="1" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="project" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="Project" minOccurs="0" maxOccurs="1" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="semanticMetadataCollection" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="SemanticMetadata" minOccurs="0" maxOccurs="unbounded" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -150,10 +143,17 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="targetUMLClassMetadata" minOccurs="0" maxOccurs="1">
+      <xs:element name="semanticMetadataCollection" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
-            <xs:element ref="UMLClassMetadata" minOccurs="0" maxOccurs="1" />
+            <xs:element ref="SemanticMetadata" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="project" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="Project" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -172,6 +172,13 @@
   <xs:element name="UMLPackageMetadata" type="UMLPackageMetadata" />
   <xs:complexType name="UMLPackageMetadata">
     <xs:sequence>
+      <xs:element name="project" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="Project" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="UMLClassMetadataCollection" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
@@ -183,13 +190,6 @@
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="SubProject" minOccurs="0" maxOccurs="1" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="project" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="Project" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -209,27 +209,6 @@
   <xs:element name="UMLClassMetadata" type="UMLClassMetadata" />
   <xs:complexType name="UMLClassMetadata">
     <xs:sequence>
-      <xs:element name="UMLAttributeMetadataCollection" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="UMLAttributeMetadata" minOccurs="0" maxOccurs="unbounded" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="UMLPackageMetadata" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="UMLPackageMetadata" minOccurs="0" maxOccurs="1" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-      <xs:element name="UMLAssociationMetadataCollection" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="UMLAssociationMetadata" minOccurs="0" maxOccurs="unbounded" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
       <xs:element name="semanticMetadataCollection" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
@@ -244,10 +223,31 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+      <xs:element name="UMLAttributeMetadataCollection" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="UMLAttributeMetadata" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="objectClass" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="gov.nih.nci.cadsr.domain:ObjectClass" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="UMLPackageMetadata" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="UMLPackageMetadata" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="UMLAssociationMetadataCollection" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="UMLAssociationMetadata" minOccurs="0" maxOccurs="unbounded" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -288,17 +288,17 @@
   <xs:element name="SubProject" type="SubProject" />
   <xs:complexType name="SubProject">
     <xs:sequence>
-      <xs:element name="project" minOccurs="0" maxOccurs="1">
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element ref="Project" minOccurs="0" maxOccurs="1" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
       <xs:element name="UMLPackageMetadataCollection" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="UMLPackageMetadata" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="project" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="Project" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -332,10 +332,10 @@
   <xs:element name="AttributeTypeMetadata" type="AttributeTypeMetadata" />
   <xs:complexType name="AttributeTypeMetadata">
     <xs:sequence>
-      <xs:element name="semanticMetadataCollection" minOccurs="0" maxOccurs="1">
+      <xs:element name="typeEnumerationCollection" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
-            <xs:element ref="SemanticMetadata" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element ref="TypeEnumerationMetadata" minOccurs="0" maxOccurs="unbounded" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
@@ -346,10 +346,10 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="typeEnumerationCollection" minOccurs="0" maxOccurs="1">
+      <xs:element name="semanticMetadataCollection" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
-            <xs:element ref="TypeEnumerationMetadata" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element ref="SemanticMetadata" minOccurs="0" maxOccurs="unbounded" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>
