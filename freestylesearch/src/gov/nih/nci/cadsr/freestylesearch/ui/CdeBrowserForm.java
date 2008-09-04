@@ -1,6 +1,6 @@
 // Copyright (c) 2008 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/CdeBrowserForm.java,v 1.1 2008-06-16 20:48:22 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/CdeBrowserForm.java,v 1.2 2008-09-04 18:19:09 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.ui;
@@ -28,7 +28,7 @@ public class CdeBrowserForm extends ActionForm
     private String _vers;
     private String _idseq;
     private String _cdebrowser;
-    private static final String _deUrl = "/CDEBrowser/search?dataElementDetails=9&p_de_idseq=$IDSEQ$&PageId=DataElementsGroup&queryDE=yes&FirstTimer=0";
+    private static final String _deUrl = "search?dataElementDetails=9&p_de_idseq=$IDSEQ$&PageId=DataElementsGroup&queryDE=yes&FirstTimer=0";
     
     private static final long serialVersionUID = 5305822440080952381L;
     private static final Logger _logger = Logger.getLogger(CdeBrowserForm.class);
