@@ -1,5 +1,5 @@
 <!-- Copyright ScenPro, Inc. 2005
-    $Header: /share/content/gforge/freestylesearch/freestylesearch/build.xml,v 1.23 2008-07-09 17:50:57 hebell Exp $
+    $Header: /share/content/gforge/freestylesearch/freestylesearch/build.xml,v 1.24 2008-11-03 17:33:17 hebell Exp $
     $Name: not supported by cvs2svn $
 -->
 <project name="caDSR Freestyle Search" default="init" basedir=".">
@@ -21,6 +21,9 @@
         CADSR.DS.USER = ${CADSR.DS.USER}
         CADSR.DS.PSWD = ${CADSR.DS.PSWD}
         CADSR.DS.TNS.ENTRY=${CADSR.DS.TNS.ENTRY}
+        CADSR.TOOL.URL = ${CADSR.TOOL.URL}
+        CADSR.TOOL.USER = ${CADSR.TOOL.USER}
+        CADSR.TOOL.PSWD = ${CADSR.TOOL.PSWD}
         DEPLOY.LOCATION = ${DEPLOY.LOCATION}
         JBOSS.HOME.DIR = ${JBOSS.HOME.DIR}
         JBOSS.SERVER.DIR = ${JBOSS.SERVER.DIR}
@@ -53,6 +56,9 @@
             <isset property="CADSR.DS.USER" />
             <isset property="CADSR.DS.PSWD" />
             <isset property="CADSR.DS.TNS.ENTRY" />
+            <isset property="CADSR.TOOL.URL" />
+            <isset property="CADSR.TOOL.USER" />
+            <isset property="CADSR.TOOL.PSWD" />
             <isset property="TIER" />
             <isset property="TIER.UPPER" />
             <isset property="TIER.NAME" />
@@ -104,6 +110,9 @@
     <filter token="CADSR.DS.URL" value="${CADSR.DS.URL}" />
     <filter token="CADSR.DS.USER" value="${CADSR.DS.USER}" />
     <filter token="CADSR.DS.PSWD" value="${CADSR.DS.PSWD}" />
+    <filter token="CADSR.TOOL.URL" value="${CADSR.TOOL.URL}" />
+    <filter token="CADSR.TOOL.USER" value="${CADSR.TOOL.USER}" />
+    <filter token="CADSR.TOOL.PSWD" value="${CADSR.TOOL.PSWD}" />
     <filter token="TEST.VALID.USER" value="${TEST.VALID.USER}" />
     <filter token="TEST.VALID.PSWD" value="${TEST.VALID.PSWD}" />
     <filter token="TEST.BAD.USER" value="${TEST.BAD.USER}" />
