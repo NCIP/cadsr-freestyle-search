@@ -1,6 +1,6 @@
 /* Copyright ScenPro, Inc, 2005
 
-   $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/template.load_options.sql,v 1.8 2008-11-03 18:45:17 hebell Exp $
+   $Header: /share/content/gforge/freestylesearch/freestylesearch/conf/template.load_options.sql,v 1.9 2008-11-03 19:03:51 hebell Exp $
    $Name: not supported by cvs2svn $
 
    Author: Larry Hebel
@@ -74,7 +74,7 @@ union select 'FREESTYLE' as tool_name , 'INDEX.SCHEDULE.END' as property, '19:00
 union select 'FREESTYLE' as tool_name , 'INDEX.BLOCK.START' as property, '02:00' as value, '' as ua_name, 'The start time (24 hour clock) when no manual requests can be made.' as description from dual
 union select 'FREESTYLE' as tool_name , 'INDEX.BLOCK.END' as property, '09:00' as value, '' as ua_name, 'The end time (24 hour clock) when no manual requests can be made.' as description from dual
 union select 'FREESTYLE' as tool_name , 'INDEX.SCHEDULE.TZ' as property, 'Eastern' as value, '' as ua_name, 'The timezone for the automatic index updates.' as description from dual
-union select 'FREESTYLE' as tool_name , 'VERSION' as property, 'appl.version' as value, '' as ua_name, 'The version identification for the current Freestyle Search Engine.' as description from dual
+union select 'FREESTYLE' as tool_name , 'VERSION' as property, '@appl.version@' as value, '' as ua_name, 'The version identification for the current Freestyle Search Engine.' as description from dual
 ) t
 on (s.tool_name = t.tool_name and s.property = t.property)
 when matched then update set s.value = t.value, s.ua_name = t.ua_name, s.description = t.description
