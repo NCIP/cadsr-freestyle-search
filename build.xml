@@ -1,5 +1,5 @@
 <!-- Copyright ScenPro, Inc. 2005
-    $Header: /share/content/gforge/freestylesearch/freestylesearch/build.xml,v 1.25 2008-11-03 18:45:07 hebell Exp $
+    $Header: /share/content/gforge/freestylesearch/freestylesearch/build.xml,v 1.26 2008-11-25 21:15:28 hebell Exp $
     $Name: not supported by cvs2svn $
 -->
 <project name="caDSR Freestyle Search" default="init" basedir=".">
@@ -294,6 +294,8 @@
             <fileset dir="${basedir}">
                 <include name="build.xml" />
                 <include name="template.build.properties" />
+                <include name="Open_Source_Software_License_v2_20080107.html" />
+                <include name="caBIG_Logo.jpg" />
             </fileset>
         </copy>
         <mkdir dir="${odi.dir}/conf" />
