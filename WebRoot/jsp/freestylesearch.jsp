@@ -1,5 +1,5 @@
 <!-- Copyright ScenPro, Inc. 2005
-     $Header: /share/content/gforge/freestylesearch/freestylesearch/WebRoot/jsp/freestylesearch.jsp,v 1.11 2008-05-27 16:30:31 hebell Exp $
+     $Header: /share/content/gforge/freestylesearch/freestylesearch/WebRoot/jsp/freestylesearch.jsp,v 1.12 2009-04-01 12:22:05 hebell Exp $
      $Name: not supported by cvs2svn $
 -->
 <%@ taglib uri="/tags/struts-bean" prefix="bean" %>
@@ -9,6 +9,7 @@
 <%@ page import="gov.nih.nci.cadsr.freestylesearch.util.SearchResults" %>
 <%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
     <head>
         <title><bean:message key="search.title" /></title>
@@ -23,50 +24,62 @@
             <!--
             function doSearch()
             {
-                if (freestyleForm.limit.value == null || freestyleForm.limit.value.length == 0 || isNaN(freestyleForm.limit.value))
+                var obj = document.getElementsByName("limit");
+                var limit = obj[0];
+                if (limit.value == null || limit.value.length == 0 || isNaN(limit.value))
                 {
                     alert("The maximum number of possible results is not valid, please correct.");
-                    freestyleForm.limit.focus();
+                    limit.focus();
                     return;
                 }
-                if (freestyleForm.score.value == null || freestyleForm.score.value.length == 0 || isNaN(freestyleForm.score.value))
+                obj = document.getElementsByName("score");
+                var score = obj[0];
+                if (score.value == null || score.value.length == 0 || isNaN(score.value))
                 {
                     alert("The number of top score groups is not valid, please correct.");
-                    freestyleForm.score.focus();
+                    score.focus();
                     return;
                 }
-                workingmsg.innerHTML = "Searching, please wait...";
-                freestyleForm.search.disabled = true;
-                freestyleForm.submit();
+                var msg = document.getElementById("workingmsg");
+                msg.innerHTML = "Searching, please wait...";
+                
+                obj = document.getElementsByName("search");
+                obj[0].disabled = true;
+                obj = document.getElementsByName("freestyleForm");
+                obj[0].submit();
             }
             function toggleOptions()
             {
+                var opts = document.getElementById("opts");
+                var obj = document.getElementsByName("displayOptions");
+                var dis = obj[0];
                 if (opts.style.display == "none")
                 {
                     opts.style.display = "block";
-                    freestyleForm.displayOptions.value = "Y";
+                    dis.value = "Y";
                 }
                 else
                 {
                     opts.style.display = "none";
-                    freestyleForm.displayOptions.value = "N";
+                    dis.value = "N";
                 }
             }
             function loaded()
             {
-                if (freestyleForm.displayOptions.value == "Y")
+                var dis = document.getElementsByName("displayOptions");
+                if (dis[0].value == "Y")
                     toggleOptions();
             }
-            function checkEnter()
+            function checkEnter(evnt)
             {
-                if (window.event.keyCode == 13)
+                if (evnt.keyCode == 13)
                     doSearch();
             }
             // -->
         </script>
     </head>
 
-<body onload="loaded();" onkeyup="checkEnter();">
+<body onload="loaded();" onkeyup="checkEnter(event);">
               <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#A90101">
               <tr bgcolor="#A90101">
               <td valign="center" align="left"><a href="http://www.cancer.gov" target="_blank" alt="NCI Logo">
