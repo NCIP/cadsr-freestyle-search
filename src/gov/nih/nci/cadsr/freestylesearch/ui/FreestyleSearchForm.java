@@ -1,6 +1,6 @@
 // Copyright (c) 2006 ScenPro, Inc.
 
-// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FreestyleSearchForm.java,v 1.7 2008-06-17 19:44:05 hebell Exp $
+// $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/ui/FreestyleSearchForm.java,v 1.8 2009-04-09 13:59:23 hebell Exp $
 // $Name: not supported by cvs2svn $
 
 package gov.nih.nci.cadsr.freestylesearch.ui;
@@ -354,7 +354,7 @@ public class FreestyleSearchForm extends ActionForm
                     + "&nbsp;(" + jboss + "/" + System.getProperty("java.version") + ")"
                     + "</span></td></tr>\n"
                     + "<tr>\n<td class=\"nciftrtable\">\n"
-                    + "<a href=\"mailto:ncicb@pop.nci.nih.gov?subject=caDSR%20Freestyle%20Search\"><span class=\"wdemail\" title=\"Email NCICB Help Desk\">&#42;</span></a>\n"
+                    + "<a href=\"mailto:ncicb@pop.nci.nih.gov?subject=caDSR%20Freestyle%20Search\"><img border=\"0\" src=\"/freestyle/images/email_icon.gif\" alt=\"Email NCI Help Desk\" title=\"Email NCI Help Desk\"></a>\n"
                     + "<a target=\"_blank\" href=\"http://www.cancer.gov/\"><img border=\"0\" src=\"/freestyle/images/footer_nci.gif\" alt=\"National Cancer Institute Logo\" title=\"National Cancer Institute\"></a>\n"
                     + "<a target=\"_blank\" href=\"http://www.dhhs.gov/\"><img border=\"0\" src=\"/freestyle/images/footer_hhs.gif\" alt=\"Department of Health and Human Services Logo\" title=\"Department of Health and Human Services\"></a>\n"
                     + "<a target=\"_blank\" href=\"http://www.nih.gov/\"><img border=\"0\" src=\"/freestyle/images/footer_nih.gif\" alt=\"National Institutes of Health Logo\" title=\"National Institutes of Health\"></a>\n"
