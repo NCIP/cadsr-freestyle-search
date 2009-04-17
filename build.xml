@@ -1,5 +1,5 @@
 <!-- Copyright ScenPro, Inc. 2005
-    $Header: /share/content/gforge/freestylesearch/freestylesearch/build.xml,v 1.26 2008-11-25 21:15:28 hebell Exp $
+    $Header: /share/content/gforge/freestylesearch/freestylesearch/build.xml,v 1.27 2009-04-17 19:21:14 hebell Exp $
     $Name: not supported by cvs2svn $
 -->
 <project name="caDSR Freestyle Search" default="init" basedir=".">
@@ -9,7 +9,7 @@
     <!-- set global properties for this build -->
     <tstamp/>
     
-    <property name="appl.release" value="4.0.0.1" />
+    <property name="appl.release" value="4.0.1" />
     <property name="appl.version" value="${appl.release}.${DSTAMP}${TSTAMP}"/>
 
     <property name="PROP.FILE" location="build.properties" />
