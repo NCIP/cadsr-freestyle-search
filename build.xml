@@ -1,5 +1,5 @@
 <!-- Copyright ScenPro, Inc. 2005
-    $Header: /share/content/gforge/freestylesearch/freestylesearch/build.xml,v 1.28 2009-04-17 20:02:57 hebell Exp $
+    $Header: /share/content/gforge/freestylesearch/freestylesearch/build.xml,v 1.29 2009-05-15 12:35:01 hebell Exp $
     $Name: not supported by cvs2svn $
 -->
 <project name="caDSR Freestyle Search" default="init" basedir=".">
@@ -313,6 +313,10 @@
         <mkdir dir="${odi.dir}/scripts" />
         <copy todir="${odi.dir}/scripts">
             <fileset dir="scripts" />
+        </copy>
+        <mkdir dir="${odi.dir}/sdkapi" />
+        <copy todir="${odi.dir}/sdkapi">
+            <fileset dir="sdkapi" />
         </copy>
         <mkdir dir="${odi.dir}/src" />
         <copy todir="${odi.dir}/src">
