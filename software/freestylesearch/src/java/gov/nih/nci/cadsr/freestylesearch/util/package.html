@@ -1,0 +1,229 @@
+<html>
+    <!--
+    $Header: /share/content/gforge/freestylesearch/freestylesearch/src/gov/nih/nci/cadsr/freestylesearch/util/package.html,v 1.4 2007-01-25 20:24:07 hebell Exp $
+    $Name: not supported by cvs2svn $
+-->
+    <body>
+        <p>
+            This is the package for the Freestyle Search API, distributed in the <b>freestylesearch.jar</b> file.
+        </p>
+        <p>
+            <b>Introduction</b>
+        </p>
+        <div style="margin-left: 0.5in">
+            <p>
+                The search algorythm impoys weights to a variety of scenarios and configuration settings. Weights are summed for each match to produce a score. The results returned are always in descending order by the score. Any type of Administered
+                Component supported by Freestyle may be returned unless certain options are set. The following first descibes the weights and search algorythm. Next the available options are described. More details can always be found by referencing the
+                various methods provided in the Search class.
+            </p>
+            <p>
+                To suggest changes, enhancements, report bugs and get more information please contact the <a href="mailto:ncicb@pop.nci.nih.gov?subject=Freestyle%20Search%20Request">NCICB Help Desk</a>. Be sure to include examples, code snippets, screen
+                shots, etc as appropriate to your request.
+            </p>
+        </div>
+        <p>
+            <b>Search Scoring</b>
+        </p>
+        <div style="margin-left: 0.5in">
+            <p>
+            The Administered Components that could be returned from a search are:
+            </p>
+            <ul>
+                <li>
+                    Data Element
+                </li>
+                <li>
+                    Data Element Concept
+                </li>
+                <li>
+                    Value Domain
+                </li>
+                <li>
+                    Object Class
+                </li>
+                <li>
+                    Property
+                </li>
+                <li>
+                    Concept
+                </li>
+                <li>
+                    Conceptual Domain
+                </li>
+            </ul>
+            <p>
+                These are weighted in the order presented for results in the same score group. A score group is two or more results with the same score. Outside of a group these may appear in any order or combination within a search, for example, using the
+                search term "Lateral" may return depending on other search settings:
+            </p>
+            <div style="margin-left: 0.3in">
+                <p>
+                    Nodule RML Lateral Segment Ind
+                    <br>
+                    Data Element
+                    <br>
+                    Score 4
+                </p>
+                <p>
+                    Nodule LLL Lateral Basal Segment Ind
+                    <br>
+                    Data Element
+                    <br>
+                    Score 3
+                </p>
+                <p>
+                    Surgical Margin, Distance, Closest to Lateral
+                    <br>
+                    Data Element
+                    <br>
+                    Score 3
+                </p>
+                <p>
+                    NODULE RML LATERAL SEGMENT IND
+                    <br>
+                    Data Element Concept
+                    <br>
+                    Score 3
+                </p>
+                <p>
+                    RELATION_LATERAL_TUMOR_VD
+                    <br>
+                    Value Domain
+                    <br>
+                    Score 3
+                </p>
+                <p>
+                    Location Medio Lateral
+                    <br>
+                    Value Domain
+                    <br>
+                    Score 3
+                </p>
+                <p>
+                    Brachytherapy Lateral Radiographic Magnification
+                    <br>
+                    Data Element Concept
+                    <br>
+                    Score 2
+                </p>
+                <p>
+                    Measurement X Medio Lateral
+                    <br>
+                    Value Domain
+                    <br>
+                    Score 2
+                </p>
+                <p>
+                    Lateral
+                    <br>
+                    Concept
+                    <br>
+                    Score 2
+                </p>
+                <p>
+                    Lateral Ventricle
+                    <br>
+                    Concept
+                    <br>
+                    Score 2
+                </p>
+            </div>
+            <p>
+                Notice how the results above are all sorted highest score first. Within matching scores (a score group) the order is by AC as weighted by the list above. In this example the results were truncated for simplicity.
+            </p>
+            <p>
+                Also note in the previous example the Concept "Lateral" appears near the end of the list. This is a result of the number of hits the term has within the AC. The columns searched include the following were appropriate: Version, Long Name,
+                Preferred Name, Preferred Definition, Question, Public ID, Latest Version Indicator, Created By, Modified By, Workflow Status, Context, Alternate Name, Definition Source and Origin. If the column applies to an AC it is included, e.g. a Data
+                Element has a "Question" column however no other AC defines it. A term is counted once per column in which it appears. So again in the previous example "Lateral" appears in more columns in the results at the top of the list.
+            </p>
+            <p>
+                When multiple search terms are provided, e.g. "Congestive Heart Failure", the results score higher when these words are found in the order specified. This extra weight is not applied to single term searches as it becomes a mathematical
+                constant and does not affect the result.
+            </p>
+            <p>
+                Some terms are have an inherent weight of zero (0) and are consequently ignored during a search. This applies to all single letters, e.g. "A" and "I", and some predicates and verbs, e.g. "The", "of", "be", "an", etc. These words do nothing
+                to narrow a meaningful semantic search, for example the phrases "An agent report" and "The agent report" have subtle contextual implications but are more often a result of choice of wording and not semantically important to the user.
+            </p>
+        </div>
+        <p>
+            <b>Search Options</b>
+        </p>
+        <div style="margin-left: 0.5in">
+        <p>
+            Controlling the search result is performed through the options. This search engine is not intended to provide a programmatic specification for specific columns but is designed from a user perspective to work toward answering a question. The
+            user does not need to know how the database is designed or the name of specific columns or tables, e.g. search for something named "agent report", not 'long_name' equals 'agent report'. When the caDSR was curated the terms or words in the
+            search phrase could appear in any order and in who knows which columns, i.e. "long_name", "preferred_name", "name", etc. The options available to control the results reflect this philosophy.
+            </p>
+            <p>
+                There are three (3) consistencies in all searches that can not be changed via options. The first is all comparisons are case insensitive. Case in the caDSR and in the search term is ignored by the search engine. The second is word order in
+                a multi-term phrase is ignored. As mentioned above a higher score is given when a match to the order is found but that is not a requirement to finding a match. If only one term in a phrase is actually found, results are returned regardless
+                of the position of the word in the phrase. The third is special characters are ignored. All punctuation characters are removed during a search. There is no concept of a wildcard within the search terms.
+            </p>
+            <p>
+                Although there is no wildcard character and no option to set or create one, there is an option to elect exact and partial term searches. This option applies to all terms in the phrase. Assuming a wildcard character of asterisk ( * ), the
+                search engine does not provide for the following scenario, search exactly on "agent" and partially on "report", e.g. "agent report*". The match option instructs the search that all terms are to be compared exactly, e.g. "agent report", or
+                compared partially, e.g. "*agent*report*". (The previous examples are abbreviated, remember word order is ignored.) See the Search.setMatchFlag() method for more information.
+            </p>
+            <p>
+                A search results limit may be set to prevent performance and resource issues. Again this was designed with a user perspective and most users have a "reasonable" limit related to how much they expect to read. A good example of this can be
+                found with Google. If the desired link isn't on the first page of results most people will play with the search term by adding or arranging words. Some people will progress to the second results page. Statistically very few go beyond that.
+                This limit is the total number of results in the return, it is not the results per "page". Pagenation must be handled by the caller if desired. See the Search.setLimit() method for more details.
+            </p>
+        </div>
+        <p>
+            <b>Software Dependencies</b>
+        </p>
+        <div style="margin-left: 0.5in">
+            <p>Following are the required dependent software when using the Freestyle API. These JAR files may appear anywhere on the Java CLASSPATH and should only be bundled as needed, e.g. deploying a WAR to JBoss need not
+            include commons-logging.jar if it is present in the JBoss/lib folder.</p>
+            <table>
+                <tr><th>JAR</th><th>Release</th></tr>
+                <tr><td>cglib-full-2.0.1.jar </td><td>2.0.1</td></tr>
+                <tr><td>client.jar</td><td>3.2</td></tr>
+                <tr><td>commons-logging.jar</td><td>1.0.3</td></tr>
+                <tr><td>freestylesearch.jar</td><td>3.2</td></tr>
+                <tr><td>hibernate3.jar</td><td>3.0.2</td></tr>
+                <tr><td>log4j-1.2.8.jar</td><td>1.2.8</td></tr>
+                <tr><td>ojdbc14.jar</td><td>Oracle 9i</td></tr>
+                <tr><td>spring.jar</td><td>1.2</td></tr>
+            </table>
+        </div>
+        <p>
+            <b>Examples</b>
+        </p>
+        <div style="margin-left: 0.5in">
+            <code>
+                import gov.nih.nci.cadsr.freestylesearch.util.*;
+                <br>
+                <br>
+                DataSource ds = ...;
+                <br>
+                <br>
+                // Use programmed defaults
+                <br>
+                Search var = new Search();
+                <br>
+                <br>
+                // Connect to the server/database<br/>
+                // <u><b>One of the setDataDescription(...) methods MUST be called prior to any other class method. The preferred method takes a URL as the argument.</b></u>
+                <br>
+                var.setDataDescription("http://freestyle.nci.nih.gov");
+                <br>
+                <br>
+                // Perform a search and get a default ASCII result
+                <br>
+                Vector&lt;String&gt; r1 = var.findReturningDefault("congestive heart failure");
+                <br>
+                <br>
+                // Perform a search and get a search result set
+                <br>
+                Vector&lt;SearchResultSet&gt; r2 = var.findReturningResultSet("congestive heart failure");
+                <br>
+                <br>
+                // Perform a search and get caCORE API AdministeredComponent results
+                <br>
+                Vector&lt;AdministeredComponent&gt; r3 = var.findReturningAdministeredComponent("congestive heart failure");
+                <br>
+            </code>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,361 @@
+/* Copyright ScenPro, Inc. 2005
+   $Header: /share/content/gforge/freestylesearch/freestylesearch/WebRoot/css/freestyle.css,v 1.1 2007-12-11 22:45:35 hebell Exp $
+   $Name: not supported by cvs2svn $
+*/
+
+.ncihdrbg { /* for the cell that contains the required cancer.gov header */
+    background-color: #a90101; /* constant: red */
+}
+
+.ncisubhdrbg { /* for the cell that contains the application header */
+    /* background-color:#475B82; /* darker */
+    background-color: #2e2f81;
+}
+
+.nciftrtable { /* for the table that contains the footer */
+    padding-top: 0.1in;
+    vertical-align: top;
+    text-align: center
+}
+
+.ncifmenu {
+    background-color: #5c5c5c;
+    vertical-align: middle;
+    text-align: left
+}
+
+dt {
+    margin-top: 0.2in
+}
+
+dd {
+    margin-top: 0.1in
+}
+
+body {
+    font-size: 10pt;
+    font-family: arial;
+    background-color: white
+}
+
+p {
+    font-size: 10pt;
+    font-family: arial
+}
+
+textarea {
+    font-size: 10pt;
+    font-family: arial
+}
+
+td {
+    font-size: 10pt
+}
+
+input {
+    font-size: 10pt
+}
+
+select {
+    font-size: 10pt;
+}
+
+button {
+    font-size: 10pt;
+}
+
+.sect {
+    font-size: 10pt;
+    font-weight: normal;
+    text-align: left;
+    margin-top: 12pt;
+    margin-bottom: 0pt
+}
+
+.but3 {
+    font-size: 10pt;
+    font-weight: normal;
+    margin-left: 5px;
+    margin-right: 5px;
+    width: 1in
+}
+
+.ttl18 {
+    font-size: 14pt;
+    font-weight: normal;
+    margin-top: 10pt
+}
+
+.wd {
+    font-family: wingdings;
+    font-size: 10pt;
+    font-weight: normal
+}
+
+.wd2 {
+    font-family: wingdings;
+    font-size: 10pt;
+    font-weight: normal
+}
+
+.wdemail {
+    font-family: wingdings;
+    font-size: 24pt;
+    font-weight: bold;
+    text-decoration: none;
+    margin-right: 0.2in;
+    color: #888888
+}
+
+th {
+    text-align: center;
+    vertical-align: middle
+}
+
+.link1 {
+    color: black;
+    font-weight: bold;
+    text-decoration: underline
+}
+
+.td1 {
+    vertical-align: top
+}
+
+.td1a {
+    border-top: solid black 1px;
+    text-align: center;
+    vertical-align: middle
+}
+
+.td1b {
+    border-top: solid black 1px;
+    text-align: left;
+    vertical-align: middle
+}
+
+.sstd100 {
+    font-weight: normal;
+    width: 100%
+}
+
+.sstd {
+    font-weight: normal;
+    width: 95%
+}
+
+.std0 {
+    font-weight: normal;
+    margin-top: 0in;
+    margin-bottom: 6pt
+}
+
+.std05 {
+    font-weight: normal;
+    text-align: left;
+    margin-top: 2pt;
+    margin-bottom: 0pt;
+    margin-left: 0.5in
+}
+
+.std {
+    font-weight: normal
+}
+
+.std12 {
+    font-weight: normal;
+    margin-top: 10pt
+}
+
+.stds6 {
+    font-weight: 700;
+    font-size: 10pt;
+    text-align: justify;
+    margin-left: 0.25in;
+    margin-right: 0.25in;
+    margin-top: 4pt
+}
+
+.std6 {
+    font-weight: normal;
+    margin-top: 4pt
+}
+
+.rstd {
+    font-family: wingdings;
+    color: red
+}
+
+.estd {
+    font-weight: bold;
+    margin-top: 0pt;
+    margin-bottom: 0pt;
+    color: green
+}
+
+.bstd {
+    font-weight: bold;
+    margin-top: 0pt;
+    margin-bottom: 0pt
+}
+
+.bstd6 {
+    font-weight: bold;
+    text-align: left;
+    margin-top: 4pt;
+    margin-bottom: 0pt
+}
+
+.bstd12 {
+    font-weight: bold;
+    text-align: left;
+    margin-top: 10pt;
+    margin-bottom: 0pt
+}
+
+.table1 {
+    width: 100%;
+    border-spacing: 0px;
+    border-collapse: collapse
+}
+
+.table3 {
+    width: 100%;
+    border-spacing: 0px;
+    border-collapse: collapse;
+    margin-top: 10pt
+}
+
+.table4 {
+    border: 1px solid black;
+    width: 100%;
+    border-spacing: 0px;
+    border-collapse: collapse
+}
+
+.but1 {
+    font-weight: normal;
+    margin-right: 0.05in;
+    width: 1in
+}
+
+.but1a {
+    font-weight: normal;
+    margin-right: 0.05in;
+    width: 1in
+}
+
+.but2 {
+    font-weight: normal;
+    width: 1in
+}
+
+.img1 {
+    vertical-align: middle;
+    margin-right: 0.2in;
+}
+
+.img2 {
+    vertical-align: middle
+}
+
+.hrf { /* width: 95%; */
+    height: 0.3em;
+    color: #cc0000;
+    margin-top: 16pt;
+    text-align: center
+}
+
+.hrs {
+    width: 100%;
+    margin-top: 10pt
+}
+
+li {
+    margin-left: -0.25in
+}
+.secttable {
+    width: 100%;
+    border-spacing: 0px;
+    border-collapse: collapse;
+    margin: 0in 0in 0in 0in
+}
+
+.secttbody {
+    padding: 0px 0px 0px 0px
+}
+
+.tabtable {
+    width: 100%;
+    border-spacing: 0px;
+    border-collapse: collapse
+}
+
+.tabtbody {
+    padding: 0px 0px 0px 0px
+}
+
+.tabtd {
+    vertical-align: bottom
+}
+    
+.tab0 {
+    border-left: 1px solid black;
+    border-top: 3px solid black;
+    border-right: 2px solid black;
+    border-bottom: 0px solid black;
+    background-color: #ffffff;
+    color: #000000;
+    padding-left: 0.1in;
+    padding-right: 0.1in;
+    text-align: center;
+    vertical-align: bottom;
+    cursor: default;
+    width: 100%;
+    font-weight: bold
+}
+
+.tab1 {
+    border-left: 1px solid black;
+    border-top: 1px solid black;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+    background-color: #e2e2e2;
+    color: #000000;
+    padding-left: 0.1in;
+    padding-right: 0.1in;
+    text-align: center;
+    vertical-align: bottom;
+    cursor: default;
+    width: 100%;
+    font-weight: normal
+}
+
+.tab2 {
+    border-left: 1px solid black;
+    border-top: 2px solid #0088ff;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+    background-color: #eeeeee;
+    color: #000000;
+    padding-left: 0.1in;
+    padding-right: 0.1in;
+    text-align: center;
+    vertical-align: bottom;
+    cursor: default;
+    width: 100%;
+    font-weight: normal
+}
+
+.tabend {
+    width: 100%;
+    border-bottom: 1px solid black
+}
+
+img {
+    border: 0px solid red;
+}
+
+.padding0 {
+    padding: 0in 0in 0in 0in
+}
