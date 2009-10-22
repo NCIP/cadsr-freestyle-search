@@ -96,7 +96,7 @@
     <property name="odi.dir" location="${artifacts.dir}/ospack" />
     <property name="web.dir" location="${root.dir}/WEB-INF" />
     <property name="classes.dir" location="${web.dir}/classes" />
-    <property name="wlib.dir" location="${basedir}/lib" />
+    <property name="wlib.dir" location="${basedir}/src/web/lib" />
     <property name="jsp.dir" location="${root.dir}/jsp" />
     <property name="prop.dir" location="${classes.dir}/gov/nih/nci/cadsr/freestylesearch" />
     <property name="src.dir" location="${basedir}/src/java" />
@@ -169,6 +169,24 @@
         <copy tofile="${prop.dir}/Freestyle.properties" filtering="true">
             <fileset file="${basedir}/src/resources/conf/template.Freestyle.properties" />
         </copy>
+    	<copy todir="${root.dir}/css" filtering="true">
+    	    <fileset dir="${basedir}/src/web/css" />
+    	</copy>
+    	<copy todir="${root.dir}/images" filtering="true">
+    	   	<fileset dir="${basedir}/src/web/images" />
+    	</copy>
+    	<copy todir="${root.dir}/jsp" filtering="true">
+    	    <fileset dir="${basedir}/src/web/jsp" />
+    	</copy>
+    	<copy todir="${web.dir}/tld" filtering="true">
+    	    <fileset dir="${basedir}/src/web/tld" />
+    	</copy>
+    	<copy todir="${web.dir}/lib" filtering="true">
+    	    <fileset dir="${wlib.dir}" />
+    	</copy>
+    	<copy todir="${web.dir}" filtering="true">
+    	    <fileset file="${basedir}/src/web/struts-config.xml" />
+    	</copy>
         <copy tofile="${web.dir}/web.xml" filtering="true">
             <fileset file="${basedir}/src/resources/conf/template.web.xml" />
         </copy>
