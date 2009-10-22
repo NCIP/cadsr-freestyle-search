@@ -121,8 +121,7 @@ $HeadURL: http://gforge.nci.nih.gov/svnroot/automation/trunk/software/bda-build-
 		</condition>
 		<echo message="application.base.path=${application.base.path}"/>
 		<property name="jboss.home" value="${application.base.path}/${jboss.relative.path}"/>
-		<jboss-version
-			/>
+		<jboss-version/>
 	</target>
 
 	<target name="install:jboss:init" depends="common:init:pre">
@@ -366,7 +365,7 @@ $HeadURL: http://gforge.nci.nih.gov/svnroot/automation/trunk/software/bda-build-
 		<!-- This code is for updating properties.service.xml, make sure to add ${line.separator} after each property def as the property delimiter, if this is not included you will not get the desired results. If you do not use properties service.xml you can delete this code. -->
 		<var name="property.block" value="property1=${authentication.type}${line.separator}
 			property2=${env.name}${line.separator}
-			property3=${jboss.home}${line.separator}			
+			property3=${jboss.home}${line.separator}
 			"/>
 		<copy file="${jboss.home}/server/${jboss.server.name}/deploy/properties-service.xml" tofile="${jboss.home}/server/${jboss.server.name}/deploy/properties-service.xml.orig" overwrite="true"/>
 		<jboss-update-properties-service
