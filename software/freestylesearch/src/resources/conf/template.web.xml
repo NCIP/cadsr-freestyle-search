@@ -5,7 +5,7 @@
      $Name: not supported by cvs2svn $
 -->
 <web-app>
-  <description>Empty web.xml file for Web Application</description>
+  <description>web.xml file for FreeStyleSearch</description>
   <servlet>
     <servlet-name>process</servlet-name>
     <servlet-class>org.apache.struts.action.ActionServlet</servlet-class>
