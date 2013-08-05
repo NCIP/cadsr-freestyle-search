@@ -1,3 +1,10 @@
+<%--L
+  Copyright ScenPro Inc, SAIC-F
+
+  Distributed under the OSI-approved BSD 3-Clause License.
+  See http://ncip.github.com/cadsr-freestyle-search/LICENSE.txt for details.
+L--%>
+
 <!-- Copyright ScenPro, Inc. 2005
      $Header: /share/content/gforge/freestylesearch/freestylesearch/WebRoot/jsp/freestylesearch.jsp,v 1.12 2009-04-01 12:22:05 hebell Exp $
      $Name: not supported by cvs2svn $

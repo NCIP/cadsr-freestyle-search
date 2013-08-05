@@ -1,3 +1,10 @@
+<%--L
+  Copyright ScenPro Inc, SAIC-F
+
+  Distributed under the OSI-approved BSD 3-Clause License.
+  See http://ncip.github.com/cadsr-freestyle-search/LICENSE.txt for details.
+L--%>
+
 <!--
     Copyright 2007, ScenPro, Inc
     

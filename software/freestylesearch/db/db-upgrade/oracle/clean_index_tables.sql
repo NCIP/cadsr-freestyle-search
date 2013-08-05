@@ -1,3 +1,10 @@
+/*L
+  Copyright ScenPro Inc, SAIC-F
+
+  Distributed under the OSI-approved BSD 3-Clause License.
+  See http://ncip.github.com/cadsr-freestyle-search/LICENSE.txt for details.
+L*/
+
 /* Copyright ScenPro, Inc, 2006
 
     $Header: /share/content/gforge/freestylesearch/freestylesearch/db-sql/clean_index_tables.sql,v 1.1 2007-12-11 22:21:02 hebell Exp $
