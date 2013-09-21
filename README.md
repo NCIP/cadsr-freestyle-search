@@ -3,6 +3,8 @@ Welcome to the caDSR Freestyle Search Project!
 
 The caDSR Freestyle Search engine performs weighted semantic searches on the content of Administered Items in the caDSR. Freestyle Search is packaged as an API and also includes a sample UI accessible from a web browser.
 
+The caDSR Freestyle Search is developed in Java and requires Apache Ant for building.
+
 The caDSR Freestyle Search is distributed under the BSD 3-Clause License.
 Please see the NOTICE and LICENSE files for details.
 
