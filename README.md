@@ -13,13 +13,9 @@ You will find more details about the caDSR Freestyle Search in the following lin
  * [Community Wiki] (https://wiki.nci.nih.gov/x/QIEI)
  * [Code Repository] (https://github.com/NCIP/cadsr-freestyle-search)
  * [Issue Tracker] (https://gforge.nci.nih.gov/tracker/?group_id=158)
- * [Downloads] (http://gforge.nci.nih.gov/frs/?group_id=158)
+ * [Installation Package] (http://gforge.nci.nih.gov/frs/?group_id=158)
  * [Documentation] (https://gforge.nci.nih.gov/docman/?group_id=158)
+ * [NCI Instance] (http://freestyle.nci.nih.gov) 
  
- 
-An NCI hosted instance of caDSR Freestyle Search is publicly available at:
-
-[Production Instance] (http://freestyle.nci.nih.gov) 
-
 
 Please join us in further developing and improving the caDSR Freestyle Search project.
